@@ -1,0 +1,144 @@
+{
+  "rules": {
+    "infra": {
+      "canai-supabase-rules": {
+        "path": ".cursor/rules/canai-supabase-rules.mdc",
+        "tags": ["supabase", "typescript", "canai", "prd"],
+        "context": ["backend/**/*", "databases/**/*"]
+      },
+      "canai-security-rules": {
+        "path": ".cursor/rules/canai-security-rules.mdc",
+        "tags": ["security", "canai", "prd"],
+        "context": ["backend/**/*", ".github/workflows/*"]
+      },
+      "canai-ci-cd-rules": {
+        "path": ".cursor/rules/canai-ci-cd-rules.mdc",
+        "tags": ["ci", "cd", "canai", "prd"],
+        "context": [".github/workflows/*"]
+      },
+      "canai-api-rules": {
+        "path": ".cursor/rules/canai-api-rules.mdc",
+        "tags": ["api", "canai", "prd"],
+        "context": ["backend/api/**/*", "backend/routes/**/*"]
+      },
+      "canai-data-lifecycle-rules": {
+        "path": ".cursor/rules/canai-data-lifecycle-rules.mdc",
+        "tags": ["data", "compliance", "canai", "prd"],
+        "context": ["backend/**/*", "databases/**/*"]
+      }
+    },
+    "frontend": {
+      "canai-user-journey": {
+        "path": ".cursor/rules/canai-user-journey.mdc",
+        "tags": ["mvp", "ui", "user-journey"],
+        "context": ["frontend/**/*"]
+      },
+      "canai-structure-rules": {
+        "path": ".cursor/rules/canai-structure-rules.mdc",
+        "tags": ["structure", "canai", "prd"],
+        "context": ["frontend/**/*", "backend/**/*"]
+      },
+      "canai-feature-flags-rules": {
+        "path": ".cursor/rules/canai-feature-flags-rules.mdc",
+        "tags": ["flags", "canai", "prd"],
+        "context": ["frontend/**/*", "backend/**/*"]
+      }
+    },
+    "llm": {
+      "canai-llm-rules": {
+        "path": ".cursor/rules/canai-llm-rules.mdc",
+        "tags": ["llm", "typescript", "canai", "prd"],
+        "context": ["backend/prompts/**/*", "backend/services/**/*"]
+      },
+      "canai-llm-prompting": {
+        "path": ".cursor/rules/canai-llm-prompting.mdc",
+        "tags": ["llm", "prompting", "canai", "prd"],
+        "context": ["backend/prompts/**/*"]
+      }
+    },
+    "workflow": {
+      "canai-memberstack-sync": {
+        "path": ".cursor/rules/canai-memberstack-sync.mdc",
+        "tags": ["memberstack", "supabase", "canai", "prd"],
+        "context": ["backend/**/*", "frontend/utils/**/*"]
+      },
+      "canai-make-automation": {
+        "path": ".cursor/rules/canai-make-automation.mdc",
+        "tags": ["make", "automation", "canai", "prd"],
+        "context": ["backend/webhooks/**/*"]
+      },
+      "canai-github-rules": {
+        "path": ".cursor/rules/canai-github-rules.mdc",
+        "tags": ["github", "workflow", "canai", "prd"],
+        "context": [".github/**/*", "*.md"]
+      },
+      "canai-taskmaster-rules": {
+        "path": ".cursor/rules/canai-taskmaster-rules.mdc",
+        "tags": ["taskmaster", "project-management", "canai", "prd"],
+        "context": ["**/*"]
+      }
+    },
+    "analytics": {
+      "canai-analytics-rules": {
+        "path": ".cursor/rules/canai-analytics-rules.mdc",
+        "tags": ["analytics", "posthog", "canai", "prd"],
+        "context": ["backend/**/*", "frontend/utils/**/*"]
+      },
+      "canai-observability-rules": {
+        "path": ".cursor/rules/canai-observability-rules.mdc",
+        "tags": ["observability", "canai", "prd"],
+        "context": ["backend/**/*", "frontend/**/*"]
+      }
+    },
+    "testing": {
+      "canai-testing-rules": {
+        "path": ".cursor/rules/canai-testing-rules.mdc",
+        "tags": ["testing", "jest", "canai", "prd"],
+        "context": ["backend/tests/**/*", "frontend/tests/**/*"]
+      }
+    },
+    "memory": {
+      "canai-cortex-rules": {
+        "path": ".cursor/rules/canai-cortex-rules.mdc",
+        "tags": ["memory", "context", "canai", "prd"],
+        "context": ["docs/cortex.md"]
+      },
+      "cortex-memory": {
+        "path": ".cursor/rules/cortex.md",
+        "tags": ["memory", "milestones", "context"],
+        "context": ["**/*"]
+      }
+    },
+    "docs": {
+      "canai-docs-rules": {
+        "path": ".cursor/rules/canai-docs-rules.mdc",
+        "tags": ["docs", "documentation", "canai", "prd"],
+        "context": ["docs/**/*"]
+      }
+    },
+    "performance": {
+      "canai-performance-rules": {
+        "path": ".cursor/rules/canai-performance-rules.mdc",
+        "tags": ["performance", "caching", "canai", "prd"],
+        "context": ["backend/**/*", "frontend/**/*"]
+      }
+    },
+    "error-handling": {
+      "canai-error-handling-rules": {
+        "path": ".cursor/rules/canai-error-handling-rules.mdc",
+        "tags": ["error", "canai", "prd"],
+        "context": ["backend/**/*", "frontend/**/*"]
+      }
+    },
+    "typescript": {
+      "canai-typescript-rules": {
+        "path": ".cursor/rules/canai-typescript-rules.mdc",
+        "tags": ["typescript", "canai", "prd"],
+        "context": ["backend/**/*", "frontend/**/*"],
+        "enforceOnSave": true,
+        "blockCompletionsOnViolation": false,
+        "aiSuggestionFiltering": true
+      }
+    }
+  }
+}
