@@ -2,7 +2,7 @@ import { generateCorrelationId } from './tracing';
 
 export interface ValidationRequest {
   value: string;
-  context: Record<string, any>;
+  context: Record<string, string | number | boolean | undefined>;
 }
 
 export interface ValidationResponse {

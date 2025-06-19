@@ -1,0 +1,87 @@
+# CanAI Emotional Sovereignty Platform - Product Requirements Document
+
+## Project Overview
+The CanAI Emotional Sovereignty Platform is a comprehensive emotional intelligence and business planning application that guides users through a 9-stage journey from discovery to deliverable generation.
+
+## 9-Stage User Journey
+
+### F1: Discovery Hook
+Initial user engagement with trust indicators and psychological safety elements.
+
+### F2: 2-Step Discovery Funnel
+Guided discovery process to understand user needs and business context.
+
+### F3: Spark Layer
+AI-powered generation of business insights and sparks using GPT-4o.
+
+### F4: Purchase Flow
+Secure payment processing with Stripe integration and user onboarding.
+
+### F5: Detailed Input Collection
+Comprehensive data collection with progress saving and auto-save functionality.
+
+### F6: Intent Mirror
+Reflection and validation of user intentions with AI-generated summaries.
+
+### F7: Deliverable Generation
+Creation of final business deliverables using AI and emotional resonance validation.
+
+### F8: SparkSplit
+Comparative analysis and feedback collection for generated content.
+
+### F9: Feedback Capture
+User feedback collection with referral and sharing capabilities.
+
+## Technical Requirements
+
+### Backend APIs Required
+- GET /v1/messages - Trust indicators and messaging
+- POST /v1/log-interaction - User interaction logging
+- POST /v1/validate-input - Input validation
+- POST /v1/generate-tooltip - Dynamic tooltip generation
+- POST /v1/generate-sparks - AI spark generation
+- POST /v1/stripe-session - Payment processing
+- POST /v1/save-progress - Progress persistence
+- POST /v1/intent-mirror - Intent reflection
+- POST /v1/request-revision - Deliverable revision
+- POST /v1/spark-split - Comparison generation
+- POST /v1/feedback - Feedback collection
+
+### Database Schema
+- Supabase RLS implementation
+- User data protection
+- Session management
+- Progress tracking
+- Analytics logging
+
+### External Integrations
+- Supabase: Database and authentication
+- Make.com: Workflow automation
+- GPT-4o: AI content generation
+- Hume AI: Emotional resonance validation
+- Stripe: Payment processing
+- PostHog: Analytics tracking
+- Memberstack: User management
+
+### Performance Requirements
+- API response times < 200ms (standard)
+- AI generation < 2s
+- Database queries optimized with RLS
+- Caching implementation
+- Error handling and retry logic
+
+## Quality Standards
+- TypeScript strict mode
+- >80% test coverage
+- WCAG 2.2 AA accessibility
+- Security best practices
+- Comprehensive error handling
+- Real-time monitoring
+
+## Development Standards
+- Monorepo structure
+- Component-based architecture
+- API-first design
+- Comprehensive testing
+- CI/CD pipeline integration
+- Documentation requirements

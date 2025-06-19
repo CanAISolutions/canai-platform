@@ -76,6 +76,18 @@
         "path": ".cursor/rules/canai-taskmaster-rules.mdc",
         "tags": ["taskmaster", "project-management", "canai", "prd"],
         "context": ["**/*"]
+      },
+      "taskmaster-workflow": {
+        "path": ".cursor/rules/dev_workflow.mdc",
+        "tags": ["workflow", "taskmaster", "agent-guide"],
+        "context": [".taskmaster/**/*"],
+        "description": "TaskMaster workflow patterns for AI agents"
+      },
+      "taskmaster-reference": {
+        "path": ".cursor/rules/taskmaster.mdc",
+        "tags": ["taskmaster", "reference", "commands"],
+        "context": [".taskmaster/**/*"],
+        "description": "Comprehensive TaskMaster command reference"
       }
     },
     "analytics": {
@@ -101,11 +113,11 @@
       "canai-cortex-rules": {
         "path": ".cursor/rules/canai-cortex-rules.mdc",
         "tags": ["memory", "context", "canai", "prd"],
-        "context": ["docs/cortex.md"]
+        "context": [".cursor/rules/cortex.md", "backend/Taskmaster-Tasks.md"]
       },
-      "cortex-memory": {
+      "cortex-milestones": {
         "path": ".cursor/rules/cortex.md",
-        "tags": ["memory", "milestones", "context"],
+        "tags": ["memory", "milestones", "context", "taskmaster"],
         "context": ["**/*"]
       }
     },
@@ -139,6 +151,71 @@
         "blockCompletionsOnViolation": false,
         "aiSuggestionFiltering": true
       }
+    },
+    "meta": {
+      "rule-improvement": {
+        "path": ".cursor/rules/self_improve.mdc",
+        "tags": ["meta", "rules", "improvement"],
+        "context": [".cursor/rules/**/*"],
+        "description": "Guidelines for maintaining and improving rules"
+      },
+      "rule-structure": {
+        "path": ".cursor/rules/cursor_rules.mdc",
+        "tags": ["meta", "rules", "structure"],
+        "context": [".cursor/rules/**/*"],
+        "description": "Rule formatting and structure standards"
+      }
+    },
+    "production": {
+      "production-readiness": {
+        "path": ".cursor/rules/canai-production-readiness.mdc",
+        "tags": ["production", "operations", "enterprise"],
+        "context": ["**/*"],
+        "description": "Production-specific operational requirements and standards"
+      }
+    }
+  },
+  "taskmaster": {
+    "enabled": true,
+    "paths": {
+      "prd": ".taskmaster/docs/prd.txt",
+      "tasks": ".taskmaster/tasks/tasks.json",
+      "cortexMilestones": ".cursor/rules/cortex.md",
+      "cortexRules": ".cursor/rules/canai-cortex-rules.mdc"
+    },
+    "aiModel": "claude-3-7-sonnet-20250219",
+    "fieldNaming": {
+      "convention": "kebab-case",
+      "cursorInstructionsField": "cursor-ai-instructions"
+    },
+    "validationRules": {
+      "enforceTaskStructure": true,
+      "validateDependencies": true,
+      "requirePRDAlignment": true,
+      "mandatoryFields": [
+        "id",
+        "description",
+        "inputs",
+        "outputs",
+        "dependencies",
+        "cursor-ai-instructions"
+      ],
+      "optionalFields": [
+        "status",
+        "priority",
+        "complexity",
+        "estimated_hours"
+      ]
+    },
+    "yamlToJsonConversion": {
+      "preserveKebabCase": true,
+      "convertToSnakeCase": false
+    },
+    "integration": {
+      "cortexMilestones": true,
+      "prdSectionMapping": true,
+      "dependencyValidation": true,
+      "cursorRulesSync": true
     }
   }
 }

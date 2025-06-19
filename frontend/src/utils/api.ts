@@ -1,9 +1,9 @@
-import { generateCorrelationId, retryWithBackoff } from './tracing';
-import { insertSessionLog, insertErrorLog, insertPromptLog } from './supabase';
 import { logSessionToMakecom } from './makecom';
+import { insertErrorLog, insertPromptLog, insertSessionLog } from './supabase';
+import { generateCorrelationId, retryWithBackoff } from './tracing';
 
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = Record<string, unknown>> {
   data?: T;
   error?: string;
 }
@@ -16,7 +16,7 @@ export interface MessageResponse {
 export interface LogInteractionRequest {
   user_id?: string;
   interaction_type: string;
-  interaction_details: Record<string, any>;
+  interaction_details: Record<string, string | number | boolean | undefined>;
 }
 
 export interface PreviewSparkRequest {
@@ -66,7 +66,7 @@ export interface IntentMirrorResponse {
 }
 
 // Base API configuration
-const API_BASE = import.meta.env.VITE_API_BASE || '/v1';
+const API_BASE = import.meta.env['VITE_API_BASE'] || '/v1';
 const DEFAULT_TIMEOUT = 5000;
 
 // Generic fetch wrapper with retry logic and correlation ID

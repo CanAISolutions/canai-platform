@@ -1,0 +1,79 @@
+# Dependencies
+node_modules/
+.yarn/
+.pnp/
+.pnp.js
+
+# Build outputs
+dist/
+build/
+coverage/
+.next/
+out/
+
+# Runtime and cache
+.cache/
+.parcel-cache/
+.npm/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+
+# Generated files
+*.generated.ts
+*.generated.tsx
+*.generated.js
+*.generated.jsx
+*.generated.json
+
+# Lock files (preserve exact formatting)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# API documentation (generated)
+docs/api/generated/
+
+# Database files
+databases/
+*.db
+*.sqlite
+
+# Taskmaster generated files
+tasks/generated/
+.taskmaster/temp/
+.taskmaster/cache/
+
+# Configuration files that require specific formatting
+.husky/*
+.github/workflows/*.yml
+.github/workflows/*.yaml
+docker-compose.yml
+docker-compose.*.yml
+
+# Markdown files with specific formatting requirements
+CHANGELOG.md
+.cursor/rules/*.mdc
+
+# Log files
+logs/
+*.log
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage reports
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/

@@ -1,6 +1,8 @@
 # TaskMaster-Compatible Task Breakdowns
 
-This document outlines TaskMaster-compatible tasks for backend development, organized by section (6.1 to 18.3). Each task is formatted for Cursor AI to identify gaps and enable TaskMaster to generate supplemental tasks not explicitly defined in the PRD.
+This document outlines TaskMaster-compatible tasks for backend development, organized by section
+(6.1 to 18.3). Each task is formatted for Cursor AI to identify gaps and enable TaskMaster to
+generate supplemental tasks not explicitly defined in the PRD.
 
 ## Section 6.1: Backend Development - Messages and Interactions
 
@@ -48,7 +50,9 @@ tasks:
       - Log pricing_modal_viewed event with PostHog
 
   - id: T6.1.3-preview-spark
-    description: Implement POST /v1/generate-preview-spark API for free spark generation with sample PDF serving
+    description:
+      Implement POST /v1/generate-preview-spark API for free spark generation with sample PDF
+      serving
     inputs:
       - backend/routes/sparks.js
       - backend/services/gpt4o.js
@@ -108,7 +112,9 @@ tasks:
 ```yaml
 tasks:
   - id: T6.2.1-validate-input-api
-    description: Implement POST /v1/validate-input API for funnel input validation, trust score, and quiz mapping
+    description:
+      Implement POST /v1/validate-input API for funnel input validation, trust score, and quiz
+      mapping
     inputs:
       - backend/routes/funnel.js
       - backend/middleware/validation.js
@@ -191,7 +197,8 @@ tasks:
 ```yaml
 tasks:
   - id: T6.3.1-generate-sparks-api
-    description: Implement POST /v1/generate-sparks API for initial spark generation with generic preview
+    description:
+      Implement POST /v1/generate-sparks API for initial spark generation with generic preview
     inputs:
       - backend/routes/sparks.js
       - backend/services/gpt4o.js
@@ -425,7 +432,8 @@ tasks:
 ```yaml
 tasks:
   - id: T6.6.1-intent-mirror-api
-    description: Implement POST /v1/intent-mirror API for summary, confidence scoring, and question logging
+    description:
+      Implement POST /v1/intent-mirror API for summary, confidence scoring, and question logging
     inputs:
       - backend/routes/intent.js
       - backend/middleware/auth.js
