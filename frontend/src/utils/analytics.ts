@@ -4,6 +4,85 @@
 
 import { generateCorrelationId } from './tracing';
 
+// TypeScript interfaces for analytics properties
+interface BaseAnalyticsProperties {
+  timestamp?: string;
+  correlation_id?: string;
+  user_id?: string;
+  session_id?: string;
+}
+
+interface PageViewProperties extends BaseAnalyticsProperties {
+  page?: string;
+  referrer?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+}
+
+interface FunnelStepProperties extends BaseAnalyticsProperties {
+  stepName?: string;
+  completed?: boolean;
+  duration_ms?: number;
+  previous_step?: string;
+}
+
+interface TrustScoreProperties extends BaseAnalyticsProperties {
+  score?: number;
+  meets_target?: boolean;
+  previous_score?: number;
+  journey_stage?: string;
+}
+
+interface SparkProperties extends BaseAnalyticsProperties {
+  spark_id?: string;
+  selection_time?: number;
+  attempt_count?: number;
+  max_attempts_reached?: boolean;
+  view_type?: string;
+}
+
+interface FeedbackProperties extends BaseAnalyticsProperties {
+  source?: string;
+  rating?: number;
+  positive_feedback?: boolean;
+  comments?: string;
+}
+
+interface ProductProperties extends BaseAnalyticsProperties {
+  product_id?: string;
+  product_name?: string;
+  source?: string;
+}
+
+interface PerformanceProperties extends BaseAnalyticsProperties {
+  action?: string;
+  duration?: number;
+  success?: boolean;
+  error_message?: string;
+}
+
+interface ErrorProperties extends BaseAnalyticsProperties {
+  error_name?: string;
+  error_message?: string;
+  stack_trace?: string;
+  component?: string;
+  user_action?: string;
+}
+
+// Generic analytics properties type
+type AnalyticsProperties =
+  | BaseAnalyticsProperties
+  | PageViewProperties
+  | FunnelStepProperties
+  | TrustScoreProperties
+  | SparkProperties
+  | FeedbackProperties
+  | ProductProperties
+  | PerformanceProperties
+  | ErrorProperties
+  | Record<string, string | number | boolean | undefined>;
+
 // PostHog Event Constants
 export const POSTHOG_EVENTS = {
   FUNNEL_STEP: 'funnel_step',
@@ -31,10 +110,10 @@ export const POSTHOG_EVENTS = {
 
 // Mock PostHog implementation for development
 const mockPostHog = {
-  capture: (event: string, properties?: Record<string, any>) => {
+  capture: (event: string, properties?: AnalyticsProperties) => {
     console.log(`[PostHog] ${event}:`, properties);
   },
-  identify: (userId: string, properties?: Record<string, any>) => {
+  identify: (userId: string, properties?: AnalyticsProperties) => {
     console.log(`[PostHog] Identify ${userId}:`, properties);
   },
 };
@@ -42,7 +121,7 @@ const mockPostHog = {
 // Page view tracking
 export const trackPageView = (
   page: string,
-  properties?: Record<string, any>
+  properties?: PageViewProperties
 ) => {
   try {
     trackEvent(POSTHOG_EVENTS.FUNNEL_STEP, {
@@ -60,7 +139,7 @@ export const trackPageView = (
 // Generic event tracking
 export const trackEvent = (
   eventName: string,
-  properties?: Record<string, any>
+  properties?: AnalyticsProperties
 ) => {
   try {
     mockPostHog.capture(eventName, {
@@ -76,7 +155,7 @@ export const trackEvent = (
 // Funnel step tracking
 export const trackFunnelStep = (
   stepName: string,
-  properties?: Record<string, any>
+  properties?: FunnelStepProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.FUNNEL_STEP, {
     stepName,
@@ -88,7 +167,7 @@ export const trackFunnelStep = (
 // Trust score updates
 export const trackTrustScoreUpdate = (
   score: number,
-  context?: Record<string, any>
+  context?: TrustScoreProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.TRUST_SCORE_UPDATE, {
     score,
@@ -100,7 +179,7 @@ export const trackTrustScoreUpdate = (
 // Spark selection tracking
 export const trackSparkSelected = (
   sparkId: string,
-  properties?: Record<string, any>
+  properties?: SparkProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.SPARK_SELECTED, {
     spark_id: sparkId,
@@ -112,7 +191,7 @@ export const trackSparkSelected = (
 // Spark regeneration tracking
 export const trackSparksRegenerated = (
   attemptCount: number,
-  properties?: Record<string, any>
+  properties?: SparkProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.SPARKS_REGENERATED, {
     attempt_count: attemptCount,
@@ -122,7 +201,7 @@ export const trackSparksRegenerated = (
 };
 
 // SparkSplit view tracking
-export const trackSparkSplitView = (properties?: Record<string, any>) => {
+export const trackSparkSplitView = (properties?: SparkProperties) => {
   trackEvent(POSTHOG_EVENTS.SPARK_SPLIT_VIEW, {
     view_type: 'comparison_displayed',
     ...properties,
@@ -133,7 +212,7 @@ export const trackSparkSplitView = (properties?: Record<string, any>) => {
 export const trackFeedbackSubmission = (
   source: string,
   rating: number,
-  properties?: Record<string, any>
+  properties?: FeedbackProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.FEEDBACK_SUBMISSION, {
     source,
@@ -146,7 +225,7 @@ export const trackFeedbackSubmission = (
 // Form step tracking
 export const trackFormStep = (
   stepName: string,
-  properties?: Record<string, any>
+  properties?: FunnelStepProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.FORM_STEP, {
     stepName,
@@ -159,7 +238,7 @@ export const trackFormStep = (
 export const trackProductClick = (
   productId: string,
   productName: string,
-  properties?: Record<string, any>
+  properties?: ProductProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.PRODUCT_CLICKED, {
     product_id: productId,
@@ -171,7 +250,7 @@ export const trackProductClick = (
 // Pricing view tracking
 export const trackPricingView = (
   source: string,
-  properties?: Record<string, any>
+  properties?: ProductProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.PRICING_VIEW, {
     source,
@@ -182,7 +261,7 @@ export const trackPricingView = (
 // Preview view tracking
 export const trackPreviewView = (
   source: string,
-  properties?: Record<string, any>
+  properties?: BaseAnalyticsProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.PREVIEW_VIEW, {
     source,
@@ -192,69 +271,91 @@ export const trackPreviewView = (
 
 // Intent mirror tracking
 export const trackIntentMirrorConfirmed = (
-  properties?: Record<string, any>
+  properties?: BaseAnalyticsProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.INTENT_MIRROR_CONFIRMED, properties);
 };
 
-export const trackIntentMirrorEdited = (properties?: Record<string, any>) => {
+export const trackIntentMirrorEdited = (properties?: BaseAnalyticsProperties) => {
   trackEvent(POSTHOG_EVENTS.INTENT_MIRROR_EDITED, properties);
 };
 
-export const trackIntentMirrorLoaded = (properties?: Record<string, any>) => {
+export const trackIntentMirrorLoaded = (properties?: BaseAnalyticsProperties) => {
   trackEvent(POSTHOG_EVENTS.INTENT_MIRROR_LOADED, properties);
 };
 
 // Support request tracking
-export const trackSupportRequested = (properties?: Record<string, any>) => {
+export const trackSupportRequested = (properties?: BaseAnalyticsProperties) => {
   trackEvent(POSTHOG_EVENTS.SUPPORT_REQUESTED, properties);
 };
 
 // Deliverable tracking
-export const trackDeliverableGenerated = (properties?: Record<string, any>) => {
+export const trackDeliverableGenerated = (properties?: BaseAnalyticsProperties) => {
   trackEvent(POSTHOG_EVENTS.DELIVERABLE_GENERATED, properties);
 };
 
-export const trackRevisionRequested = (properties?: Record<string, any>) => {
+export const trackRevisionRequested = (properties?: BaseAnalyticsProperties) => {
   trackEvent(POSTHOG_EVENTS.REVISION_REQUESTED, properties);
 };
 
 export const trackDeliverableRegenerated = (
-  properties?: Record<string, any>
+  properties?: BaseAnalyticsProperties
 ) => {
   trackEvent(POSTHOG_EVENTS.DELIVERABLE_REGENERATED, properties);
 };
 
-export const trackPDFDownload = (properties?: Record<string, any>) => {
+export const trackPDFDownload = (properties?: BaseAnalyticsProperties) => {
   trackEvent(POSTHOG_EVENTS.PDF_DOWNLOAD, properties);
 };
 
-export const trackEmotionalResonance = (properties?: Record<string, any>) => {
+export const trackEmotionalResonance = (properties?: BaseAnalyticsProperties) => {
   trackEvent(POSTHOG_EVENTS.EMOTIONAL_RESONANCE, properties);
 };
 
-// Performance tracking
 export const trackPerformance = (
   action: string,
   duration: number,
-  properties?: Record<string, any>
+  properties?: PerformanceProperties
 ) => {
   trackEvent('performance_metric', {
     action,
-    duration_ms: duration,
-    meets_target: duration < 2000, // 2s target
+    duration,
+    success: duration < 2000, // Consider <2s as success
     ...properties,
   });
 };
 
-// Error tracking
-export const trackError = (error: Error, context?: Record<string, any>) => {
+export const trackError = (error: Error, context?: ErrorProperties) => {
   trackEvent('error_occurred', {
+    error_name: error.name,
     error_message: error.message,
-    error_stack: error.stack,
+    stack_trace: error.stack,
     ...context,
   });
 };
 
-// Re-export logInteraction from api module
-export { logInteraction } from './api';
+export default {
+  trackPageView,
+  trackEvent,
+  trackFunnelStep,
+  trackTrustScoreUpdate,
+  trackSparkSelected,
+  trackSparksRegenerated,
+  trackSparkSplitView,
+  trackFeedbackSubmission,
+  trackFormStep,
+  trackProductClick,
+  trackPricingView,
+  trackPreviewView,
+  trackIntentMirrorConfirmed,
+  trackIntentMirrorEdited,
+  trackIntentMirrorLoaded,
+  trackSupportRequested,
+  trackDeliverableGenerated,
+  trackRevisionRequested,
+  trackDeliverableRegenerated,
+  trackPDFDownload,
+  trackEmotionalResonance,
+  trackPerformance,
+  trackError,
+};

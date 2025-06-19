@@ -6,9 +6,9 @@ import { createClient } from '@supabase/supabase-js';
 
 // Supabase configuration using Vite environment variables
 const SUPABASE_URL =
-  import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
+  import.meta.env['VITE_SUPABASE_URL'] || 'https://your-project.supabase.co';
 const SUPABASE_ANON_KEY =
-  import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+  import.meta.env['VITE_SUPABASE_ANON_KEY'] || 'your-anon-key';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -18,14 +18,14 @@ export interface SessionLog {
   user_id?: string;
   stripe_payment_id?: string;
   interaction_type: string;
-  interaction_details: Record<string, any>;
+  interaction_details: Record<string, string | number | boolean | null | undefined>;
   created_at: string;
 }
 
 export interface InitialPromptLog {
   id: string;
   user_id?: string;
-  payload: Record<string, any>;
+  payload: Record<string, string | number | boolean | null | undefined>;
   trust_score?: number;
   other_type?: string;
   custom_tone?: string;
@@ -35,7 +35,14 @@ export interface InitialPromptLog {
 export interface SparkLog {
   id: string;
   initial_prompt_id: string;
-  selected_spark: Record<string, any>;
+  selected_spark: {
+    title?: string;
+    tagline?: string;
+    content?: string;
+    emotional_tone?: string;
+    trust_indicators?: string[];
+    [key: string]: string | number | boolean | string[] | undefined;
+  };
   product_track: 'business_builder' | 'social_email' | 'site_audit';
   feedback?: string;
   created_at: string;
@@ -113,16 +120,16 @@ export const enableVaultEncryption = async () => {
     /*
     -- Enable vault extension
     CREATE EXTENSION IF NOT EXISTS supabase_vault WITH SCHEMA vault;
-    
+
     -- Create encryption key for prompt_logs
     INSERT INTO vault.secrets (name, secret)
     VALUES ('prompt_logs_encryption_key', 'your-encryption-key-here')
     ON CONFLICT (name) DO NOTHING;
-    
+
     -- Enable vault encryption for sensitive fields
-    ALTER TABLE prompt_logs 
+    ALTER TABLE prompt_logs
     ADD COLUMN IF NOT EXISTS encrypted_payload vault.encrypted_jsonb;
-    
+
     -- Create function to encrypt payload
     CREATE OR REPLACE FUNCTION encrypt_prompt_payload(payload jsonb)
     RETURNS vault.encrypted_jsonb
@@ -148,7 +155,7 @@ export const enableVaultEncryption = async () => {
 export const insertPromptLog = async (log: {
   user_id?: string;
   initial_prompt_id?: string;
-  payload: Record<string, any>;
+  payload: Record<string, string | number | boolean | null | undefined>;
   location?: string;
   unique_value?: string;
 }) => {
@@ -231,7 +238,7 @@ export const insertSparkLog = async (
 // Enhanced helper functions for intent mirror
 export const insertIntentMirrorLog = async (log: {
   user_id?: string;
-  business_data: Record<string, any>;
+  business_data: Record<string, string | number | boolean | null | undefined>;
   summary: string;
   confidence_score: number;
   clarifying_questions?: string[];
@@ -299,7 +306,12 @@ export const insertComparisonLog = async (log: {
   prompt_id: string;
   canai_output: string;
   generic_output?: string;
-  emotional_resonance?: any;
+  emotional_resonance?: {
+    score: number;
+    factors: string[];
+    sentiment: 'positive' | 'negative' | 'neutral';
+    emotional_triggers?: string[];
+  };
   trust_delta?: number;
   user_feedback?: string;
 }) => {
@@ -387,15 +399,15 @@ export const initializeIntentMirrorSupport = async () => {
     /*
     -- Add support_request column to error_logs if it doesn't exist
     ALTER TABLE error_logs ADD COLUMN IF NOT EXISTS support_request BOOLEAN DEFAULT false;
-    
+
     -- Create index for performance
     CREATE INDEX IF NOT EXISTS idx_error_logs_support_request ON error_logs(support_request);
     CREATE INDEX IF NOT EXISTS idx_prompt_logs_step ON prompt_logs((payload->>'step'));
-    
+
     -- Update RLS policies for intent mirror
     CREATE POLICY IF NOT EXISTS "Intent mirror access" ON prompt_logs
       FOR SELECT USING (
-        auth.uid() = user_id OR 
+        auth.uid() = user_id OR
         (payload->>'step' = 'intent_mirror' AND user_id IS NULL)
       );
     */

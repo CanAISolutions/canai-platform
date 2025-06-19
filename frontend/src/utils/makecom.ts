@@ -10,44 +10,44 @@ export interface MakecomWebhookPayload {
   timestamp: string;
   source: string;
   event_type: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 // Make.com webhook URLs
 const MAKECOM_WEBHOOKS = {
   SESSION_LOG:
-    import.meta.env.VITE_MAKECOM_SESSION_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_SESSION_WEBHOOK'] ||
     'https://hook.integromat.com/your-session-webhook',
   USER_INTERACTION:
-    import.meta.env.VITE_MAKECOM_INTERACTION_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_INTERACTION_WEBHOOK'] ||
     'https://hook.integromat.com/your-interaction-webhook',
   ERROR_LOG:
-    import.meta.env.VITE_MAKECOM_ERROR_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_ERROR_WEBHOOK'] ||
     'https://hook.integromat.com/your-error-webhook',
   SPARK_GENERATION:
-    import.meta.env.VITE_MAKECOM_SPARK_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_SPARK_WEBHOOK'] ||
     'https://hook.integromat.com/your-spark-webhook',
   SPARK_REGENERATION:
-    import.meta.env.VITE_MAKECOM_SPARK_REGEN_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_SPARK_REGEN_WEBHOOK'] ||
     'https://hook.integromat.com/your-spark-regen-webhook',
   PROJECT_CREATION:
-    import.meta.env.VITE_MAKECOM_PROJECT_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_PROJECT_WEBHOOK'] ||
     'https://hook.integromat.com/your-project-webhook',
   DELIVERABLE_GENERATION:
-    import.meta.env.VITE_MAKECOM_DELIVERABLE_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_DELIVERABLE_WEBHOOK'] ||
     'https://hook.integromat.com/your-deliverable-webhook',
   PDF_GENERATION:
-    import.meta.env.VITE_MAKECOM_PDF_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_PDF_WEBHOOK'] ||
     'https://hook.integromat.com/your-pdf-webhook',
   PROJECT_STATUS_UPDATE:
-    import.meta.env.VITE_MAKECOM_STATUS_WEBHOOK ||
+    import.meta.env['VITE_MAKECOM_STATUS_WEBHOOK'] ||
     'https://hook.integromat.com/your-status-webhook',
 };
 
 // Send data to Make.com workflow
 export const triggerMakecomWorkflow = async (
   webhookType: keyof typeof MAKECOM_WEBHOOKS,
-  data: Record<string, any>
+  data: Record<string, unknown>
 ): Promise<void> => {
   const webhookUrl = MAKECOM_WEBHOOKS[webhookType];
 
@@ -117,7 +117,7 @@ export const triggerMakecomWorkflow = async (
 export const logSessionToMakecom = (sessionData: {
   user_id?: string;
   interaction_type: string;
-  interaction_details: Record<string, any>;
+  interaction_details: Record<string, unknown>;
 }) => {
   return triggerMakecomWorkflow('SESSION_LOG', sessionData);
 };
@@ -125,7 +125,7 @@ export const logSessionToMakecom = (sessionData: {
 export const logInteractionToMakecom = (interactionData: {
   user_id?: string;
   action: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }) => {
   return triggerMakecomWorkflow('USER_INTERACTION', interactionData);
 };
@@ -172,7 +172,12 @@ export const triggerSparkSplitWorkflow = (sparkSplitData: {
   canai_output: string;
   generic_output: string;
   trust_delta: number;
-  emotional_resonance: any;
+  emotional_resonance: {
+    score: number;
+    factors: string[];
+    sentiment: 'positive' | 'negative' | 'neutral';
+    emotional_triggers?: string[];
+  };
   prompt_id: string;
 }) => {
   return triggerMakecomWorkflow('DELIVERABLE_GENERATION', {
@@ -216,7 +221,7 @@ export const triggerProjectCreation = (projectData: {
 export const triggerDeliverableGeneration = (deliverableData: {
   prompt_id: string;
   product_type: string;
-  business_inputs: Record<string, any>;
+  business_inputs: Record<string, unknown>;
   user_id?: string;
 }) => {
   return triggerMakecomWorkflow('DELIVERABLE_GENERATION', {
@@ -289,7 +294,7 @@ Scenario 1: add_project.json
 - Webhook trigger → Filter → Supabase insert to session_logs
 - Include error handling and retry logic
 
-Scenario 2: admin_add_project.json  
+Scenario 2: admin_add_project.json
 - Admin webhook → Validation → Admin-specific logging
 
 Scenario 3: SAAP Update Project Blueprint.json
@@ -319,7 +324,7 @@ NEW Scenario: deliverable_generation.json
 - Performance target: <2s end-to-end for content generation
 - Include fallback logic for API failures
 
-NEW Scenario: pdf_generation.json  
+NEW Scenario: pdf_generation.json
 - PDF webhook → Content formatting → PDF creation → Cloud storage → Download URL generation
 - Include error handling for PDF generation failures
 - Performance target: <1s PDF creation and storage

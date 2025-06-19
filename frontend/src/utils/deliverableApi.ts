@@ -1,7 +1,7 @@
-import { generateCorrelationId, retryWithBackoff } from './tracing';
-import { insertComparisonLog, insertErrorLog } from './supabase';
-import { triggerMakecomWorkflow } from './makecom';
 import { trackEvent } from './analytics';
+import { triggerMakecomWorkflow } from './makecom';
+import { insertComparisonLog, insertErrorLog } from './supabase';
+import { generateCorrelationId, retryWithBackoff } from './tracing';
 
 // API Response Types for Deliverable Generation
 export interface GenerationStatusResponse {
@@ -375,7 +375,7 @@ export const validateEmotionalResonance = async (
 // Generate deliverable with GPT-4o
 export const generateDeliverableContent = async (
   productType: string,
-  businessInputs: Record<string, any>
+  businessInputs: Record<string, string | number | boolean | undefined>
 ): Promise<{
   canaiOutput: string;
   genericOutput: string;
@@ -496,7 +496,7 @@ export const generateDeliverableContent = async (
 // Helper function for mock content generation
 const generateMockContent = (
   productType: string,
-  inputs: Record<string, any>,
+  inputs: Record<string, string | number | boolean | undefined>,
   personalized: boolean
 ): string => {
   const businessName = inputs.businessName || 'Your Business';

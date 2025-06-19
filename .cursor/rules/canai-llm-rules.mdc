@@ -1,181 +1,141 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
-# CanAI LLM Rules
+---
+description: Guides GPT-4o and Hume AI integration
+globs: backend/services/{gpt4o,hume}.js, backend/prompts/*.js
+alwaysApply: false
+---
+
+# CanAI LLM Guidelines
 
 ## Purpose
-Ensure responsible, efficient, and safe LLM deployments with cost optimization, emotional resonance validation, and comprehensive safety measures for the CanAI Emotional Sovereignty Platform.
+Guide the deployment of Large Language Models (LLMs) to deliver safe, efficient, and emotionally resonant outputs across the 9-stage user journey (F1-F9), aligning with PRD Sections 6, 8.4, 12, and 17 to support user trust and platform reliability.
 
-## Standards
+## Scope
+Provide flexible, high-level guidance for deploying LLMs, ensuring PRD alignment, emotional resonance, and adaptability to project needs while prioritizing safety and performance.
 
-### Input Validation
-- **Zod Validation**: Validate all LLM inputs with Zod schemas before processing (`backend/middleware/validation.js`, PRD Table 4).
-- **Token Limits**: Enforce 128K token limit per request; prioritize `businessDescription`, `primaryGoal` for chunking (`backend/prompts/`).
-- **NSFW Detection**: Reject inappropriate content via `POST /v1/filter-input` (`backend/routes/validation.js`).
-- **Prompt Injection Protection**: 
-  ```ts
-  const isSafePrompt = runPromptFilter(userInput);
-  if (!isSafePrompt) {
-    posthog.capture('prompt_blocked', { input: userInput });
-    return { error: 'Unsafe prompt rejected' };
-  }
-  ```
+## Guiding Principles
 
-### Privacy & Data Protection
-- **PII Redaction**: Redact personally identifiable information using `backend/services/anonymize.js`.
-- **Data Retention**: Store LLM interactions in `databases/prompt_logs` with 24-month retention policy.
-- **Supabase RLS**: Enforce Row-Level Security for all LLM-related data access.
+### Safety
+- Protect users from harmful or biased outputs through robust filtering and validation.
+- Secure data handling to comply with privacy standards.
 
-### Rate Limits & Cost Controls
-- **GPT-4o Limits**: Respect 128K tokens/request, $5/1M tokens budget (PRD Section 7.6).
-- **Hume AI Circuit Breaker**: Enforce >900 req/day limit (`backend/middleware/hume.js`):
-  ```ts
-  const dailyUsage = await getHumeUsage(); // Supabase query
-  if (dailyUsage >= 900) {
-    // Fallback to GPT-4o with -0.2 TrustDelta penalty
-    posthog.capture('hume_fallback_triggered', { usage: dailyUsage, fallback_reason: 'limit_exceeded' });
-    return await fallbackToGPT4oSentiment(input);
-  }
-  ```
-- **Cost Tracking**: Log usage in `databases/usage_logs` with monthly budget alerts (<$150 combined).
+### Emotional Resonance
+- Deliver outputs that align with user emotional drivers and PRD-defined metrics.
+- Validate resonance to enhance user engagement and trust.
 
-### LLM Configuration
-- **Temperature**: Set 0.5 default unless task explicitly requires higher creativity (0.7-0.8 for creative content).
-- **Model Selection**: Use GPT-4o for all primary LLM tasks (`backend/services/gpt4o.js`).
-- **Timeout Handling**: Implement 30s timeout with exponential backoff (3 retries, 2^i * 1000ms delay).
+### Efficiency
+- Optimize resource usage for performance and cost-effectiveness.
+- Implement fallbacks to maintain functionality under constraints.
 
-### Safety & Bias Prevention
-- **Harmful Content Detection**: Prevent generation of harmful, biased, or inappropriate outputs.
-- **Bias Detection Pipeline**: Integrate bias detection tools into LLM generation pipeline:
-  ```ts
-  const biasScore = await detectBias(generatedContent);
-  if (biasScore > 0.7) {
-    posthog.capture('bias_detected', { score: biasScore, content_type: 'deliverable' });
-    return await regenerateWithBiasCorrection(input);
-  }
-  ```
-- **Content Filtering**: Validate outputs against safety guidelines before delivery.
+### PRD Alignment
+- Ensure LLM deployments support PRD objectives for each journey stage.
+- Adapt to evolving PRD requirements and user feedback.
 
-### Emotional Resonance & Quality
-- **Hume AI Validation**: Check emotional resonance (>0.7), arousal (>0.5), valence (>0.6).
-- **TrustDelta Requirements**: Achieve TrustDelta ≥4.0/5.0 for all deliverables.
-- **Confidence Thresholds**: 
-  - High-stakes deliverables require minimum AI confidence score >0.8
-  - Trigger AI-in-the-Loop human review if confidence <0.8 after 2 attempts
-  - Log low confidence events: `posthog.capture('low_confidence_triggered', { confidence: 0.7, attempts: 2 })`
+## LLM Deployment Approach
 
-### Graceful Degradation
-- **Timeout Recovery**: For `/v1/deliverable` >15s, return partial output and send resume link via `send_email.json`.
-- **Fallback Strategies**: 
-  - Hume AI failure → GPT-4o sentiment analysis (-0.2 TrustDelta)
-  - GPT-4o timeout → Cached response from `databases/spark_cache` (TTL: 5min)
-  - Complete failure → User-friendly error with retry option
+### Input Handling
+- Validate inputs for completeness and appropriateness before processing.
+- Optimize token usage, prioritizing essential user data within model limits.
+- Filter inappropriate content and prevent prompt injection attacks.
 
-### Output Validation & Structure
-- **Schema Validation**: Validate all LLM outputs against expected schemas:
-  ```ts
-  const result = schema.safeParse(jsonOutput);
-  if (!result.success) {
-    posthog.capture('schema_validation_failed', { errors: result.error.issues });
-    throw new Error("Invalid output schema");
-  }
-  ```
-- **Word Count Compliance**: Enforce PRD word counts (e.g., 700–800 words for BUSINESS_BUILDER).
-- **Format Consistency**: Ensure outputs match expected format (JSON, markdown, plain text).
+### Privacy & Security
+- Redact sensitive information and enforce strict access controls.
+- Define retention periods for LLM interactions per PRD.
+- Log access attempts securely for compliance.
 
-### Code Generation Standards
-- **Inline Comments**: Require inline comments in generated code explaining any API/library used.
-- **Documentation**: Include JSDoc comments for all generated functions.
-- **Best Practices**: Follow TypeScript and React best practices in generated code.
+### Cost & Rate Limits
+- Monitor API usage to stay within rate limits and budgets.
+- Set alerts for cost thresholds and implement circuit breakers for external services.
+- Use cost-efficient models or fallbacks when appropriate.
 
-### Performance Optimization
-- **Response Times**: Target <2s for deliverable generation, <1.5s for spark generation.
-- **Caching Strategy**: Cache frequent prompts and responses in `databases/spark_cache` (TTL: 5min).
-- **Streaming**: Use Server-Sent Events (SSE) for long-running generations (>2s).
+### Configuration
+- Use balanced model settings (e.g., moderate temperature) for consistency, adjusting for creative tasks.
+- Set timeouts with retries to ensure reliability.
+- Support fallback models to maintain quality during failures.
+
+### Safety & Bias
+- Validate outputs for harmful or biased content using detection tools.
+- Mitigate bias through flagging and correction, logging incidents for review.
+- Ensure compliance with PRD safety standards before delivery.
+
+### Emotional Resonance
+- Confirm outputs meet resonance goals using validation tools (e.g., Hume AI).
+- Target high trust and confidence scores per PRD metrics.
+- Trigger human review for low-confidence outputs in critical stages.
+
+### Fallback & Recovery
+- Provide partial outputs or cached responses during failures.
+- Communicate errors empathetically with clear retry options.
+- Use alternative models or data to maintain functionality.
+
+### Output Standards
+- Ensure outputs match PRD-specified formats, lengths, and tones.
+- Validate structure and consistency before delivery.
+- Support dynamic user preferences (e.g., tone, style).
+
+## Stage-Specific Guidance
+Apply LLM deployments thoughtfully across the 9-stage journey, guided by PRD:
+- **F1: Discovery Hook**: Generate trust-building content with high resonance.
+- **F2: Discovery Funnel**: Validate inputs with emotionally supportive feedback.
+- **F3: Spark Layer**: Create engaging spark concepts tailored to user inputs.
+- **F4: Purchase Flow**: Provide clear, reassuring payment guidance.
+- **F5: Input Collection**: Offer context-aware input assistance.
+- **F6: Intent Mirror**: Summarize inputs with high confidence and empathy.
+- **F7: Deliverable**: Generate high-quality, resonant outputs.
+- **F8: SparkSplit**: Produce comparable outputs for trust evaluation.
+- **F9: Feedback**: Analyze feedback for sentiment and actionable insights.
+
+## Implementation Guidance
+
+### Integration
+- Ensure compatibility with project services (e.g., Supabase, Make.com).
+- Track LLM interactions via analytics for performance insights.
+
+### Code Generation
+- Include clear comments and documentation for generated code.
+- Adhere to project coding standards (e.g., TypeScript, React).
+- Validate functionality and integration before deployment.
+
+### Performance
+- Optimize for fast response times per PRD targets.
+- Cache frequent responses to reduce latency.
+- Support streaming for long-running tasks to improve user experience.
 
 ### Monitoring & Logging
-- **Usage Tracking**: Log all LLM interactions in `databases/usage_logs`:
-  ```sql
-  CREATE TABLE usage_logs (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    service TEXT NOT NULL, -- 'gpt4o' | 'hume'
-    tokens_used INTEGER,
-    cost NUMERIC NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
-  );
-  ```
-- **PostHog Events**: Track key LLM metrics:
-  - `llm_request_made` - All LLM requests
-  - `llm_cost_exceeded` - Budget warnings
-  - `hume_fallback_triggered` - Circuit breaker activations
-  - `partial_output_sent` - Graceful degradation events
-  - `bias_detected` - Content safety issues
-  - `low_confidence_triggered` - Quality concerns
+- Log interactions, including tokens, costs, and errors.
+- Track metrics like success rates, fallbacks, and resonance scores.
+- Use tools (e.g., Sentry) for real-time error detection.
 
-### Error Handling
-- **Structured Errors**: Return consistent error format:
-  ```ts
-  {
-    error: string,
-    code: number,
-    details: object|null,
-    correlationId: string,
-    fallback?: string // Available fallback option
-  }
-  ```
-- **Error Logging**: Log all LLM errors to `databases/error_logs` with context.
-- **User Communication**: Provide empathetic error messages (e.g., "We're sparking your ideas!" for timeouts).
+### Testing
+- Achieve high test coverage for LLM-related code.
+- Validate fallback scenarios and safety checks.
+- Test output quality and resonance alignment.
 
-### Prompt Engineering
-- **Template Structure**: Organize prompts in `backend/prompts/`:
-  - `funnel.js` - Discovery funnel validation
-  - `sparks.js` - Spark generation
-  - `intent.js` - Intent mirror summaries
-  - `deliverables.js` - Final output generation
-- **Tone Injection**: Support dynamic tone configuration (warm, bold, optimistic, professional, playful, inspirational, custom).
-- **Context Awareness**: Include relevant user context and emotional drivers in prompts.
+### CI/CD
+- Automate input validation, safety, and performance tests in pipelines.
+- Validate schema compliance and resource usage.
+- Monitor deployment health and rollback readiness.
 
-### Integration Requirements
-- **Make.com Compatibility**: Ensure LLM outputs integrate with Make.com scenarios (`backend/webhooks/make_scenarios/`).
-- **Supabase Integration**: Store all LLM data with proper schemas and indexes.
-- **PostHog Analytics**: Track all user interactions with LLM features.
+## Documentation
+- Document LLM configurations, safety measures, and fallback strategies.
+- Maintain a log of prompt changes and performance metrics.
+- Update documentation with PRD or project evolution.
 
-## Validation
-
-### CI/CD Enforcement
-- **Input Validation**: CI/CD enforces input validation (`.github/workflows/llm.yml`).
-- **Schema Testing**: Validate all LLM schemas in pre-commit hooks.
-- **Safety Testing**: Run bias detection and safety tests on all prompt templates.
-
-### Testing Requirements
-- **Jest Coverage**: >80% test coverage for all LLM-related code (`backend/tests/llm.test.js`).
-- **Safety Tests**: Verify content filtering, bias detection, and prompt injection protection.
-- **Performance Tests**: Validate response times and token usage limits.
-- **Fallback Tests**: Test graceful degradation scenarios.
-
-### Monitoring Validation
-- **PostHog Dashboards**: Monitor `llm_cost`, `hume_fallback_triggered`, `partial_output_sent` events.
-- **Sentry Integration**: Track LLM errors and performance issues.
-- **Cost Alerts**: Set up alerts for budget overruns and unusual usage patterns.
-
-## File Structure
-- **Backend Services**: `backend/services/gpt4o.js`, `backend/services/hume.js`
-- **Middleware**: `backend/middleware/hume.js`, `backend/middleware/validation.js`
-- **Database**: `databases/usage_logs`, `databases/prompt_logs`, `databases/spark_cache`
-- **Prompts**: `backend/prompts/` (organized by feature)
-- **Tests**: `backend/tests/llm.test.js`, `backend/tests/safety.test.js`
+## Ownership
+- **AI Team**: Configures and maintains LLM deployments.
+- **Product Team**: Defines output goals and metrics.
+- **QA Team**: Validates safety, quality, and resonance.
+- **DevOps Team**: Monitors performance and cost.
 
 ## References
-- **PRD Sections**: 1, 6, 7.6, 8.4, 9, 16
-- **Project Structure**: `backend/services/`, `backend/middleware/`, `databases/`
-- **Performance Targets**: <2s response time, <100ms error responses, 99.9% uptime
-- **Cost Limits**: <$150/month combined (GPT-4o + Hume AI)
+- **PRD Sections**: 6 (Requirements), 8.4 (AI Integration), 12 (Metrics), 17 (Enhancements).
+- **Standards**: Prioritize safety, resonance, and PRD alignment.
 
-## Version History
-- **Version 2.0.0** - Comprehensive rewrite aligned with PRD and project structure
-- **Updated**: Current date, comprehensive LLM safety and performance standards
+---
 
-
-
+**Created**: June 19, 2025
+**Version**: 1.0.0

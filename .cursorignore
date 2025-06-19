@@ -1,0 +1,264 @@
+# CanAI Platform Cursor Ignore Configuration
+# Optimized for Cursor AI performance and focused development experience
+
+# ====================================================================
+# NODE.JS & PACKAGE MANAGEMENT
+# ====================================================================
+
+# Dependencies (large, auto-generated, not relevant for AI analysis)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Package lock files (generated, version-controlled but not for AI analysis)
+package-lock.json
+yarn.lock
+bun.lockb
+pnpm-lock.yaml
+
+# ====================================================================
+# BUILD ARTIFACTS & COMPILED OUTPUT
+# ====================================================================
+
+# Frontend build outputs
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/.next/
+frontend/.nuxt/
+frontend/.output/
+
+# Backend compiled output
+backend/dist/
+backend/build/
+backend/lib/
+
+# TypeScript build info
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ====================================================================
+# COVERAGE & TESTING ARTIFACTS
+# ====================================================================
+
+# Test coverage reports (large HTML files, not needed for AI analysis)
+coverage/
+.coverage/
+*.lcov
+.nyc_output/
+
+# Test artifacts
+test-results/
+playwright-report/
+test-report/
+junit.xml
+
+# Vitest artifacts
+vitest.config.*.timestamp-*
+test-results.json
+
+# ====================================================================
+# CACHE & TEMPORARY FILES
+# ====================================================================
+
+# Various caches
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ====================================================================
+# LOGS & DEBUGGING
+# ====================================================================
+
+# Log files (large, not relevant for code analysis)
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ====================================================================
+# ENVIRONMENT & SECRETS
+# ====================================================================
+
+# Environment files (may contain secrets, should not be analyzed)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# ====================================================================
+# TASKMASTER CONFIGURATION (KEEP FOR AI ANALYSIS)
+# ====================================================================
+
+# Keep TaskMaster files for AI analysis but exclude large generated files
+# .taskmaster/ - Keep for AI analysis
+# tasks/ - Keep for AI analysis
+# taskmaster_prep.md - Keep for AI analysis
+
+# ====================================================================
+# EDITOR & IDE FILES
+# ====================================================================
+
+# VSCode (except settings that might be relevant)
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# Other editors
+.idea/
+*.swp
+*.swo
+*~
+
+# ====================================================================
+# VERSION CONTROL & CI/CD ARTIFACTS
+# ====================================================================
+
+# Git internals (not needed for code analysis)
+.git/
+.gitignore
+
+# CI/CD artifacts
+.github/workflows/*.log
+
+# ====================================================================
+# DOCKER & CONTAINERIZATION
+# ====================================================================
+
+# Docker artifacts
+Dockerfile.prod
+docker-compose.override.yml
+.dockerignore
+
+# ====================================================================
+# DATABASE & EXTERNAL SERVICES
+# ====================================================================
+
+# Database files (if any local DBs)
+*.sqlite
+*.sqlite3
+*.db
+
+# Supabase local development
+.supabase/
+
+# ====================================================================
+# MONITORING & ANALYTICS
+# ====================================================================
+
+# Sentry/monitoring artifacts
+.sentryclirc
+
+# ====================================================================
+# DOCUMENTATION ARTIFACTS
+# ====================================================================
+
+# Large documentation builds (keep source docs)
+docs/build/
+docs/.docusaurus/
+
+# ====================================================================
+# MEDIA & ASSETS (LARGE FILES)
+# ====================================================================
+
+# Large media files that don't need code analysis
+*.mp4
+*.mov
+*.avi
+*.webm
+*.mkv
+*.wmv
+
+# Large images (keep small icons/logos)
+*.psd
+*.ai
+*.sketch
+*.fig
+
+# Audio files
+*.mp3
+*.wav
+*.flac
+*.aac
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ====================================================================
+# CANAI PLATFORM SPECIFIC EXCLUSIONS
+# ====================================================================
+
+# Webflow exports (large, generated HTML/CSS)
+frontend/webflow-export/
+
+# Large AI model files or cached responses
+*.model
+ai-cache/
+llm-cache/
+
+# Generated API documentation
+api-docs/build/
+
+# Performance benchmarks data
+benchmarks/data/
+performance-logs/
+
+# ====================================================================
+# FOCUS ON CANAI DEVELOPMENT
+# ====================================================================
+
+# Keep these files for Cursor analysis:
+# - All .mdc Cursor rules files
+# - TypeScript/JavaScript source code
+# - React components and pages
+# - API routes and services
+# - Database schemas and migrations
+# - Configuration files (package.json, tsconfig.json, etc.)
+# - Documentation source files (.md)
+# - Tests (.test.ts, .spec.ts)
+# - Workflow definitions (.yml in .github/workflows/)
+
+# This configuration optimizes Cursor for:
+# 1. Fast indexing of relevant CanAI platform code
+# 2. Focused AI analysis on implementation files
+# 3. Reduced noise from generated/temporary content
+# 4. Better performance with large codebases
+# 5. Enhanced development experience with precise context

@@ -1,0 +1,221 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# CanAI Structure Rules
+
+## Purpose
+Maintain a scalable, modular codebase architecture with reusable rule patterns for the CanAI Emotional Sovereignty Platform, ensuring consistent Domain-Driven Design (DDD) principles and AI-specific code organization.
+
+## Standards
+
+### Repository Layout
+- **Root Structure** (`canai-platform/`):
+  - `backend/` - Node.js/TypeScript server with Express routes, middleware, services
+  - `frontend/` - React/Vite application with components, pages, utilities
+  - `databases/` - Supabase migrations, schemas, cron jobs
+  - `docs/` - Technical documentation and project guides
+  - `packages/` - Shared configurations and TypeScript configs
+  - `.github/` - CI/CD workflows and automation
+  - `temp-roo-rules/` - Development rules and patterns
+
+### Backend Service Design (Domain-Driven Design)
+- **Service Layer** (`backend/services/`):
+  - Domain services: `gpt4o.js`, `hume.js`, `sparkSplit.js`, `memberstack.js`
+  - Infrastructure services: `cache.js`, `supabase.js`, `stripe.js`, `posthog.js`
+  - Each service encapsulates business logic for a specific domain
+  - Services are stateless and independently testable
+- **Route Layer** (`backend/routes/`):
+  - Thin controllers focused on HTTP concerns
+  - Route handlers delegate to domain services
+  - Consistent error handling and response formatting
+  - Examples: `sparks.js`, `deliverables.js`, `inputs.js`, `feedback.js`
+- **Middleware Layer** (`backend/middleware/`):
+  - Cross-cutting concerns: `auth.js`, `rateLimit.js`, `validation.js`
+  - Error handling: `error.js` with empathetic messaging
+  - Performance: `retry.js` with exponential backoff
+  - Security: CSP headers, input sanitization
+
+### Frontend Feature Organization
+- **Component Architecture** (`frontend/src/components/`):
+  - Feature-based grouping: `DiscoveryHook/`, `SparkSplit/`, `DetailedInput/`
+  - Shared UI components: `ui/` (shadcn/ui components)
+  - Enhanced components: `enhanced/` (ErrorBoundary, LoadingState)
+- **Page Components** (`frontend/src/pages/`):
+  - 9-stage journey pages: `DiscoveryHook.tsx`, `SparkLayer.tsx`, `SparkSplit.tsx`
+  - Each page focuses on presentation and user interaction
+  - Business logic delegated to utility functions and hooks
+- **Utility Layer** (`frontend/src/utils/`):
+  - API clients: `sparkLayerApi.ts`, `purchaseFlowApi.ts`, `deliverableApi.ts`
+  - Integration utilities: `supabase.ts`, `memberstack.ts`, `analytics.ts`
+  - Helper functions: `tracing.ts`, `makecom.ts`
+
+### Naming Conventions
+- **Directories**: kebab-case (`detailed-input/`, `spark-split/`, `purchase-flow/`)
+- **React Components**: PascalCase (`SparkLayer.tsx`, `IntentMirror.tsx`, `TrustDeltaDisplay.tsx`)
+- **Functions & Variables**: camelCase (`generateSparks`, `trustDelta`, `userInput`)
+- **Constants**: UPPER_SNAKE_CASE (`API_ENDPOINTS`, `DEFAULT_TTL`, `MAX_RETRIES`)
+- **Files**: 
+  - Backend: camelCase for services (`gpt4o.js`, `sparkSplit.js`)
+  - Frontend: PascalCase for components, camelCase for utilities
+- **Database**: snake_case for tables and columns (`prompt_logs`, `user_id`, `trust_delta`)
+
+### Code Organization Principles
+- **Thin Controller, Fat Domain**:
+  - Route handlers (`backend/routes/`) focus on HTTP concerns
+  - Business logic resides in domain services (`backend/services/`)
+  - Data access patterns centralized in service layer
+- **Single Responsibility**:
+  - Each module has one reason to change
+  - Clear separation of concerns between layers
+  - Minimal dependencies between modules
+- **Dependency Direction**:
+  - Routes depend on services, not vice versa
+  - Services depend on infrastructure, not on routes
+  - Frontend utilities depend on external APIs, not on components
+
+### Modularity & Reusability
+- **Shared Patterns** (`backend/rules/` - to be created):
+  - Input validation patterns with Joi: `validateInput.js`
+  - Output verification schemas: `verifyOutput.js`
+  - Hallucination detection: `checkHallucination.js`
+  - Performance monitoring: `logPerformance.js`
+- **Component Reusability**:
+  - UI components in `frontend/src/components/ui/` for cross-feature use
+  - Custom hooks in `frontend/src/hooks/` for state management
+  - Utility functions avoid duplication across features
+- **Service Interfaces**:
+  - Consistent API contracts between services
+  - Error handling patterns standardized across services
+  - Logging and monitoring integrated into all services
+
+### AI-Specific Code Patterns
+- **AI Service Structure** (`backend/services/`):
+  - `gpt4o.js`: Content generation with prompt management
+  - `hume.js`: Emotional resonance validation with circuit breaker
+  - `sparkSplit.js`: Output comparison and TrustDelta calculation
+- **Prompt Management** (`backend/prompts/`):
+  - Organized by feature: `business_plan.js`, `funnel.js`, `sparks.js`
+  - Template-based prompts with parameter injection
+  - Version control for prompt evolution
+- **AI Integration Patterns**:
+  - Async/await for all AI service calls
+  - Circuit breaker patterns for external AI services
+  - Fallback strategies (Hume AI → GPT-4o sentiment analysis)
+  - Token management and chunking for large inputs
+- **Quality Assurance**:
+  - Output schema validation before returning to users
+  - TrustDelta scoring for output quality measurement
+  - Emotional resonance validation with Hume AI
+
+### Database Schema Organization
+- **Migration Structure** (`databases/migrations/`):
+  - Table-specific migrations: `prompt_logs.sql`, `comparisons.sql`
+  - RLS policies: `*_rls.sql` files for each table
+  - Indexes: Performance-optimized queries with proper indexing
+- **Schema Patterns**:
+  - Consistent UUID primary keys with `gen_random_uuid()`
+  - User association via `user_id` foreign keys
+  - Audit fields: `created_at`, `updated_at` timestamps
+  - JSON fields for flexible data: `payload JSONB`, `emotional_resonance JSONB`
+
+### File Organization Best Practices
+- **Avoid Nested Utils**: Keep utility functions flat in respective directories
+- **Reuse Existing Folders**: Use `configs/` instead of creating redundant directories
+- **Feature Grouping**: Group related files by feature, not by file type
+- **Clear Interfaces**: Each module exports clear, documented interfaces
+- **Minimal Dependencies**: Reduce coupling between modules
+
+### Roo Code Rule Library
+- **Reusable Patterns** (to be documented in `docs/rules/library.md`):
+  - Joi validation schemas for consistent input validation
+  - PostHog event logging patterns for analytics
+  - Supabase RLS policy templates for security
+  - Error handling patterns with empathetic messaging
+  - Retry logic with exponential backoff
+- **AI Model Registry & Versioning**:
+  - Formal registry for AI model versions and configurations
+  - Traceability for AI outputs and model performance
+  - Reproducibility through version-controlled prompts
+- **TaskMaster Integration**:
+  - Roo Code AI instructions mandate use of established patterns
+  - Automated validation of pattern compliance in CI/CD
+  - Documentation updates when patterns evolve
+
+## Validation
+
+### Structure Enforcement
+- **CI/CD Validation** (`.github/workflows/structure.yml`):
+  - ESLint rules for naming convention compliance
+  - File organization validation
+  - Import/export pattern checking
+  - Dependency direction validation
+- **Code Quality Gates**:
+  - TypeScript strict mode enforcement
+  - Test coverage requirements for services
+  - Documentation completeness checks
+- **Pattern Compliance**:
+  - Automated detection of anti-patterns
+  - Rule library usage verification
+  - Modularity metrics tracking
+
+### Testing Requirements
+- **Unit Testing**: Jest tests for all services and utilities
+- **Integration Testing**: API endpoint testing with Supertest
+- **Structure Testing**: Validate file organization and naming
+- **Pattern Testing**: Verify reusable pattern implementation
+
+### Acceptance Criteria
+- AC-1: All files follow naming conventions, validated by ESLint
+- AC-2: Service layer properly encapsulates business logic
+- AC-3: Frontend components maintain single responsibility
+- AC-4: AI services implement circuit breaker patterns
+- AC-5: Database schemas follow established patterns
+- AC-6: Rule library patterns are consistently applied
+
+## Technical Implementation
+
+### File Structure Targets
+- `backend/server.js` - Express application entry point
+- `backend/routes/index.js` - Route aggregation and organization
+- `backend/services/` - Domain and infrastructure services
+- `backend/middleware/` - Cross-cutting concerns
+- `backend/prompts/` - AI prompt templates and management
+- `backend/rules/` - Reusable code patterns (to be created)
+- `frontend/src/components/` - Feature-based component organization
+- `frontend/src/pages/` - 9-stage journey page components
+- `frontend/src/utils/` - API clients and utility functions
+- `databases/migrations/` - Schema definitions and RLS policies
+- `docs/rules/library.md` - Pattern documentation
+
+### Architecture Patterns
+- Microservices-inspired with stateless APIs
+- Event-driven architecture with Make.com webhooks
+- Circuit breaker patterns for external service resilience
+- Cache-first strategies for performance optimization
+- Domain-driven design for business logic organization
+
+### Development Guidelines
+- Preserve existing code structures aligned with PRD requirements
+- File-by-file changes to maintain system stability
+- Clear separation between presentation and business logic
+- Consistent error handling and logging across all layers
+- Performance monitoring integrated into all services
+
+## References
+- PRD Sections: 8.1 (Architecture Overview), 8.3 (Backend), 8.2 (Frontend), 8.4 (Database)
+- Project Structure: Repository root organization, service layer design
+- Patterns: Domain-driven design, circuit breaker, cache-first strategies
+- Quality: ESLint validation, TypeScript strict mode, test coverage
+
+---
+**Updated**: June 18, 2025  
+**Version**: 2.0.0  
+**Scope**: Repository organization, service design, AI patterns, quality enforcement
+
+
+
+
+
+

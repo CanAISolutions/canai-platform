@@ -54,7 +54,15 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowJs": false,
-    "checkJs": false
+    "checkJs": false,
+
+    // Performance Optimizations
+    "assumeChangesOnlyAffectDirectDependencies": true,
+
+    // MDC Compatibility - Additional Strict Checks
+    "useUnknownInCatchVariables": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false
   },
   "files": [],
   "references": [{ "path": "./backend/tsconfig.json" }, { "path": "./frontend/tsconfig.json" }],

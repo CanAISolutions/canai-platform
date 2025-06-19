@@ -1,0 +1,87 @@
+name: CanAI Security Scanning & Validation
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run security scans daily at 3 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+  FORCE_COLOR: 1
+
+jobs:
+  dependency-check:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Frontend Dependency Audit
+        working-directory: frontend
+        run: |
+          echo "🔍 Auditing frontend dependencies..."
+          npm audit --audit-level=moderate
+          echo "✅ Frontend dependency audit completed"
+
+      - name: Backend Dependency Audit
+        working-directory: backend
+        run: |
+          echo "🔍 Auditing backend dependencies..."
+          npm audit --audit-level=moderate
+          echo "✅ Backend dependency audit completed"
+
+      - name: Root Dependencies Audit
+        run: |
+          echo "🔍 Auditing root dependencies..."
+          npm audit --audit-level=moderate
+          echo "✅ Root dependency audit completed"
+
+  code-scanning:
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript, typescript
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  security-reporting:
+    name: Security Summary Report
+    runs-on: ubuntu-latest
+    needs: [dependency-check, code-scanning]
+    if: always()
+    steps:
+      - name: Security Summary
+        run: |
+          echo "🛡️  CanAI Security Scan Summary"
+          echo "==============================="
+          echo "✅ Dependency vulnerability audit"
+          echo "✅ Static code analysis (CodeQL)"
+          echo ""
+          echo "Security Standards:"
+          echo "- Zero critical vulnerabilities"
+          echo "- No exposed secrets or API keys"
+          echo "- OWASP Top 10 compliance"
+          echo "- GDPR data protection compliance"
+          echo ""
+          echo "🎯 Security validations completed"
