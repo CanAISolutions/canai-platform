@@ -1,4 +1,4 @@
-{
+﻿{
     "mcpServers": {
         "task-master-ai": {
             "command": "npx",
