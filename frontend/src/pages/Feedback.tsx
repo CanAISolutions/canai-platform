@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { StarRating } from '@/components/feedback/StarRating';
-import { ReferModal } from '@/components/feedback/ReferModal';
 import { DangerZone } from '@/components/feedback/DangerZone';
-import { Followup } from '@/components/feedback/Followup';
-import SuccessAnimation from '@/components/feedback/SuccessAnimation';
-import EnhancedSocialShare from '@/components/feedback/EnhancedSocialShare';
 import EnhancedReferral from '@/components/feedback/EnhancedReferral';
-import { useFeedbackForm } from '@/hooks/useFeedbackForm';
+import EnhancedSocialShare from '@/components/feedback/EnhancedSocialShare';
+import { Followup } from '@/components/feedback/Followup';
+import { ReferModal } from '@/components/feedback/ReferModal';
+import { StarRating } from '@/components/feedback/StarRating';
+import SuccessAnimation from '@/components/feedback/SuccessAnimation';
 import PageHeader from '@/components/PageHeader';
 import StandardBackground from '@/components/StandardBackground';
 import StandardCard from '@/components/StandardCard';
 import {
-  PageTitle,
-  SectionTitle,
-  BodyText,
-  CaptionText,
+    BodyText,
+    CaptionText,
+    PageTitle,
+    SectionTitle,
 } from '@/components/StandardTypography';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { useFeedbackForm } from '@/hooks/useFeedbackForm';
+import React, { useState } from 'react';
 
 const quickbooksLink = 'https://quickbooks.intuit.com/';
 const prompt_id = 'SPRINKLE_PROMPT_ID';
@@ -109,12 +109,12 @@ const FeedbackPage: React.FC = () => {
                         value={comment}
                         onChange={e => setComment(e.target.value)}
                         className="
-                          bg-[rgba(255,255,255,0.05)] 
-                          border-2 border-[rgba(54,209,254,0.3)] 
-                          focus:border-[#36d1fe] 
-                          text-white 
-                          placeholder:text-[#b3d9f2] 
-                          min-h-[120px] 
+                          bg-[rgba(255,255,255,0.05)]
+                          border-2 border-[rgba(54,209,254,0.3)]
+                          focus:border-[#36d1fe]
+                          text-white
+                          placeholder:text-[#b3d9f2]
+                          min-h-[120px]
                           rounded-xl
                           resize-none
                         "
@@ -124,7 +124,7 @@ const FeedbackPage: React.FC = () => {
                         rows={4}
                       />
                       <CaptionText className="mt-3 mb-0 text-center">
-                        Your feedback helps shape CanAI's next phase.{' '}
+                        Your feedback helps shape CanAI&apos;s next phase.{' '}
                         <a
                           href={quickbooksLink}
                           target="_blank"
@@ -142,15 +142,15 @@ const FeedbackPage: React.FC = () => {
                       type="submit"
                       size="lg"
                       className="
-                        w-full 
-                        bg-gradient-to-r from-[#36d1fe] to-[#00b8e6] 
-                        text-[#0a1628] 
-                        font-bold 
-                        text-lg 
+                        w-full
+                        bg-gradient-to-r from-[#36d1fe] to-[#00b8e6]
+                        text-[#0a1628]
+                        font-bold
+                        text-lg
                         py-6
-                        hover:from-[#4ae3ff] hover:to-[#36d1fe] 
-                        hover:scale-[1.02] 
-                        transition-all 
+                        hover:from-[#4ae3ff] hover:to-[#36d1fe]
+                        hover:scale-[1.02]
+                        transition-all
                         duration-300
                         border-0
                         rounded-xl
@@ -164,12 +164,12 @@ const FeedbackPage: React.FC = () => {
                   <div className="flex justify-end mt-8">
                     <button
                       className="
-                        text-[#ff8fa3] 
-                        hover:text-[#ff6b85] 
-                        font-medium 
-                        text-sm 
-                        underline 
-                        transition-colors 
+                        text-[#ff8fa3]
+                        hover:text-[#ff6b85]
+                        font-medium
+                        text-sm
+                        underline
+                        transition-colors
                         duration-200
                       "
                       type="button"
@@ -220,8 +220,8 @@ const FeedbackPage: React.FC = () => {
                     variant="outline"
                     size="lg"
                     className="
-                      border-2 border-[#36d1fe] 
-                      text-[#36d1fe] 
+                      border-2 border-[#36d1fe]
+                      text-[#36d1fe]
                       hover:bg-[#36d1fe]/20
                       hover:scale-105
                       transition-all

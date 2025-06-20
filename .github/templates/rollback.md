@@ -304,6 +304,6 @@ Thank you for your patience.
 
 ---
 
-**Rollback Executed By:** ******\_\_\_****** **Date/Time:** ******\_\_\_****** **Previous Version:**
-******\_\_\_****** **Rollback Duration:** ******\_\_\_****** **Verification Completed:**
-******\_\_\_******
+**Rollback Executed By:** **\*\***\_\_\_**\*\*** **Date/Time:** **\*\***\_\_\_**\*\*** **Previous
+Version:** **\*\***\_\_\_**\*\*** **Rollback Duration:** **\*\***\_\_\_**\*\*** **Verification
+Completed:** **\*\***\_\_\_**\*\***

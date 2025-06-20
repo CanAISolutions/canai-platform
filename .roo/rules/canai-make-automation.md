@@ -1,181 +1,122 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
-# CanAI Make.com Automation Rules
+---
+description: Guides Make.com automation workflows
+globs: backend/webhooks/*.js, backend/webhooks/make_scenarios/*.json
+alwaysApply: false
+---
+
+# CanAI Make.com Automation Guidelines
 
 ## Purpose
-Standardize automation workflows for reliability, security, and seamless integration across CanAI's 9-stage user journey with robust error handling and monitoring.
+Enable reliable, secure, and efficient automation workflows to support the 9-stage user journey (F1-F9) of the CanAI Emotional Sovereignty Platform, aligning with PRD Sections 6, 8.3, 9.4, and 14.1 for seamless integration and user experience.
 
-## Standards
+## Scope
+Provide high-level guidance for creating and managing Make.com automation workflows, prioritizing PRD alignment, reliability, and adaptability to project needs.
 
-### Naming Conventions
-- **Descriptive Names**: Use clear, descriptive names for scenarios:
-  - `add_project.json` - Project creation after payment
-  - `add_client.json` - Client onboarding workflow
-  - `admin_add_project.json` - Administrative project setup
-  - `send_email.json` - Email notification workflows
-  - `SAAP Update Project Blueprint.json` - Project status updates
-- **File Organization**: Store scenarios in `backend/webhooks/make_scenarios/`
-- **Handler Naming**: Use corresponding handlers (e.g., `add_project.js` for `add_project.json`)
+## Guiding Principles
 
-### Trigger Configuration
-- **Webhook Triggers**: Define triggers in `backend/webhooks/` with specific endpoints:
-  - `log_interaction.js` - User interaction logging
-  - `save_funnel.js` - Discovery funnel data processing
-  - `generate_sparks.js` - Spark generation workflows
-  - `log_payment.js` - Payment processing flows
-  - `save_inputs.js` - Detailed input collection
-  - `save_intent.js` - Intent mirror processing
-  - `generate_pdf.js` - Deliverable PDF generation
-  - `update_project.js` - Project status updates
-  - `support_request.js` - Support queue management
-- **Response Times**: Target <200ms response for all webhook triggers
-- **Supabase Integration**: Trigger scenarios from table changes (e.g., `prompt_logs`, `payment_logs`)
+### Reliability
+- Ensure workflows are fault-tolerant with robust retry and recovery mechanisms.
+- Maintain consistent data states across operations.
 
-### Retry Logic & Reliability
-- **Retry Strategy**: Retry failed webhooks 3 times at 1-hour intervals
-- **Exponential Backoff**: Use 2^i * 1000ms delay for immediate retries (API failures)
-- **Dead-Letter Queue**: Route persistent failures to `backend/webhooks/dlq.js`:
-  ```ts
-  // Failed webhook handler
-  if (retryCount >= 3) {
-    await dlq.enqueue({
-      webhook: webhookName,
-      payload,
-      error: lastError,
-      originalTimestamp: Date.now()
-    });
-    posthog.capture('webhook_failed', { webhook: webhookName, retries: 3 });
-  }
-  ```
-- **Failure Routing**: Log failures to `databases/error_logs` with `error_type: 'webhook_failure'`
+### Security
+- Protect data and interactions with strong authentication and access controls.
+- Align with PRD privacy and security standards (e.g., GDPR/CCPA).
 
-### Idempotency & Data Integrity
-- **Unique Identifiers**: Ensure idempotent operations with UUID v4 replay IDs
-- **Idempotency Keys**: Include correlation IDs in all webhook payloads:
-  ```json
-  {
-    "idempotency_key": "uuid-v4",
-    "user_id": "uuid",
-    "correlation_id": "uuid-v4",
-    "timestamp": "ISO-8601",
-    "payload": { ... }
-  }
-  ```
-- **Duplicate Prevention**: Check for existing operations before processing
-- **State Management**: Maintain consistent state across webhook retries
+### Efficiency
+- Optimize workflows for performance and resource usage.
+- Respect external service limits to avoid disruptions.
 
-### Security & Authentication
-- **Webhook Secrets**: Use webhook secrets for HMAC signature verification
-- **HMAC Validation**: Verify signatures in all webhook handlers:
-  ```ts
-  const expectedSignature = crypto
-    .createHmac('sha256', process.env.MAKE_WEBHOOK_SECRET)
-    .update(JSON.stringify(payload))
-    .digest('hex');
-  
-  if (signature !== expectedSignature) {
-    throw new Error('Invalid webhook signature');
-  }
-  ```
-- **Scoped Tokens**: Use scoped API tokens with minimal required permissions
-- **Supabase RLS**: Pass authorized user-scoped data respecting Row-Level Security
+### PRD Alignment
+- Support PRD-defined goals for user journey, integration, and performance.
+- Adapt to evolving PRD requirements and project needs.
+
+## Automation Approach
+
+### Naming & Organization
+- Use clear, descriptive names for scenarios (e.g., `project-creation`, `payment-processing`).
+- Organize scenarios and handlers logically in a dedicated backend directory.
+- Pair scenarios with corresponding handlers for maintainability.
+
+### Triggers
+- Configure webhooks to initiate actions (e.g., data updates, payment confirmations).
+- Support triggers from database changes for seamless data flow.
+- Optimize trigger response times to meet PRD performance goals.
+
+### Data Integrity
+- Implement idempotency with unique identifiers to prevent duplicate actions.
+- Use correlation IDs to track operations across systems.
+- Ensure state consistency during retries and failures.
+
+### Error Handling
+- Handle failures gracefully to minimize user impact.
+- Categorize errors for targeted recovery (e.g., transient, permanent).
+- Provide user-friendly feedback when errors affect the journey.
+
+## Stage-Specific Guidance
+Apply automation thoughtfully across the 9-stage journey, guided by PRD:
+- **F1: Discovery Hook**: Automate trust indicator updates and interaction logging.
+- **F2: Discovery Funnel**: Trigger input validation and tooltip generation.
+- **F3: Spark Layer**: Automate spark generation and regeneration workflows.
+- **F4: Purchase Flow**: Handle payment confirmations and project creation.
+- **F5: Input Collection**: Support autosave and resume workflows.
+- **F6: Intent Mirror**: Automate summary generation and clarification requests.
+- **F7: Deliverable**: Trigger output generation and status updates.
+- **F8: SparkSplit**: Automate comparison logging and preference tracking.
+- **F9: Feedback**: Handle feedback submission and follow-up emails.
+
+## Implementation Guidance
+
+### Security
+- Authenticate webhook requests (e.g., HMAC signatures).
+- Use minimal-permission tokens for API interactions.
+- Protect sensitive data with encryption and access controls.
 
 ### Payload Validation
-- **Schema Validation**: Validate all payloads against PRD schemas using Zod:
-  ```ts
-  const addProjectSchema = z.object({
-    user_id: z.string().uuid(),
-    product_type: z.enum(['business_builder', 'social_email', 'site_audit']),
-    payment_id: z.string(),
-    project_data: z.object({ ... })
-  });
-  
-  const result = addProjectSchema.safeParse(webhookPayload);
-  if (!result.success) {
-    throw new Error('Invalid payload schema');
-  }
-  ```
-- **Required Fields**: Ensure all critical fields are present and valid
-- **Data Types**: Enforce correct data types and formats
-- **Business Logic**: Validate business rules and constraints
+- Validate payloads against schemas to ensure data correctness.
+- Enforce required fields and project-specific rules.
+- Log validation failures for debugging.
+
+### Performance
+- Batch high-volume operations to reduce overhead.
+- Respect rate limits with backoff strategies for external services.
+- Use asynchronous processing for non-critical tasks.
+
+### Integration
+- Ensure smooth data flow with databases and analytics platforms.
+- Support AI-driven workflows (e.g., GPT-4o, Hume AI).
+- Handle payment-related actions securely via Stripe.
 
 ### Monitoring & Logging
-- **Automation Logs**: Log all events to `databases/automation_logs`:
-  ```sql
-  CREATE TABLE automation_logs (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    webhook_name TEXT NOT NULL,
-    status TEXT CHECK (status IN ('triggered', 'success', 'failed', 'retrying')),
-    payload JSONB,
-    error_message TEXT,
-    retry_count INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT NOW()
-  );
-  ```
-- **PostHog Events**: Track automation metrics:
-  - `automation_triggered` - Webhook initiated
-  - `webhook_failed` - Webhook processing failed
-  - `retry_attempted` - Retry operation started
-  - `dlq_enqueued` - Message sent to dead-letter queue
-  - `automation_recovered` - Failed automation recovered
+- Log automation events (e.g., triggers, successes, failures) securely.
+- Track metrics like success rates and latency for insights.
+- Use tools (e.g., PostHog, Sentry) for real-time monitoring.
 
-### Error Handling & Recovery
-- **Graceful Degradation**: Handle failures without breaking user experience
-- **Error Classification**: Categorize errors (transient, permanent, configuration)
-- **User Communication**: Provide meaningful error messages to users
-- **Recovery Procedures**: Define clear recovery steps for common failure scenarios
+## Validation & Testing
+- Test webhook triggers, payloads, and integrations in CI/CD pipelines.
+- Validate retry logic, security measures, and performance.
+- Simulate failures to ensure robust recovery.
 
-### Webhook Batching & Performance
-- **High-Volume Handling**: Batch high-volume interactions (e.g., `session_logs`)
-- **Rate Limiting**: Respect Make.com rate limits and implement backoff
-- **Payload Optimization**: Minimize payload size while maintaining data integrity
-- **Async Processing**: Use asynchronous processing for non-critical operations
+## Documentation
+- Document scenario purposes, triggers, and data flows.
+- Maintain a registry of workflows and their PRD alignment.
+- Update documentation with project or PRD changes.
 
-### Integration Requirements
-- **Supabase Integration**: Seamless data flow between Make.com and Supabase
-- **PostHog Analytics**: Track all automation events for monitoring
-- **GPT-4o Workflows**: Integrate AI processing into automation flows
-- **Hume AI Fallbacks**: Handle Hume AI circuit breaker scenarios
-- **Stripe Integration**: Process payment-related automations securely
-
-## Validation
-
-### CI/CD Enforcement
-- **Webhook Testing**: CI/CD tests webhook triggers and payloads (`.github/workflows/make.yml`)
-- **Schema Validation**: Validate scenario schemas in pre-commit hooks
-- **Integration Testing**: Test end-to-end workflow functionality
-
-### Testing Requirements
-- **Supatest Integration**: Verify idempotency and Dead-Letter Queue (`backend/tests/webhooks.test.js`)
-- **Payload Testing**: Test all webhook payloads against schemas
-- **Retry Testing**: Validate retry logic and failure recovery
-- **Security Testing**: Test HMAC verification and authentication
-
-### Monitoring Validation
-- **PostHog Dashboards**: Monitor `automation_triggered`, `webhook_failed` events
-- **Error Tracking**: Track webhook failures and recovery rates
-- **Performance Metrics**: Monitor webhook response times and success rates
-
-## File Structure
-- **Scenarios**: `backend/webhooks/make_scenarios/` (JSON configurations)
-- **Handlers**: `backend/webhooks/` (JavaScript webhook handlers)
-- **Dead-Letter Queue**: `backend/webhooks/dlq.js`
-- **Database**: `databases/automation_logs`, `databases/error_logs`
-- **Tests**: `backend/tests/webhooks.test.js`
-- **CI/CD**: `.github/workflows/make.yml`
+## Ownership
+- **Backend Team**: Implements and maintains workflows.
+- **Product Team**: Defines automation goals and metrics.
+- **QA Team**: Validates functionality and reliability.
+- **DevOps Team**: Monitors performance and errors.
 
 ## References
-- **PRD Sections**: 6 (Functional Requirements), 8.5 (Integrations), 9 (Error Handling)
-- **Project Structure**: `backend/webhooks/`, `databases/automation_logs`
-- **Performance Targets**: <200ms webhook response, >85% retry success rate
-- **Security**: HMAC verification, scoped tokens, RLS enforcement
+- **PRD Sections**: 6 (Requirements), 8.3 (Automation), 9.4 (Error Handling), 14.1 (Security).
+- **Standards**: Emphasize reliability, security, and PRD alignment.
 
-## Version History
-- **Version 2.0.0** - Comprehensive rewrite aligned with PRD automation requirements
-- **Updated**: Current date, enhanced reliability and security standards
+---
 
-
-
+**Created**: June 19, 2025
+**Version**: 1.0.0

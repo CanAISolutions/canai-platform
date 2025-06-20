@@ -1,6 +1,6 @@
-import { generateCorrelationId, retryWithBackoff } from './tracing';
-import { insertSessionLog, insertErrorLog } from './supabase';
 import { triggerMakecomWorkflow } from './makecom';
+import { insertErrorLog, insertSessionLog } from './supabase';
+import { generateCorrelationId, retryWithBackoff } from './tracing';
 
 // API Response Types
 export interface StripeSessionRequest {
@@ -41,7 +41,7 @@ export interface SwitchProductResponse {
 }
 
 // Base API configuration
-const API_BASE = import.meta.env.VITE_API_BASE || '/v1';
+const API_BASE = import.meta.env['VITE_API_BASE'] || '/v1';
 const DEFAULT_TIMEOUT = 5000;
 
 // Generic fetch wrapper with retry logic
@@ -228,85 +228,42 @@ export const switchProduct = async (
 };
 
 // Log payment initiation with F4-E1 retry logic
+interface PaymentInitiationDetails extends Record<string, string | number | boolean | null | undefined> {
+  product: string;
+  price: number;
+  spark_title: string;
+}
+
 export const logPaymentInitiation = async (paymentData: {
-  user_id?: string;
+  user_id?: string | undefined;
   stripe_payment_id: string;
-  interaction_details: Record<string, any>;
+  interaction_details: PaymentInitiationDetails;
 }): Promise<void> => {
-  const maxRetries = 3;
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      await insertSessionLog({
-        user_id: paymentData.user_id,
-        stripe_payment_id: paymentData.stripe_payment_id,
-        interaction_type: 'payment_initiated',
-        interaction_details: paymentData.interaction_details,
-      });
-
-      console.log('[Purchase API] Payment initiation logged successfully');
-      return;
-    } catch (error) {
-      console.warn(
-        `[F4-E1] Payment logging attempt ${attempt + 1} failed:`,
-        error
-      );
-
-      if (attempt === maxRetries) {
-        // Final attempt failed, log error
-        await logPurchaseError({
-          error_message:
-            error instanceof Error ? error.message : 'Unknown error',
-          action: 'log_payment_initiation',
-          error_type: 'timeout',
-          user_id: paymentData.user_id,
-        });
-
-        // F4-E1: Fallback to localStorage
-        try {
-          const fallbackData = {
-            ...paymentData,
-            timestamp: new Date().toISOString(),
-            fallback_reason: 'supabase_logging_failed',
-          };
-
-          const existingData = JSON.parse(
-            localStorage.getItem('canai_payment_fallback') || '[]'
-          );
-          existingData.push(fallbackData);
-          localStorage.setItem(
-            'canai_payment_fallback',
-            JSON.stringify(existingData)
-          );
-
-          console.log('[F4-E1] Payment data saved to localStorage fallback');
-        } catch (storageError) {
-          console.error('[F4-E1] localStorage fallback failed:', storageError);
-        }
-
-        throw error;
-      }
-
-      // Exponential backoff delay
-      const delay = Math.pow(2, attempt) * 1000;
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-  }
+  await insertSessionLog({
+    user_id: paymentData.user_id,
+    stripe_payment_id: paymentData.stripe_payment_id,
+    interaction_type: 'payment_initiated',
+    interaction_details: paymentData.interaction_details,
+  });
 };
 
-// Error logging specific to purchase operations
-const logPurchaseError = async (errorData: {
+type PurchaseErrorType = 'timeout' | 'stripe_failure' | 'invalid_input';
+
+interface PurchaseErrorData {
   error_message: string;
   action: string;
-  error_type: 'timeout' | 'stripe_failure' | 'invalid_input';
-  user_id?: string;
-}): Promise<void> => {
-  try {
-    await insertErrorLog({
-      ...errorData,
-      support_request: false,
-    });
-  } catch (error) {
-    console.error('[Purchase API] Failed to log purchase error:', error);
-  }
+  error_type: PurchaseErrorType;
+  user_id?: string | undefined;
+}
+
+const logPurchaseError = async (errorData: PurchaseErrorData): Promise<void> => {
+  await insertErrorLog({
+    error_message: errorData.error_message,
+    error_type: errorData.error_type,
+    user_id: errorData.user_id,
+    error_details: {
+      action: errorData.action,
+      timestamp: new Date().toISOString(),
+    },
+  });
 };

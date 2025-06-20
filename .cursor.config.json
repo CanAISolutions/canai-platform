@@ -192,20 +192,8 @@
       "enforceTaskStructure": true,
       "validateDependencies": true,
       "requirePRDAlignment": true,
-      "mandatoryFields": [
-        "id",
-        "description",
-        "inputs",
-        "outputs",
-        "dependencies",
-        "cursor-ai-instructions"
-      ],
-      "optionalFields": [
-        "status",
-        "priority",
-        "complexity",
-        "estimated_hours"
-      ]
+      "mandatoryFields": ["id", "description", "inputs", "outputs", "dependencies", "cursor-ai-instructions"],
+      "optionalFields": ["status", "priority", "complexity", "estimated_hours"]
     },
     "yamlToJsonConversion": {
       "preserveKebabCase": true,

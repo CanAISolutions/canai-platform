@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { cn } from '@/lib/utils';
 import { useFormValidation, ValidationRule } from '@/hooks/useFormValidation';
+import { cn } from '@/lib/utils';
+import * as React from 'react';
 import {
-  StandardForm,
-  StandardFormGroup,
-  StandardFormLabel,
-  StandardFormInput,
-  StandardFormTextarea,
-  StandardFormHelperText,
+    StandardForm,
+    StandardFormGroup,
+    StandardFormHelperText,
+    StandardFormInput,
+    StandardFormLabel,
+    StandardFormTextarea,
 } from './standard-form';
 
 interface ValidatedFormProps extends React.FormHTMLAttributes<HTMLFormElement> {
@@ -68,14 +68,25 @@ export const ValidatedForm = React.forwardRef<
 );
 ValidatedForm.displayName = 'ValidatedForm';
 
+interface ValidationProps {
+  getFieldProps: (name: string) => {
+    value: string;
+    error: string | undefined;
+    validationState: 'error' | 'success' | 'idle' | 'validating';
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onBlur: () => void;
+  };
+  validations: Record<string, { value: string; state: 'error' | 'success' | 'idle' | 'validating' }>;
+}
+
 interface ValidatedFieldProps {
   name: string;
   label: string;
   type?: 'text' | 'email' | 'password' | 'textarea';
   placeholder?: string;
   helperText?: string;
-  required?: boolean;
-  validation: any;
+  required: boolean;
+  validation: ValidationProps;
   className?: string;
 }
 
@@ -90,7 +101,7 @@ export const ValidatedField = React.forwardRef<
       type = 'text',
       placeholder,
       helperText,
-      required,
+      required = false,
       validation,
       className,
     },
@@ -104,8 +115,8 @@ export const ValidatedField = React.forwardRef<
         ref={ref}
         className={className}
         required={required}
-        error={fieldProps.error}
-        success={fieldValidation?.state === 'success'}
+        error={fieldProps.error || ''}
+        success={fieldValidation ? fieldValidation.state === 'success' : false}
         validationState={fieldProps.validationState}
       >
         <StandardFormLabel htmlFor={name} required={required}>
@@ -163,3 +174,4 @@ export const ValidatedField = React.forwardRef<
 ValidatedField.displayName = 'ValidatedField';
 
 export { useFormValidation };
+

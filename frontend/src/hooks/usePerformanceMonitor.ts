@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
 import { trackPerformance } from '@/utils/analytics';
+import { useEffect, useRef } from 'react';
 
 interface PerformanceMetrics {
   loadTime: number;
@@ -41,14 +41,15 @@ export const usePerformanceMonitor = (
     }
 
     return () => {
-      // Track time spent on page
-      const timeOnPage =
-        performance.now() - (renderTimeRef.current || startTimeRef.current);
-      trackPerformance(`${pageName}_engagement`, timeOnPage, {
-        page: pageName,
-        engagement_level:
-          timeOnPage > 10000 ? 'high' : timeOnPage > 3000 ? 'medium' : 'low',
-      });
+      const startTime = startTimeRef.current;
+      const renderTime = renderTimeRef.current;
+      if (startTime) {
+        const timeOnPage = performance.now() - startTime;
+        trackPerformance(`${pageName}_engagement`, timeOnPage, {
+          page: pageName,
+          engagement_level: timeOnPage > 10000 ? 'high' : timeOnPage > 3000 ? 'medium' : 'low',
+        });
+      }
     };
   }, [pageName, targetLoadTime]);
 

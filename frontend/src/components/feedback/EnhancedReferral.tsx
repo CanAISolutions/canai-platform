@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import StandardCard from '@/components/StandardCard';
+import {
+    BodyText,
+    CaptionText,
+    SectionTitle,
+} from '@/components/StandardTypography';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import StandardCard from '@/components/StandardCard';
-import {
-  SectionTitle,
-  BodyText,
-  CaptionText,
-} from '@/components/StandardTypography';
-import { Users, Gift, Copy, Check } from 'lucide-react';
+import { Check, Copy, Gift, Users } from 'lucide-react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 
 interface EnhancedReferralProps {
@@ -93,7 +93,7 @@ const EnhancedReferral: React.FC<EnhancedReferralProps> = ({ onRefer }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="referral-email" className="text-white font-medium">
-              Friend's Email
+              Friend&apos;s Email
             </Label>
             <Input
               id="referral-email"

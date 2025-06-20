@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import ProjectContextSummary from '@/components/SparkSplit/ProjectContextSummary';
+import RefinedComparisonContainer from '@/components/SparkSplit/RefinedComparisonContainer';
+import RefinedFeedbackForm from '@/components/SparkSplit/RefinedFeedbackForm';
+import TrustDeltaDisplay from '@/components/SparkSplit/TrustDeltaDisplay';
 import StandardBackground from '@/components/StandardBackground';
 import {
-  PageTitle,
-  SectionTitle,
-  BodyText,
+    BodyText,
+    PageTitle,
+    SectionTitle,
 } from '@/components/StandardTypography';
-import { EnhancedButton } from '@/components/ui/enhanced-button';
-import RefinedComparisonContainer from '@/components/SparkSplit/RefinedComparisonContainer';
-import TrustDeltaDisplay from '@/components/SparkSplit/TrustDeltaDisplay';
-import RefinedFeedbackForm from '@/components/SparkSplit/RefinedFeedbackForm';
-import ProjectContextSummary from '@/components/SparkSplit/ProjectContextSummary';
 import LoadingState from '@/components/enhanced/LoadingState';
+import { EnhancedButton } from '@/components/ui/enhanced-button';
 import {
-  MobileOptimizedCard,
-  MobileOptimizedCardContent,
+    MobileOptimizedCard,
+    MobileOptimizedCardContent,
 } from '@/components/ui/mobile-optimized-card';
-import { Download, ArrowRight } from 'lucide-react';
-import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
 import { useAccessibility } from '@/hooks/useAccessibility';
+import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
+import { ArrowRight, Download } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // API and analytics imports
-import { generateSparkSplit, submitFeedback } from '@/utils/sparkSplitApi';
 import {
-  trackPageView,
-  trackFunnelStep,
-  trackSparkSplitView,
-  trackFeedbackSubmission,
+    trackFeedbackSubmission,
+    trackFunnelStep,
+    trackPageView,
+    trackSparkSplitView,
 } from '@/utils/analytics';
 import { logInteraction } from '@/utils/api';
+import { generateSparkSplit, submitFeedback } from '@/utils/sparkSplitApi';
 
 const SparkSplit = () => {
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ const SparkSplit = () => {
             emotional_resonance: response.emotionalResonance,
           },
         });
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('[SparkSplit] Initialization failed:', error);
 
         // Fallback content
@@ -99,7 +99,7 @@ Denver's growing families crave authentic, local experiences. Your bakery fills 
 
 ## Revenue Strategy
 - **Morning Rush**: Premium coffee + fresh pastries for working parents
-- **Afternoon Comfort**: After-school treats + homework-friendly environment  
+- **Afternoon Comfort**: After-school treats + homework-friendly environment
 - **Weekend Celebrations**: Custom cakes + family event hosting
 - **Community Events**: Baking classes + local artist showcases
 
@@ -120,7 +120,7 @@ The bakery industry serves customers who want baked goods. There is demand for b
 
 ## Products and Services
 - Bread
-- Pastries  
+- Pastries
 - Cakes
 - Coffee
 - Catering services
@@ -183,7 +183,7 @@ A bakery can be a profitable business with proper planning and execution.`);
       setTimeout(() => {
         navigate('/feedback');
       }, 1500);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('[SparkSplit] Feedback submission failed:', error);
       announce('Failed to submit feedback. Please try again.', 'assertive');
     }

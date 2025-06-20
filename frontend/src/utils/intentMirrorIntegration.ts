@@ -3,18 +3,25 @@
  * Handles the data flow: Business Data → GPT-4o → Make.com → Supabase → Analytics
  */
 
-import { triggerMakecomWorkflow } from './makecom';
-import { insertIntentMirrorLog } from './supabase';
-import { generateCorrelationId } from './tracing';
 import {
-  trackIntentMirrorLoaded,
-  trackSupportRequested,
-  POSTHOG_EVENTS,
+    POSTHOG_EVENTS,
+    trackIntentMirrorLoaded,
+    trackSupportRequested,
 } from './analytics';
+import { triggerMakecomWorkflow } from './makecom';
+import { type ErrorLog } from './supabase';
+import { generateCorrelationId } from './tracing';
+
+interface BusinessData {
+  businessName: string;
+  primaryGoal: string;
+  targetAudience: string;
+  businessDescription: string;
+}
 
 export interface IntentMirrorWorkflowPayload {
   correlation_id: string;
-  business_data: Record<string, any>;
+  business_data: BusinessData;
   user_context?: {
     user_id?: string;
     session_id: string;
@@ -23,9 +30,7 @@ export interface IntentMirrorWorkflowPayload {
 }
 
 // Trigger complete intent mirror workflow
-export const triggerIntentMirrorWorkflow = async (
-  businessData: Record<string, any>
-) => {
+export const triggerIntentMirrorWorkflow = async (businessData: BusinessData) => {
   const correlationId = generateCorrelationId();
 
   try {
@@ -48,9 +53,10 @@ export const triggerIntentMirrorWorkflow = async (
 
     // Step 2: Track workflow initiation
     trackIntentMirrorLoaded({
-      confidence_score: 0, // Will be updated when response arrives
+      confidence_score: 0,
       response_time: 0,
       clarifying_questions_count: 0,
+      correlation_id: correlationId,
     });
 
     console.log('[IntentMirror] Workflow initiated successfully');
@@ -74,9 +80,7 @@ export const triggerIntentMirrorWorkflow = async (
 };
 
 // GPT-4o intent mirror generation
-export const generateGPT4oIntentMirror = async (
-  businessData: Record<string, any>
-) => {
+export const generateGPT4oIntentMirror = async (businessData: BusinessData) => {
   try {
     const correlationId = generateCorrelationId();
 
@@ -92,7 +96,7 @@ export const generateGPT4oIntentMirror = async (
           Goal: ${businessData.primaryGoal}
           Audience: ${businessData.targetAudience}
           Description: ${businessData.businessDescription}
-          
+
           Return JSON: {"summary": "string", "confidenceScore": number, "clarifyingQuestions": ["string"]}
         `,
         max_tokens: 300,
@@ -121,19 +125,19 @@ export const generateGPT4oIntentMirror = async (
 // Handle low confidence support requests
 export const handleLowConfidenceSupport = async (data: {
   confidence_score: number;
-  business_data: Record<string, any>;
+  business_data: BusinessData;
   attempt_count: number;
 }) => {
   try {
     // Log support request to Supabase
     const { insertErrorLog } = await import('./supabase');
     await insertErrorLog({
-      user_id: undefined,
+      user_id: '',
       error_message: `Low confidence intent mirror: ${data.confidence_score}`,
       action: 'intent_mirror_support_request',
       error_type: 'low_confidence',
       support_request: true,
-    });
+    } as ErrorLog);
 
     // Trigger Make.com workflow for support queue
     await triggerMakecomWorkflow('USER_INTERACTION', {
@@ -153,6 +157,7 @@ export const handleLowConfidenceSupport = async (data: {
       reason: 'low_confidence',
       confidence_score: data.confidence_score,
       attempt_count: data.attempt_count,
+      correlation_id: generateCorrelationId(),
     });
 
     console.log('[IntentMirror] Support request queued successfully');
@@ -180,7 +185,7 @@ Actions:
 7. Handle error states and retries
 8. Queue support requests for confidence < 0.6
 
-Scenario: intent_mirror_support.json  
+Scenario: intent_mirror_support.json
 Trigger: Webhook from low confidence detection
 Actions:
 1. Receive support request data

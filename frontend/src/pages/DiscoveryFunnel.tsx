@@ -1,42 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import ProgressIndicator from '@/components/enhanced/ProgressIndicator';
 import StandardBackground from '@/components/StandardBackground';
 import {
-  PageTitle,
-  SectionTitle,
-  BodyText,
+    BodyText,
+    PageTitle,
+    SectionTitle,
 } from '@/components/StandardTypography';
 import { EnhancedButton } from '@/components/ui/enhanced-button';
 import {
-  StandardForm,
-  StandardFormGroup,
-  StandardFormLabel,
-  StandardFormInput,
-} from '@/components/ui/standard-form';
+    MobileOptimizedCard,
+    MobileOptimizedCardContent,
+} from '@/components/ui/mobile-optimized-card';
 import {
-  ResponsiveModal,
-  ResponsiveModalContent,
-  ResponsiveModalHeader,
-  ResponsiveModalTitle,
-  ResponsiveModalDescription,
+    ResponsiveModal,
+    ResponsiveModalContent,
+    ResponsiveModalDescription,
+    ResponsiveModalHeader,
+    ResponsiveModalTitle,
 } from '@/components/ui/responsive-modal';
 import {
-  MobileOptimizedCard,
-  MobileOptimizedCardContent,
-} from '@/components/ui/mobile-optimized-card';
-import ProgressIndicator from '@/components/enhanced/ProgressIndicator';
-import { ArrowRight, Lightbulb, Heart, Target, Clock } from 'lucide-react';
-import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
+    StandardForm,
+    StandardFormGroup,
+    StandardFormInput,
+    StandardFormLabel,
+} from '@/components/ui/standard-form';
 import { useAccessibility } from '@/hooks/useAccessibility';
+import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
+import { ArrowRight, Clock, Heart, Lightbulb, Target } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // API and analytics imports
-import { validateInput, submitInitialPrompt } from '@/utils/discoveryFunnelApi';
 import {
-  trackPageView,
-  trackFunnelStep,
-  trackTrustScoreUpdate,
+    trackFunnelStep,
+    trackPageView,
+    trackTrustScoreUpdate,
 } from '@/utils/analytics';
 import { logInteraction } from '@/utils/api';
+import { submitInitialPrompt, validateInput } from '@/utils/discoveryFunnelApi';
 
 const DiscoveryFunnel = () => {
   const navigate = useNavigate();
@@ -217,7 +217,7 @@ const DiscoveryFunnel = () => {
 
                 <StandardFormGroup>
                   <StandardFormLabel required className="text-white">
-                    What's your biggest challenge right now?
+                    What&apos;s your biggest challenge right now?
                   </StandardFormLabel>
                   <StandardFormInput
                     value={formData.challenge}
@@ -302,8 +302,8 @@ const DiscoveryFunnel = () => {
               Ready to Create Something Amazing?
             </ResponsiveModalTitle>
             <ResponsiveModalDescription className="text-center">
-              We've captured your vision. Let's transform it into something
-              extraordinary with CanAI's emotional intelligence.
+              We&apos;ve captured your vision. Let&apos;s transform it into something
+              extraordinary with CanAI&apos;s emotional intelligence.
             </ResponsiveModalDescription>
           </ResponsiveModalHeader>
 

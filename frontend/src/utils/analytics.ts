@@ -21,7 +21,10 @@ interface PageViewProperties extends BaseAnalyticsProperties {
 }
 
 interface FunnelStepProperties extends BaseAnalyticsProperties {
-  stepName?: string;
+  step: string;
+  source?: string;
+  product?: string;
+  spark_id?: string;
   completed?: boolean;
   duration_ms?: number;
   previous_step?: string;
@@ -276,11 +279,15 @@ export const trackIntentMirrorConfirmed = (
   trackEvent(POSTHOG_EVENTS.INTENT_MIRROR_CONFIRMED, properties);
 };
 
-export const trackIntentMirrorEdited = (properties?: BaseAnalyticsProperties) => {
+export const trackIntentMirrorEdited = (
+  properties?: BaseAnalyticsProperties
+) => {
   trackEvent(POSTHOG_EVENTS.INTENT_MIRROR_EDITED, properties);
 };
 
-export const trackIntentMirrorLoaded = (properties?: BaseAnalyticsProperties) => {
+export const trackIntentMirrorLoaded = (
+  properties?: BaseAnalyticsProperties
+) => {
   trackEvent(POSTHOG_EVENTS.INTENT_MIRROR_LOADED, properties);
 };
 
@@ -290,11 +297,15 @@ export const trackSupportRequested = (properties?: BaseAnalyticsProperties) => {
 };
 
 // Deliverable tracking
-export const trackDeliverableGenerated = (properties?: BaseAnalyticsProperties) => {
+export const trackDeliverableGenerated = (
+  properties?: BaseAnalyticsProperties
+) => {
   trackEvent(POSTHOG_EVENTS.DELIVERABLE_GENERATED, properties);
 };
 
-export const trackRevisionRequested = (properties?: BaseAnalyticsProperties) => {
+export const trackRevisionRequested = (
+  properties?: BaseAnalyticsProperties
+) => {
   trackEvent(POSTHOG_EVENTS.REVISION_REQUESTED, properties);
 };
 
@@ -308,7 +319,9 @@ export const trackPDFDownload = (properties?: BaseAnalyticsProperties) => {
   trackEvent(POSTHOG_EVENTS.PDF_DOWNLOAD, properties);
 };
 
-export const trackEmotionalResonance = (properties?: BaseAnalyticsProperties) => {
+export const trackEmotionalResonance = (
+  properties?: BaseAnalyticsProperties
+) => {
   trackEvent(POSTHOG_EVENTS.EMOTIONAL_RESONANCE, properties);
 };
 

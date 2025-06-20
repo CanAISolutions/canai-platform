@@ -12,7 +12,10 @@
 
 ## 🌟 Overview
 
-This directory provides flexible development guidelines and configurations for the CanAI Emotional Sovereignty Platform. These guidelines promote consistent, high-quality development while allowing adaptability across TypeScript code, user journey implementation, database design, and deployment processes.
+This directory provides flexible development guidelines and configurations for the CanAI Emotional
+Sovereignty Platform. These guidelines promote consistent, high-quality development while allowing
+adaptability across TypeScript code, user journey implementation, database design, and deployment
+processes.
 
 ## 📁 Directory Structure
 
@@ -266,7 +269,7 @@ cursor generate component --follow-guidelines canai-typescript.mdc
 
 ### Guideline Template
 
-```markdown
+````markdown
 # Guideline Name
 
 ## Purpose
@@ -283,6 +286,8 @@ Best practices and suggestions.
 // Recommended approach
 const example = {};
 ```
+````
+
 ```
 
 ## Acceptance Criteria
@@ -300,3 +305,4 @@ const example = {};
 [🏠 Back to Root](../README.md) | [🤖 Guidelines Directory](./guidelines/README.md) | [🧠 Cortex Memory](./guidelines/cortex.md)
 
 </div>
+```

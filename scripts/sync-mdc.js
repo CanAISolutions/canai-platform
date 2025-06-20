@@ -45,19 +45,27 @@ function syncMDCToESLint() {
     // Merge rules from index.mdc and TypeScript rules
     const mdcRules = {
       ...indexMdcJson.rules.typescript,
-      ...tsRules.typescript || {},
-      ...tsRules
+      ...(tsRules.typescript || {}),
+      ...tsRules,
     };
 
     // Map MDC rules to ESLint rules
     const eslintRules = {
       // Core TypeScript rules
-      '@typescript-eslint/no-explicit-any': mdcRules['no-explicit-any'] || 'error',
-      '@typescript-eslint/explicit-function-return-type': mdcRules['explicit-function-return-type'] || 'error',
-      '@typescript-eslint/no-unused-vars': mdcRules['no-unused-vars'] || ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-explicit-any':
+        mdcRules['no-explicit-any'] || 'error',
+      '@typescript-eslint/explicit-function-return-type':
+        mdcRules['explicit-function-return-type'] || 'error',
+      '@typescript-eslint/no-unused-vars': mdcRules['no-unused-vars'] || [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/strict-null-checks': 'error',
       'prefer-const': mdcRules['prefer-const'] || 'error',
-      'no-console': mdcRules['no-console'] || ['warn', { allow: ['error', 'warn'] }],
+      'no-console': mdcRules['no-console'] || [
+        'warn',
+        { allow: ['error', 'warn'] },
+      ],
 
       // React rules
       'react/react-in-jsx-scope': 'off',
@@ -71,7 +79,8 @@ function syncMDCToESLint() {
       'simple-import-sort/exports': 'error',
 
       // Security rules
-      'security/detect-unsafe-regex': mdcRules['detect-unsafe-regex'] || 'error',
+      'security/detect-unsafe-regex':
+        mdcRules['detect-unsafe-regex'] || 'error',
       'security/detect-sql-injection': 'error',
       'security/detect-xss': 'error',
 
@@ -80,7 +89,7 @@ function syncMDCToESLint() {
       'jsx-a11y/anchor-has-content': 'error',
 
       // TSDoc
-      'tsdoc/syntax': 'warn'
+      'tsdoc/syntax': 'warn',
     };
 
     // Generate new ESLint config
@@ -108,7 +117,7 @@ function syncMDCToESLint() {
         'security',
         'jsx-a11y',
         'tsdoc',
-        'simple-import-sort'
+        'simple-import-sort',
       ],
       extends: [
         'eslint:recommended',
@@ -120,7 +129,7 @@ function syncMDCToESLint() {
         'plugin:import/typescript',
         'plugin:security/recommended',
         'plugin:jsx-a11y/recommended',
-        'prettier'
+        'prettier',
       ],
       settings: {
         react: {
@@ -152,10 +161,7 @@ function syncMDCToESLint() {
     };
 
     // Write updated ESLint config
-    fs.writeFileSync(
-      '.eslintrc.json',
-      JSON.stringify(eslintConfig, null, 2)
-    );
+    fs.writeFileSync('.eslintrc.json', JSON.stringify(eslintConfig, null, 2));
 
     console.log('✅ ESLint configuration synced with MDC rules');
     console.log('📝 Updated .eslintrc.json');
@@ -163,9 +169,10 @@ function syncMDCToESLint() {
     // Validate the sync
     console.log('\n🔍 Validation:');
     console.log(`- TypeScript rules: ${Object.keys(mdcRules).length} mapped`);
-    console.log(`- ESLint rules: ${Object.keys(eslintRules).length} configured`);
+    console.log(
+      `- ESLint rules: ${Object.keys(eslintRules).length} configured`
+    );
     console.log(`- MDC last updated: ${indexMdcJson.metadata.lastUpdated}`);
-
   } catch (error) {
     console.error('❌ Error syncing MDC to ESLint:', error.message);
     process.exit(1);

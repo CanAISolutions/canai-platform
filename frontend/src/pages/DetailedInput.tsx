@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import StandardBackground from '@/components/StandardBackground';
-import {
-  PageTitle,
-  SectionTitle,
-  BodyText,
-} from '@/components/StandardTypography';
-import { StandardButton } from '@/components/ui/standard-button';
+import AutoSaveIndicator from '@/components/DetailedInput/AutoSaveIndicator';
 import StepOneForm from '@/components/DetailedInput/StepOneForm';
 import StepTwoForm from '@/components/DetailedInput/StepTwoForm';
-import AutoSaveIndicator from '@/components/DetailedInput/AutoSaveIndicator';
+import StandardBackground from '@/components/StandardBackground';
+import {
+    BodyText,
+    PageTitle,
+    SectionTitle,
+} from '@/components/StandardTypography';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { StandardButton } from '@/components/ui/standard-button';
 import { FormData } from '@/types/formTypes';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // API and analytics imports
-import {
-  saveDetailedInput,
-  validateDetailedInput,
-} from '@/utils/detailedInputIntegration';
-import { trackPageView, trackFormStep } from '@/utils/analytics';
+import { trackFormStep, trackPageView } from '@/utils/analytics';
 import { logInteraction } from '@/utils/api';
+import {
+    saveDetailedInput
+} from '@/utils/detailedInputIntegration';
 
-const DetailedInput = () => {
+const DetailedInput: React.FC = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -66,18 +65,9 @@ const DetailedInput = () => {
         timestamp: new Date().toISOString(),
       },
     });
-  }, []);
+  }, [currentStep]);
 
-  // Auto-save functionality
-  useEffect(() => {
-    const autoSaveTimer = setTimeout(() => {
-      autoSave();
-    }, 10000); // Auto-save every 10 seconds
-
-    return () => clearTimeout(autoSaveTimer);
-  }, [formData]);
-
-  const autoSave = async () => {
+  const autoSave = useCallback(async () => {
     try {
       await saveDetailedInput(formData);
       setLastSaved(new Date());
@@ -85,7 +75,15 @@ const DetailedInput = () => {
     } catch (error) {
       console.error('[Detailed Input] Auto-save failed:', error);
     }
-  };
+  }, [formData]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      autoSave();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [autoSave]);
 
   const handleNextStep = () => {
     if (currentStep === 1) {

@@ -225,7 +225,7 @@
 
 ---
 
-**Deployment Date:** ******\_\_\_****** **Deployed By:** ******\_\_\_****** **Version:**
-******\_\_\_****** **Rollback Contact:** ******\_\_\_******
+**Deployment Date:** **\*\***\_\_\_**\*\*** **Deployed By:** **\*\***\_\_\_**\*\*** **Version:**
+**\*\***\_\_\_**\*\*** **Rollback Contact:** **\*\***\_\_\_**\*\***
 
 **Post-Deployment Notes:** _Space for deployment notes, issues encountered, and resolutions_

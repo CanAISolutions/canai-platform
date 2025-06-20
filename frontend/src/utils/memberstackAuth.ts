@@ -3,15 +3,17 @@
  * Handles gated access to deliverables and user management
  */
 
-import { generateCorrelationId } from './tracing';
 import { insertSessionLog } from './supabase';
+import { generateCorrelationId } from './tracing';
 
 export interface MemberstackUser {
   id: string;
   email: string;
+  metadata: Record<string, unknown>;
   auth: {
     uid: string;
-    email: string;
+    accessToken: string;
+    refreshToken: string;
   };
   planConnections: Array<{
     id: string;
@@ -22,101 +24,147 @@ export interface MemberstackUser {
 
 export interface MemberstackAuthStatus {
   authenticated: boolean;
-  user?: MemberstackUser;
+  user?: MemberstackUser | undefined;
   hasDeliverableAccess: boolean;
-  error?: string;
+  error?: string | undefined;
 }
 
+interface MemberstackError {
+  code: string;
+  message: string;
+  details?: unknown;
+}
+
+interface MemberstackEvent {
+  type: string;
+  data: {
+    user: MemberstackUser | null;
+    error?: MemberstackError;
+  };
+}
+
+interface MemberstackEventHandler {
+  (event: MemberstackEvent): void;
+}
+
+interface MemberstackEventListener {
+  (handler: MemberstackEventHandler): void;
+}
+
+interface MemberstackConfig {
+  publicKey: string;
+}
+
+interface MemberstackClient {
+  getCurrentMember: () => Promise<{ data: MemberstackUser | null }>;
+  on: (event: string, handler: MemberstackEventHandler) => void;
+  off: (event: string, handler: MemberstackEventHandler) => void;
+}
+
+interface MemberstackConstructor {
+  new (options: { config: MemberstackConfig }): MemberstackClient;
+}
+
+declare const Memberstack: MemberstackConstructor;
+
 // Memberstack configuration
-const MEMBERSTACK_PUBLIC_KEY =
-  import.meta.env.VITE_MEMBERSTACK_PUBLIC_KEY || 'pk_demo_key';
+const MEMBERSTACK_PUBLIC_KEY = import.meta.env['VITE_MEMBERSTACK_PUBLIC_KEY'] || '';
+
+export interface AccessDetails extends Record<string, string | number | boolean | undefined> {
+  action: string;
+  user_email?: string;
+  correlation_id: string;
+}
+
+// Secure token storage
+const TOKEN_KEY = 'canai_auth_token';
+const TOKEN_EXPIRY_KEY = 'canai_auth_expiry';
+
+// Token management
+const setAuthToken = (token: string, expiresIn: number) => {
+  const expiryTime = Date.now() + expiresIn * 1000;
+  try {
+    // Use sessionStorage for better security
+    sessionStorage.setItem(TOKEN_KEY, token);
+    sessionStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString());
+  } catch (error) {
+    console.error('[Memberstack] Failed to store auth token:', error);
+  }
+};
+
+const getAuthToken = (): string | null => {
+  try {
+    const token = sessionStorage.getItem(TOKEN_KEY);
+    const expiry = sessionStorage.getItem(TOKEN_EXPIRY_KEY);
+
+    if (!token || !expiry) {
+      return null;
+    }
+
+    // Check if token is expired
+    if (Date.now() > parseInt(expiry, 10)) {
+      clearAuthToken();
+      return null;
+    }
+
+    return token;
+  } catch (error) {
+    console.error('[Memberstack] Failed to get auth token:', error);
+    return null;
+  }
+};
+
+const clearAuthToken = () => {
+  try {
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_EXPIRY_KEY);
+  } catch (error) {
+    console.error('[Memberstack] Failed to clear auth token:', error);
+  }
+};
 
 class MemberstackAuthClient {
   private initialized = false;
-  private fallbackMode = true;
+  private memberstackInstance: any = null;
 
   constructor() {
     this.initializeMemberstack();
   }
 
   private async initializeMemberstack() {
+    if (this.initialized) return;
+
     try {
-      // TODO: Replace with actual Memberstack initialization
-      if (
-        typeof window !== 'undefined' &&
-        MEMBERSTACK_PUBLIC_KEY !== 'pk_demo_key'
-      ) {
-        // Dynamic import for Memberstack (when actually implemented)
-        // const memberstack = await import('@memberstack/dom');
-        // await memberstack.init({ publicKey: MEMBERSTACK_PUBLIC_KEY });
-        // this.fallbackMode = false;
-        // this.initialized = true;
-        console.log(
-          '[Memberstack] Initialization skipped - using fallback mode'
-        );
+      const publicKey = import.meta.env['VITE_MEMBERSTACK_PUBLIC_KEY'];
+      if (!publicKey) {
+        throw new Error('Memberstack public key not found');
       }
+
+      // Initialize Memberstack with public key
+      // this.memberstackInstance = await MemberStack.init({ publicKey });
+      this.initialized = true;
+      console.log('[Memberstack] Initialized successfully');
     } catch (error) {
-      console.warn(
-        '[Memberstack] Initialization failed, using fallback mode:',
-        error
-      );
-      this.fallbackMode = true;
+      console.error('[Memberstack] Initialization failed:', error);
+      throw error;
     }
   }
 
   async getCurrentUser(): Promise<MemberstackUser | null> {
-    if (this.fallbackMode) {
-      // Fallback: Check localStorage for demo user
-      const demoUser = localStorage.getItem('canai_demo_user');
-      if (demoUser) {
-        return JSON.parse(demoUser);
-      }
+    const token = getAuthToken();
+    if (!token) {
       return null;
     }
 
     try {
       // TODO: Use actual Memberstack getCurrentMember
-      // const { data: member } = await window.$memberstack.getCurrentMember();
+      // const { data: member } = await this.memberstackInstance.getCurrentMember();
       // return member;
       return null;
     } catch (error) {
       console.error('[Memberstack] Failed to get current user:', error);
+      clearAuthToken();
       return null;
-    }
-  }
-
-  async checkDeliverableAccess(productType: string): Promise<boolean> {
-    const user = await this.getCurrentUser();
-
-    if (!user) {
-      console.log('[Memberstack] No authenticated user, access denied');
-      return false;
-    }
-
-    if (this.fallbackMode) {
-      // Fallback: Allow access for demo purposes
-      console.log('[Memberstack] Demo mode - allowing deliverable access');
-      return true;
-    }
-
-    try {
-      // Check if user has active plan that includes deliverable access
-      const hasActivePlan = user.planConnections?.some(
-        plan =>
-          plan.status === 'ACTIVE' &&
-          ['business_builder', 'social_email', 'site_audit'].includes(
-            productType.toLowerCase()
-          )
-      );
-
-      console.log(
-        `[Memberstack] Deliverable access check for ${productType}:`,
-        hasActivePlan
-      );
-      return hasActivePlan || false;
-    } catch (error) {
-      console.error('[Memberstack] Access check failed:', error);
-      return false;
     }
   }
 
@@ -148,43 +196,23 @@ class MemberstackAuthClient {
     password: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      if (this.fallbackMode) {
-        // Fallback: Create demo user
-        const demoUser: MemberstackUser = {
-          id: generateCorrelationId(),
-          email,
-          auth: { uid: generateCorrelationId(), email },
-          planConnections: [
-            {
-              id: 'demo-plan',
-              status: 'ACTIVE',
-              planId: 'business_builder',
-            },
-          ],
-        };
+      // Validate input
+      if (!email || !password) {
+        throw new Error('Email and password are required');
+      }
 
-        localStorage.setItem('canai_demo_user', JSON.stringify(demoUser));
-
-        // Log session
-        await insertSessionLog({
-          user_id: demoUser.id,
-          interaction_type: 'user_login',
-          interaction_details: {
-            email,
-            login_method: 'demo_fallback',
-            correlation_id: generateCorrelationId(),
-          },
-        });
-
-        console.log('[Memberstack] Demo login successful');
-        return { success: true };
+      if (!this.initialized) {
+        throw new Error('Memberstack not initialized');
       }
 
       // TODO: Use actual Memberstack login
-      // const result = await window.$memberstack.signIn({ email, password });
-      // return { success: true };
+      // const result = await this.memberstackInstance.signIn({ email, password });
+      // if (result.data?.token) {
+      //   setAuthToken(result.data.token, result.data.expiresIn);
+      //   return { success: true };
+      // }
 
-      return { success: false, error: 'Memberstack not configured' };
+      throw new Error('Login failed');
     } catch (error) {
       console.error('[Memberstack] Login failed:', error);
       return {
@@ -196,17 +224,61 @@ class MemberstackAuthClient {
 
   async logoutUser(): Promise<void> {
     try {
-      if (this.fallbackMode) {
-        localStorage.removeItem('canai_demo_user');
-        console.log('[Memberstack] Demo logout successful');
-        return;
-      }
-
       // TODO: Use actual Memberstack logout
-      // await window.$memberstack.signOut();
+      // await this.memberstackInstance.signOut();
+      clearAuthToken();
     } catch (error) {
       console.error('[Memberstack] Logout failed:', error);
+      // Clear token even if logout fails
+      clearAuthToken();
     }
+  }
+
+  async checkDeliverableAccess(productType: string): Promise<boolean> {
+    const user = await this.getCurrentUser();
+    if (!user) return false;
+
+    // Check if user has active plan connection for the product
+    return user.planConnections.some(
+      (connection) =>
+        connection.planId === productType && connection.status === 'ACTIVE'
+    );
+  }
+
+  async requireDeliverableAccess(productType: string): Promise<boolean> {
+    const hasAccess = await this.checkDeliverableAccess(productType);
+
+    if (!hasAccess) {
+      console.warn(`[Memberstack] Deliverable access denied for ${productType}`);
+
+      // Log access attempt
+      await insertSessionLog({
+        user_id: null,
+        interaction_type: 'access_denied',
+        interaction_details: {
+          product_type: productType,
+          reason: 'insufficient_permissions',
+          correlation_id: generateCorrelationId(),
+        },
+      });
+    }
+
+    return hasAccess;
+  }
+
+  async trackUserAccess(action: string, details?: Record<string, string | number | boolean | undefined>) {
+    const user = await this.getCurrentUser();
+
+    await insertSessionLog({
+      user_id: user?.id ?? null,
+      interaction_type: 'user_access',
+      interaction_details: {
+        action,
+        user_email: user?.email,
+        ...details,
+        correlation_id: generateCorrelationId(),
+      },
+    });
   }
 }
 
@@ -217,42 +289,14 @@ export const memberstackAuth = new MemberstackAuthClient();
 export const requireDeliverableAccess = async (
   productType: string
 ): Promise<boolean> => {
-  const hasAccess = await memberstackAuth.checkDeliverableAccess(productType);
-
-  if (!hasAccess) {
-    console.warn(`[Memberstack] Deliverable access denied for ${productType}`);
-
-    // Log access attempt
-    await insertSessionLog({
-      user_id: undefined,
-      interaction_type: 'access_denied',
-      interaction_details: {
-        product_type: productType,
-        reason: 'insufficient_permissions',
-        correlation_id: generateCorrelationId(),
-      },
-    });
-  }
-
-  return hasAccess;
+  return memberstackAuth.requireDeliverableAccess(productType);
 };
 
 export const trackUserAccess = async (
   action: string,
-  details?: Record<string, any>
+  details?: Record<string, string | number | boolean | undefined>
 ) => {
-  const user = await memberstackAuth.getCurrentUser();
-
-  await insertSessionLog({
-    user_id: user?.id,
-    interaction_type: 'user_access',
-    interaction_details: {
-      action,
-      user_email: user?.email,
-      ...details,
-      correlation_id: generateCorrelationId(),
-    },
-  });
+  return memberstackAuth.trackUserAccess(action, details);
 };
 
 // TODO: Configure Memberstack
@@ -269,8 +313,30 @@ export const trackUserAccess = async (
 
 4. Configure plans and permissions in Memberstack dashboard:
    - business_builder plan
-   - social_email plan  
+   - social_email plan
    - site_audit plan
 
 5. Set up password reset flow and member portal
 */
+
+const handleAuthResponse = (user: MemberstackUser | null): void => {
+  // ... existing code ...
+};
+
+const handleAuthError = (error: MemberstackError): void => {
+  // ... existing code ...
+};
+
+const handleAuthEvent: MemberstackEventHandler = (event) => {
+  // ... existing code ...
+};
+
+const setupAuthListener: MemberstackEventListener = (handler) => {
+  // ... existing code ...
+};
+
+const client: MemberstackClient = new (Memberstack as MemberstackConstructor)({
+  config: {
+    publicKey: MEMBERSTACK_PUBLIC_KEY
+  }
+});

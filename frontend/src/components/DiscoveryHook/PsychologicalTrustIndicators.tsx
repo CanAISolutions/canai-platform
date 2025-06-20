@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
 import {
-  CheckCircle,
-  TrendingUp,
-  Clock,
-  Shield,
-  Award,
-  Users,
+    Award,
+    CheckCircle,
+    Clock,
+    Shield,
+    TrendingUp,
+    Users,
 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 const PsychologicalTrustIndicators = () => {
   const [currentMetric, setCurrentMetric] = useState(0);
@@ -45,7 +45,7 @@ const PsychologicalTrustIndicators = () => {
       setCurrentMetric(prev => (prev + 1) % trustMetrics.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [trustMetrics.length]);
 
   return (
     <section className="w-full py-8 px-4">
@@ -58,21 +58,21 @@ const PsychologicalTrustIndicators = () => {
         `}
         >
           <div
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#193c65]/80 to-[#1e4a73]/80 
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#193c65]/80 to-[#1e4a73]/80
                          backdrop-blur-md rounded-2xl px-8 py-4 border border-[#36d1fe]/30
                          shadow-[0_0_30px_rgba(54,209,254,0.2)] hover:shadow-[0_0_40px_rgba(54,209,254,0.3)]
                          transition-all duration-300"
           >
-            {React.createElement(trustMetrics[currentMetric].icon, {
+            {React.createElement(trustMetrics[currentMetric]?.icon || TrendingUp, {
               size: 28,
               className: 'text-[#36d1fe] animate-pulse',
             })}
             <div className="text-left">
               <div className="text-2xl font-bold text-white font-playfair">
-                {trustMetrics[currentMetric].value}
+                {trustMetrics[currentMetric]?.value || '0'}
               </div>
               <div className="text-sm text-[#E6F6FF] opacity-90 font-manrope">
-                {trustMetrics[currentMetric].detail}
+                {trustMetrics[currentMetric]?.detail || ''}
               </div>
             </div>
           </div>
@@ -101,7 +101,7 @@ const PsychologicalTrustIndicators = () => {
             <div
               key={index}
               className={`
-                bg-gradient-to-br from-[#193c65]/60 to-[#1e4a73]/60 
+                bg-gradient-to-br from-[#193c65]/60 to-[#1e4a73]/60
                 backdrop-blur-md rounded-xl p-4 text-center
                 border border-[#36d1fe]/20 hover:border-[#36d1fe]/40
                 transition-all duration-300 hover:scale-105
@@ -132,22 +132,22 @@ const PsychologicalTrustIndicators = () => {
         `}
         >
           <div
-            className="bg-gradient-to-r from-[#193c65]/70 to-[#1e4a73]/70 
+            className="bg-gradient-to-r from-[#193c65]/70 to-[#1e4a73]/70
                          backdrop-blur-md rounded-2xl p-6 border border-[#36d1fe]/30
                          shadow-[0_0_25px_rgba(54,209,254,0.15)]"
           >
             <div className="flex items-start gap-4">
               <div
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-[#36d1fe] to-[#00b8e6] 
+                className="w-12 h-12 rounded-full bg-gradient-to-br from-[#36d1fe] to-[#00b8e6]
                              flex items-center justify-center text-white font-bold text-lg"
               >
                 S
               </div>
               <div className="flex-1 text-left">
                 <p className="text-[#E6F6FF] italic mb-3 font-manrope leading-relaxed">
-                  "CanAI's business plan helped us raise $2.5M in Series A. The
+                  &quot;CanAI&apos;s business plan helped us raise $2.5M in Series A. The
                   emotional intelligence in their writing was exactly what
-                  investors wanted to see."
+                  investors wanted to see.&quot;
                 </p>
                 <div className="flex items-center justify-between">
                   <div>

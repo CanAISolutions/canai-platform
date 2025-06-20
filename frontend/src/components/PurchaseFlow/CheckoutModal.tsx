@@ -1,14 +1,14 @@
-import React from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CreditCard, Shield, Clock } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Product } from '@/pages/PurchaseFlow';
+import { Clock, CreditCard, Shield } from 'lucide-react';
+import React from 'react';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -100,7 +100,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
 
             <p className="text-xs text-canai-light-blue text-center mt-4 opacity-80">
-              By clicking "Pay", you agree to our Terms of Service and Privacy
+              By clicking &quot;Pay&quot;, you agree to our Terms of Service and Privacy
               Policy
             </p>
           </CardContent>

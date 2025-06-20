@@ -5,18 +5,18 @@ import { generateCorrelationId, retryWithBackoff } from './tracing';
 // API Response Types
 export interface ApiResponse<T = Record<string, unknown>> {
   data?: T;
-  error?: string;
+  error?: string | null;
 }
 
 export interface MessageResponse {
   messages: { text: string }[];
-  error: null | string;
+  error: string | null;
 }
 
 export interface LogInteractionRequest {
-  user_id?: string;
+  user_id?: string | undefined;
   interaction_type: string;
-  interaction_details: Record<string, string | number | boolean | undefined>;
+  interaction_details: Record<string, string | number | boolean | null | undefined>;
 }
 
 export interface PreviewSparkRequest {
@@ -33,9 +33,13 @@ export interface PreviewSparkResponse {
   error: null | string;
 }
 
+export interface SaveProgressPayload {
+  [key: string]: string | number | boolean | null | undefined | Record<string, unknown>;
+}
+
 export interface SaveProgressRequest {
   prompt_id?: string;
-  payload: Record<string, any>;
+  payload: SaveProgressPayload;
 }
 
 export interface SaveProgressResponse {
@@ -63,6 +67,23 @@ export interface IntentMirrorResponse {
   confidenceScore: number;
   clarifyingQuestions: string[];
   error: null | string;
+}
+
+export interface SessionLog {
+  id?: string;
+  created_at?: string;
+  user_id?: string;
+  interaction_type: string;
+  interaction_details: Record<string, unknown>;
+}
+
+export interface ErrorLog {
+  id?: string;
+  created_at?: string;
+  user_id?: string;
+  error_message: string;
+  action: string;
+  error_type: 'timeout' | 'invalid_input' | 'stripe_failure' | 'low_confidence' | 'contradiction' | 'nsfw' | 'token_limit';
 }
 
 // Base API configuration
@@ -128,12 +149,34 @@ export const getMessages = async (): Promise<MessageResponse> => {
   }
 };
 
+// Sanitize error messages to prevent sensitive info leakage
+const sanitizeErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) {
+    // Remove any potential sensitive information
+    return error.message.replace(/([A-Za-z0-9+/=]){40,}/g, '[REDACTED]');
+  }
+  return 'An unexpected error occurred';
+};
+
+// Validate user input
+const validateUserInput = (data: LogInteractionRequest): boolean => {
+  if (!data || typeof data !== 'object') return false;
+  if (typeof data.interaction_type !== 'string') return false;
+  if (!data.interaction_details || typeof data.interaction_details !== 'object') return false;
+  return true;
+};
+
 export const logInteraction = async (
   data: LogInteractionRequest
 ): Promise<ApiResponse> => {
-  console.log('[API] POST /v1/log-interaction called with:', data);
+  console.log('[API] POST /v1/log-interaction called');
 
   try {
+    // Validate input
+    if (!validateUserInput(data)) {
+      throw new Error('Invalid input data');
+    }
+
     // Primary: Log to Supabase directly
     await insertSessionLog({
       user_id: data.user_id,
@@ -147,14 +190,14 @@ export const logInteraction = async (
     console.log('[API] Interaction logged successfully');
     return { error: null };
   } catch (error) {
-    console.error('[API] logInteraction failed:', error);
+    console.error('[API] logInteraction failed:', sanitizeErrorMessage(error));
 
     // Error logging
     await logError({
       user_id: data.user_id,
-      error_message: error instanceof Error ? error.message : 'Unknown error',
+      error_message: sanitizeErrorMessage(error),
       action: 'log_interaction',
-      error_type: 'timeout',
+      error_type: 'timeout' as const,
     });
 
     return { error: 'Failed to log interaction' };
@@ -165,40 +208,40 @@ export const logInteraction = async (
 const generateContextualSpark = (
   data: PreviewSparkRequest
 ): { title: string; tagline: string } => {
-  const businessType = data.business_type?.toLowerCase() || '';
-  const challenge = data.challenge?.toLowerCase() || '';
+  const businessTypeStr = (data.business_type ?? '').toLowerCase();
+  const challengeStr = (data.challenge ?? '').toLowerCase();
 
   // Generate contextual sparks based on business type and challenge
-  if (businessType.includes('bakery') || businessType.includes('food')) {
+  if (businessTypeStr.includes('bakery') || businessTypeStr.includes('food')) {
     return {
       title: 'Sweet Success Strategy',
       tagline: 'Recipe for bakery growth and community connection',
     };
   } else if (
-    businessType.includes('tech') ||
-    businessType.includes('software')
+    businessTypeStr.includes('tech') ||
+    businessTypeStr.includes('software')
   ) {
     return {
       title: 'Digital Innovation Blueprint',
       tagline: 'Scale your tech vision with strategic planning',
     };
   } else if (
-    businessType.includes('retail') ||
-    businessType.includes('store')
+    businessTypeStr.includes('retail') ||
+    businessTypeStr.includes('store')
   ) {
     return {
       title: 'Retail Excellence Plan',
       tagline: 'Transform your store into a customer magnet',
     };
   } else if (
-    challenge?.includes('funding') ||
-    challenge?.includes('investment')
+    challengeStr?.includes('funding') ||
+    challengeStr?.includes('investment')
   ) {
     return {
       title: 'Investor-Ready Strategy',
       tagline: 'Position your business for successful funding',
     };
-  } else if (challenge?.includes('growth') || challenge?.includes('scale')) {
+  } else if (challengeStr?.includes('growth') || challengeStr?.includes('scale')) {
     return {
       title: 'Growth Acceleration Plan',
       tagline: 'Strategic roadmap for sustainable expansion',

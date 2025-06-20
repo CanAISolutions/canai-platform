@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowLeft, Shield, Clock, Users } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import StandardBackground from '@/components/StandardBackground';
-import { PageTitle, BodyText } from '@/components/StandardTypography';
-import PageHeader from '@/components/PageHeader';
 import EditModal from '@/components/IntentMirror/EditModal';
 import SummaryCard from '@/components/IntentMirror/SummaryCard';
+import PageHeader from '@/components/PageHeader';
+import StandardBackground from '@/components/StandardBackground';
+import { BodyText, PageTitle } from '@/components/StandardTypography';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import {
+    trackIntentMirrorConfirmed,
+    trackIntentMirrorEdited,
+    trackSupportRequested,
+} from '@/utils/analytics';
 import { generateIntentMirror, trackFieldEdit } from '@/utils/api';
 import {
-  trackIntentMirrorConfirmed,
-  trackIntentMirrorEdited,
-  trackSupportRequested,
-} from '@/utils/analytics';
-import {
-  triggerIntentMirrorWorkflow,
-  handleLowConfidenceSupport,
+    handleLowConfidenceSupport
 } from '@/utils/intentMirrorIntegration';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface IntentMirrorData {
   summary: string;
@@ -94,7 +93,7 @@ const IntentMirror = () => {
     };
   };
 
-  const loadIntentMirror = async (retryCount = 0) => {
+  const loadIntentMirror = useCallback(async (retryCount = 0) => {
     setIsLoading(true);
 
     try {
@@ -172,11 +171,11 @@ const IntentMirror = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [promptId, toast]);
 
   useEffect(() => {
     loadIntentMirror();
-  }, []);
+  }, [loadIntentMirror]);
 
   const handleConfirm = async () => {
     if (!intentData) return;
@@ -300,8 +299,8 @@ const IntentMirror = () => {
         <div className="text-center mb-8 animate-fade-in">
           <PageTitle className="mb-4">Review Your Business Summary</PageTitle>
           <BodyText className="text-lg opacity-90">
-            We've analyzed your information and created this summary. Please
-            review and confirm it's accurate.
+            We&apos;ve analyzed your information and created this summary. Please
+            review and confirm it&apos;s accurate.
           </BodyText>
         </div>
 

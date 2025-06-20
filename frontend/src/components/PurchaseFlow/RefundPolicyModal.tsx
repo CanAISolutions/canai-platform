@@ -1,12 +1,12 @@
-import React from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Shield, Clock, CreditCard } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Clock, CreditCard, Shield } from 'lucide-react';
+import React from 'react';
 
 interface RefundPolicyModalProps {
   isOpen: boolean;
@@ -39,8 +39,8 @@ const RefundPolicyModal: React.FC<RefundPolicyModalProps> = ({
               </h3>
             </div>
             <p className="text-canai-light mb-4">
-              We stand behind our work. If you're not completely satisfied with
-              your CanAI deliverable, we'll refund your full payment within 30
+              We stand behind our work. If you&apos;re not completely satisfied with
+              your CanAI deliverable, we&apos;ll refund your full payment within 30
               days of purchase.
             </p>
           </div>
