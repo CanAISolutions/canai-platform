@@ -1,23 +1,29 @@
 # Spark Layer: Feature Overview for PRD
 
 ## 1. Feature Overview
+
 The **Spark Layer** is a critical component of CanAI’s emotional sovereignty platform, designed to generate three personalized, emotionally engaging concept names—called “sparks”—based on validated user intent from the Intent Mirror. Each spark (e.g., “The Connection Series” for an email campaign) is a concise, visionary title that transforms user goals into intriguing, identity-driven ideas, delivering immediate value and building trust. Positioned in the user journey after the Discovery Hook, Discovery Funnel, and Intent Mirror, the Spark Layer captivates users by showcasing CanAI’s ability to understand their vision, priming them for the Product Selection Recommendation stage.
 
 ### Purpose
+
 - **For Users**: Deliver instant, tailored concept names that feel uniquely crafted, sparking excitement, curiosity, and trust in CanAI’s capabilities.
 - **For CanAI**: Demonstrate emotional intelligence, differentiate from generic AI, and drive engagement toward product adoption.
 
 ### Value Proposition
+
 - **Users**: Experience a moment of delight with creative, personally resonant sparks that validate their goals and inspire confidence.
 - **Business**: Increases conversion rates and retention by creating emotional investment, reinforcing CanAI’s competitive edge, and facilitating product selection.
 
 ## 2. Core Functionality
 
 ### Overview
+
 The Spark Layer automatically generates three distinct spark concept names after receiving validated intent from the Intent Mirror. Presented in a card-based interface, users select one spark, which informs the downstream Product Selection Recommendation stage. The Spark Layer leverages emotional resonance, curiosity-driven design, and trust transparency to maintain engagement and drive conversion.
 
 ### User Inputs
+
 Receives structured data from the Intent Mirror:
+
 - **Goal**: Primary objective (e.g., “Increase customer loyalty”).
 - **Tone Preference**: Playful, Bold, Friendly, Professional, etc.
 - **Industry Context**: Retail, Technology, Wellness, etc.
@@ -26,6 +32,7 @@ Receives structured data from the Intent Mirror:
 - **Behavioral Data**: Interaction patterns (e.g., input speed, field focus).
 
 ### User Flow
+
 1. **Spark Generation**:
    - Automatically triggered post-Intent Mirror validation.
    - Generates three unique concept names (e.g., “The Loyalty Spark,” “The Connection Series,” “The Retention Engine”).
@@ -40,6 +47,7 @@ Receives structured data from the Intent Mirror:
    - Selected spark, feedback, and input data are sent to the Product Selection Recommendation stage, with a confirmation message (“Great choice! Let’s shape your vision!”).
 
 ### Key Features
+
 - **Personalized Concept Names**: Three tailored sparks reflecting user intent, tone, and emotional context.
 - **Curiosity-Driven Design**: Concise titles without explanations create intrigue, encouraging selection.
 - **Emotional Resonance**: Tone-matched, industry-relevant language fosters a personal connection.
@@ -48,6 +56,7 @@ Receives structured data from the Intent Mirror:
 - **Feedback Loop**: Optional feedback refines downstream personalization.
 
 ### Technical Requirements
+
 - **Spark Generation Module**: AI model (e.g., fine-tuned NLP) to create concept names, integrating emotional and industry contexts.
 - **Trust Transparency Module**: Logic to generate and display CanAI vs. generic AI comparisons.
 - **Front-End**: Responsive card-based UI with animations, accessibility support.
@@ -61,6 +70,7 @@ Receives structured data from the Intent Mirror:
 ## 3. User Experience
 
 ### Interface Elements
+
 - **Spark Cards**:
   - **Title**: 10–15 characters (e.g., “The Connection Series”).
   - **Tagline**: 10–20 characters (e.g., “Build lasting relationships”).
@@ -72,7 +82,9 @@ Receives structured data from the Intent Mirror:
 - **Accessibility**: Screen readers, keyboard navigation, high-contrast modes, multilingual support.
 
 ### Example User Journey
+
 **User**: Sarah, a retail owner, wants to improve customer loyalty.
+
 1. After Discovery Funnel and Intent Mirror, Sarah’s validated intent enters the Spark Layer: “Increase customer loyalty” (Goal), “Friendly” (Tone), “Retail” (Industry), “Low retention” (Challenge).
 2. Three sparks are generated:
    - **Spark 1**: “The Loyalty Spark” – Tagline: “Reward repeat customers.”
@@ -82,12 +94,14 @@ Receives structured data from the Intent Mirror:
 4. She selects “The Connection Series,” answers “I love the relationship focus,” and sees “Great choice! Let’s shape your vision!” as her data advances.
 
 ### Design Principles
+
 - **Engaging**: Visually appealing cards and intriguing names drive curiosity.
 - **Intuitive**: One-click selection minimizes friction.
 - **Trustworthy**: Transparency comparison builds confidence.
 - **Inclusive**: Accessible, culturally sensitive design.
 
 ## 4. System Integrations
+
 - **Intent Mirror**: Receives validated intent data.
 - **Spark Generation Module**: Creates concept names.
 - **Database**: Supabase for spark storage and feedback.
@@ -96,7 +110,9 @@ Receives structured data from the Intent Mirror:
 - **Emotional Intelligence Engine**: Enhances tone and emotional personalization.
 
 ## 5. Strategic Purpose
+
 The Spark Layer strategically:
+
 - **Delivers Instant Value**: Three tailored sparks create a “wow moment,” validating user intent and boosting engagement.
 - **Differentiates CanAI**: Trust transparency showcases emotional intelligence, positioning CanAI above generic AI.
 - **Fosters Emotional Investment**: Sparks (e.g., “The Connection Series”) feel like users’ own visions, driving trust and loyalty.
@@ -104,6 +120,7 @@ The Spark Layer strategically:
 - **Enhances Personalization**: Selection and feedback data inform downstream recommendations.
 
 ### Psychological Mechanisms
+
 - **Name Effect**: Sparks like “The Authority Spark” create identity recognition, making users feel uniquely understood.
 - **Curiosity Drive**: Intriguing names (e.g., “The Crave Loop”) create an information gap, compelling users to explore further.
 - **Competence Validation**: Sophisticated titles signal professional respect, boosting confidence.
@@ -111,6 +128,7 @@ The Spark Layer strategically:
 - **Emotional Triggers**: Pride, curiosity, identity, and urgency make selection feel like claiming a vision, not a transaction.
 
 ## 6. What Makes It Unique
+
 - **Curiosity-Driven Outputs**: Three concise names spark intrigue without explanations.
 - **Emotional Personalization**: Sparks align with tone, industry, and emotional drivers.
 - **Trust Transparency**: Comparison differentiates CanAI.
@@ -118,6 +136,7 @@ The Spark Layer strategically:
 - **Automatic Activation**: Seamless flow maintains momentum.
 
 ## 7. Success Metrics
+
 - **Engagement**:
   - Spark selection rate: ≥80%.
   - Trust transparency view rate: ≥50%.
@@ -135,6 +154,7 @@ The Spark Layer strategically:
   - Generation success rate: >99%.
 
 ## 8. Implementation Requirements
+
 1. **Spark Generation Module**:
    - AI model for concept names.
    - Priority: High.
@@ -158,6 +178,7 @@ The Spark Layer strategically:
    - Priority: High.
 
 ## 9. Development Sequence
+
 1. **Phase 1: Generation & UI (3–4 months)**:
    - Build AI model and card interface.
    - Implement basic transparency.
@@ -169,15 +190,17 @@ The Spark Layer strategically:
 4. **Phase 4: Testing & Iteration (2 months)**:
    - A/B test spark diversity, transparency.
    - Iterate based on feedback.
-**Total Timeline**: 8–12 months.
+     **Total Timeline**: 8–12 months.
 
 ## 10. Stakeholder Benefits
+
 - **Users**: Delightful, personalized sparks.
 - **Product Team**: Higher engagement, conversion.
 - **Engineers**: Clear roadmap.
 - **Executives**: Stronger brand, adoption.
 
 ## 11. Risks & Mitigations
+
 - **Risk**: Generic sparks.
   - **Mitigation**: Train AI on diverse datasets.
 - **Risk**: Forced transparency.
@@ -188,7 +211,9 @@ The Spark Layer strategically:
   - **Mitigation**: Prioritize compliance.
 
 ## 12. In Simple Terms
+
 The Spark Layer is like a creative muse that, after understanding your goals, offers three visionary concept names (e.g., “The Connection Series”) that feel made for you. It shows why CanAI’s ideas outshine generic AI’s, lets you pick your favorite, and excites you for what’s next.
 
 ## 13. Notes on Integration
+
 Receives validated intent from Intent Mirror and sends selected spark to Product Selection Recommendation. These stages will be detailed separately.

@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
 import {
-  Eye,
-  DollarSign,
-  Sparkles,
-  Clock,
-  ArrowRight,
-  Star,
+    Clock,
+    DollarSign,
+    Eye,
+    Sparkles,
+    Star
 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type EnhancedSecondaryCTAsProps = {
   onOpenPricing: () => void;
@@ -34,10 +32,10 @@ const EnhancedSecondaryCTAs: React.FC<EnhancedSecondaryCTAsProps> = ({
             Choose Your Path to Success
           </h3>
           <p className="text-[#cce7fa] opacity-90 mb-4 font-manrope">
-            Join 500+ founders who've already raised funding with CanAI
+            Join 500+ founders who&apos;ve already raised funding with CanAI
           </p>
           <div
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20
                          text-amber-300 px-4 py-2 rounded-full text-sm border border-amber-400/30"
           >
             <Clock size={16} />
@@ -67,7 +65,7 @@ const EnhancedSecondaryCTAs: React.FC<EnhancedSecondaryCTAsProps> = ({
             <div className="p-6 text-center">
               <div className="mb-4 relative">
                 <DollarSign
-                  className={`w-8 h-8 text-[#36d1fe] mx-auto transition-transform duration-300 
+                  className={`w-8 h-8 text-[#36d1fe] mx-auto transition-transform duration-300
                                        ${
                                          hoveredCard === 'pricing'
                                            ? 'scale-110 rotate-12'
@@ -89,7 +87,7 @@ const EnhancedSecondaryCTAs: React.FC<EnhancedSecondaryCTAsProps> = ({
               </div>
             </div>
             <div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent 
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent
                            translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"
             />
           </div>
@@ -114,7 +112,7 @@ const EnhancedSecondaryCTAs: React.FC<EnhancedSecondaryCTAsProps> = ({
             <div className="p-6 text-center">
               <div className="mb-4 relative">
                 <Eye
-                  className={`w-8 h-8 text-[#36d1fe] mx-auto transition-transform duration-300 
+                  className={`w-8 h-8 text-[#36d1fe] mx-auto transition-transform duration-300
                                 ${
                                   hoveredCard === 'samples' ? 'scale-110' : ''
                                 }`}
@@ -139,7 +137,7 @@ const EnhancedSecondaryCTAs: React.FC<EnhancedSecondaryCTAsProps> = ({
               </div>
             </div>
             <div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent 
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent
                            translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"
             />
           </div>
@@ -148,7 +146,7 @@ const EnhancedSecondaryCTAs: React.FC<EnhancedSecondaryCTAsProps> = ({
           <div
             className={`
               group relative overflow-hidden rounded-2xl transition-all duration-300
-              bg-gradient-to-r from-[#36d1fe] to-[#00b8e6] 
+              bg-gradient-to-r from-[#36d1fe] to-[#00b8e6]
               hover:from-[#4ae3ff] hover:to-[#36d1fe]
               shadow-[0_0_30px_rgba(54,209,254,0.5)]
               hover:shadow-[0_0_40px_rgba(54,209,254,0.7)]
@@ -161,7 +159,7 @@ const EnhancedSecondaryCTAs: React.FC<EnhancedSecondaryCTAsProps> = ({
             <div className="p-6 text-center relative z-10">
               <div className="mb-4 relative">
                 <Sparkles
-                  className={`w-8 h-8 text-[#0a1628] mx-auto transition-transform duration-300 
+                  className={`w-8 h-8 text-[#0a1628] mx-auto transition-transform duration-300
                                      ${
                                        hoveredCard === 'preview'
                                          ? 'scale-110 rotate-12'
@@ -183,7 +181,7 @@ const EnhancedSecondaryCTAs: React.FC<EnhancedSecondaryCTAsProps> = ({
               </div>
             </div>
             <div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent 
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
                            translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"
             />
           </div>

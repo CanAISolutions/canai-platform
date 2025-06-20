@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { expect, afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { afterEach, expect } from 'vitest';
 
 // Cleanup after each test case (e.g. clearing jsdom)
 afterEach(() => {
@@ -13,7 +13,7 @@ expect.extend({});
 // Mock console.error to avoid noise in tests
 const originalError = console.error;
 beforeAll(() => {
-  console.error = (...args: any[]) => {
+  console.error = (...args: unknown[]) => {
     if (
       typeof args[0] === 'string' &&
       args[0].includes('Warning: ReactDOM.render is no longer supported')

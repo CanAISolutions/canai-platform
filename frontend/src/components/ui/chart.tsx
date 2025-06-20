@@ -70,16 +70,22 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     ([_, config]) => config.theme || config.color
   );
 
-  if (!colorConfig.length) {
-    return null;
-  }
+  // Create a unique style ID for this chart
+  const styleId = React.useMemo(() => `chart-style-${id}`, [id]);
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
+  // Create style element if it doesn't exist
+  React.useEffect(() => {
+    let styleElement = document.getElementById(styleId) as HTMLStyleElement;
+    if (!styleElement) {
+      styleElement = document.createElement('style');
+      styleElement.id = styleId;
+      document.head.appendChild(styleElement);
+    }
+
+    // Generate CSS content
+    const cssContent = Object.entries(THEMES)
+      .map(
+        ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
@@ -88,14 +94,23 @@ ${colorConfig
       itemConfig.color;
     return color ? `  --color-${key}: ${color};` : null;
   })
+  .filter(Boolean)
   .join('\n')}
 }
 `
-          )
-          .join('\n'),
-      }}
-    />
-  );
+      )
+      .join('\n');
+
+    // Set CSS content
+    styleElement.textContent = cssContent;
+
+    // Cleanup
+    return () => {
+      styleElement.remove();
+    };
+  }, [id, colorConfig, styleId]);
+
+  return null;
 };
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
@@ -283,7 +298,8 @@ const ChartLegendContent = React.forwardRef<
           className
         )}
       >
-        {payload.map(item => {
+        {payload.map((item) => {
+          if (!item || !item.value) return null;
           const key = `${nameKey || item.dataKey || 'value'}`;
           const itemConfig = getPayloadConfigFromPayload(config, item, key);
 
@@ -354,10 +370,9 @@ function getPayloadConfigFromPayload(
 }
 
 export {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
+    ChartContainer, ChartLegend,
+    ChartLegendContent,
+    ChartStyle, ChartTooltip,
+    ChartTooltipContent
 };
+

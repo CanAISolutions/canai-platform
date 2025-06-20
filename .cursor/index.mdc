@@ -7,7 +7,7 @@ alwaysApply: false
 description: Core linting rules for the CanAI platform repository
 globs: frontend/src/**/*.{ts,tsx}, backend/**/*.{ts,js}, docs/**/*.{md,yaml}, backend/config/*.json, backend/webhooks/make_scenarios/*.json
 alwaysApply: true
-tags: [typescript, react, markdown, api, security, testing, supabase, analytics, llm, accessibility, taskmaster, data-lifecycle, feature-flags, make-automation, error-handling]
+tags: [typescript, react, markdown, api, security, testing, supabase, analytics, llm, accessibility, taskmaster, data-lifecycle, feature-flags, make-automation, error-handling, production]
 ---
 {
   "version": 1.2,
@@ -96,13 +96,14 @@ tags: [typescript, react, markdown, api, security, testing, supabase, analytics,
     "./rules/canai-memberstack-sync.mdc",
     "./rules/canai-feature-flags-rules.mdc",
     "./rules/canai-data-lifecycle-rules.mdc",
+    "./rules/canai-production-readiness.mdc",
     "./rules/canai-taskmaster.mdc"
   ],
   "taskmaster": {
     "enabled": true,
     "prdPath": ".taskmaster/docs/prd.txt",
     "tasksPath": "tasks/tasks.json",
-    "aiModel": "claude-3-sonnet"
+    "aiModel": "claude-3.7-sonnet"
   }
 }
 

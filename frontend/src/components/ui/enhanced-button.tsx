@@ -1,33 +1,18 @@
-import * as React from 'react';
+import { cn } from '@/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import * as React from 'react';
+import { enhancedButtonVariants as variants } from './constants';
 
 const enhancedButtonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#36d1fe] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0F1C] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98] active:translate-y-0 touch-manipulation min-h-[44px] min-w-[44px]',
+  'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
-      variant: {
-        default:
-          'bg-[#36d1fe] text-white hover:bg-[#2bc4f0] shadow-[0_4px_14px_rgba(54,209,254,0.4)] hover:shadow-[0_8px_25px_rgba(54,209,254,0.6)] hover:scale-[1.02] hover:-translate-y-0.5',
-        destructive:
-          'bg-red-500 text-white hover:bg-red-600 shadow-lg hover:shadow-xl hover:scale-[1.02] hover:-translate-y-0.5',
-        outline:
-          'border-2 border-[#36d1fe] text-[#36d1fe] bg-transparent hover:bg-[#36d1fe]/10 hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-lg',
-        secondary:
-          'bg-[#1e314f] text-white border border-[#36d1fe]/30 hover:bg-[#275084] hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-lg',
-        ghost: 'text-[#36d1fe] hover:bg-[#36d1fe]/10 hover:scale-105',
-        link: 'text-[#36d1fe] underline-offset-4 hover:underline',
-        primary:
-          'font-bold text-white bg-gradient-to-r from-[#36d1fe] to-[#00b8e6] ' +
-          'hover:from-[#4ae3ff] hover:to-[#36d1fe] shadow-[0_4px_14px_rgba(54,209,254,0.4)] ' +
-          'hover:shadow-[0_8px_25px_rgba(54,209,254,0.6)] hover:scale-[1.02] hover:-translate-y-0.5',
-      },
+      variant: variants,
       size: {
         default: 'h-10 px-4 py-2',
-        sm: 'h-8 rounded-lg px-3 text-xs',
-        lg: 'h-12 rounded-xl px-8 text-base font-semibold min-h-[48px]',
-        xl: 'h-14 rounded-xl px-10 text-lg font-bold min-h-[48px]',
+        sm: 'h-9 rounded-md px-3',
+        lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
       },
     },
@@ -98,4 +83,5 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
 );
 EnhancedButton.displayName = 'EnhancedButton';
 
-export { EnhancedButton, enhancedButtonVariants };
+export { EnhancedButton };
+

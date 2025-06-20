@@ -2,6 +2,7 @@
  * SparkSplit API Integration
  */
 
+import { supabase } from '@/integrations/supabase/client';
 import { generateCorrelationId } from './tracing';
 
 export interface SparkSplitRequest {
@@ -84,17 +85,35 @@ export const submitFeedback = async (
   request: FeedbackRequest
 ): Promise<FeedbackResponse> => {
   try {
-    console.log('[SparkSplit API] Submitting feedback:', request);
+    console.log('[SparkSplit API] Submitting feedback');
 
-    // Store in localStorage for development
-    localStorage.setItem(
-      'canai_sparksplit_feedback',
-      JSON.stringify({
-        ...request,
-        id: generateCorrelationId(),
-        timestamp: new Date().toISOString(),
-      })
-    );
+    // Validate request
+    if (!request || typeof request !== 'object') {
+      throw new Error('Invalid feedback request');
+    }
+
+    // Transform feedback data to match Supabase schema
+    const feedbackData = {
+      session_id: generateCorrelationId(),
+      prompt_type: 'spark_split_feedback',
+      user_input: request.comment || '',
+      canai_output: JSON.stringify(request),
+      sterile_output: '',
+      canai_trust_score: request.trust_delta,
+      canai_emotional_resonance: request.emotional_resonance,
+      canai_generation_time_ms: Date.now(),
+      created_at: new Date().toISOString(),
+    };
+
+    // Store in Supabase
+    const { error } = await supabase
+      .from('sparksplit_comparisons')
+      .insert([feedbackData])
+      .select();
+
+    if (error) {
+      throw error;
+    }
 
     return {
       success: true,

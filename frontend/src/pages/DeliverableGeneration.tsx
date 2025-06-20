@@ -1,48 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Progress } from '@/components/ui/progress';
-import {
-  Download,
-  RefreshCw,
-  Edit3,
-  FileText,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Copy,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useIsMobile } from '@/hooks/use-mobile';
+import PageHeader from '@/components/PageHeader';
 import StandardBackground from '@/components/StandardBackground';
 import StandardCard from '@/components/StandardCard';
-import PageHeader from '@/components/PageHeader';
 import {
-  PageTitle,
-  SectionTitle,
-  CardTitle,
-  BodyText,
-  CaptionText,
+    BodyText,
+    CaptionText,
+    CardTitle,
+    PageTitle
 } from '@/components/StandardTypography';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Textarea } from '@/components/ui/textarea';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useToast } from '@/hooks/use-toast';
+import {
+    AlertCircle,
+    CheckCircle,
+    ChevronDown,
+    ChevronUp,
+    Clock,
+    Copy,
+    Download,
+    Edit3,
+    RefreshCw
+} from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 // Import new API functions
 import {
-  getGenerationStatus,
-  requestRevision,
-  regenerateDeliverable,
-  generateDeliverableContent,
-  validateEmotionalResonance,
-} from '@/utils/deliverableApi';
-import {
-  trackDeliverableGenerated,
-  trackRevisionRequested,
-  trackDeliverableRegenerated,
-  trackPDFDownload,
-  trackEmotionalResonance,
+    trackDeliverableGenerated,
+    trackDeliverableRegenerated,
+    trackEmotionalResonance,
+    trackPDFDownload,
+    trackRevisionRequested,
 } from '@/utils/analytics';
+import {
+    generateDeliverableContent,
+    getGenerationStatus,
+    regenerateDeliverable,
+    requestRevision
+} from '@/utils/deliverableApi';
 
 interface DeliverableData {
   id: string;
@@ -131,14 +128,7 @@ const DeliverableGeneration: React.FC = () => {
     { step: 'complete', message: 'Generation complete!', progress: 100 },
   ];
 
-  useEffect(() => {
-    console.log(
-      '[DeliverableGeneration] Page loaded, starting generation process'
-    );
-    generateDeliverable();
-  }, []);
-
-  const generateDeliverable = async () => {
+  const generateDeliverable = useCallback(async () => {
     console.log('[DeliverableGeneration] Starting deliverable generation');
     setIsGenerating(true);
     setProgress(0);
@@ -217,7 +207,14 @@ const DeliverableGeneration: React.FC = () => {
         variant: 'destructive',
       });
     }
-  };
+  }, [productType, intentMirrorInputs, generationSteps, toast]);
+
+  useEffect(() => {
+    console.log(
+      '[DeliverableGeneration] Page loaded, starting generation process'
+    );
+    generateDeliverable();
+  }, [generateDeliverable]);
 
   const handleRevision = async () => {
     if (!revisionText.trim() || !deliverable) return;

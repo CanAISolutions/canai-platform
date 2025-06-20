@@ -9,11 +9,7 @@ const glob = require('glob');
  */
 function validateMarkdownSections() {
   const requiredSections = ['## Purpose', '## Usage', '## Examples'];
-  const filesToCheck = [
-    'README.md',
-    'docs/**/*.md',
-    'CONTRIBUTING.md'
-  ];
+  const filesToCheck = ['README.md', 'docs/**/*.md', 'CONTRIBUTING.md'];
 
   // Exclude certain files that don't need these sections
   const excludeFiles = [
@@ -25,7 +21,7 @@ function validateMarkdownSections() {
     'taskmaster_tasks.md',
     'taskmaster_prep.md',
     'PRD.md',
-    'RULES-ENFORCEMENT.md'
+    'RULES-ENFORCEMENT.md',
   ];
 
   let allValid = true;
@@ -59,7 +55,9 @@ function validateMarkdownSections() {
       });
 
       if (missingSections.length > 0) {
-        console.error(`❌ ${file} missing sections: ${missingSections.join(', ')}`);
+        console.error(
+          `❌ ${file} missing sections: ${missingSections.join(', ')}`
+        );
         allValid = false;
       } else {
         console.log(`✅ ${file} has all required sections`);
@@ -107,7 +105,9 @@ try {
       });
 
       if (missingSections.length > 0) {
-        console.error(`❌ ${file} missing sections: ${missingSections.join(', ')}`);
+        console.error(
+          `❌ ${file} missing sections: ${missingSections.join(', ')}`
+        );
         allValid = false;
       } else {
         console.log(`✅ ${file} has all required sections`);

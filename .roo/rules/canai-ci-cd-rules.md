@@ -1,463 +1,118 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
-# CanAI CI/CD Rules
+---
+description: Guides efficient deployment pipelines
+globs: .github/workflows/*.yml, backend/docker-compose.yml, render.yaml
+alwaysApply: true
+---
+
+# CanAI CI/CD Guidelines
 
 ## Purpose
-Define CI/CD pipelines for secure, efficient deployments with <15min cycles and 99.9% uptime for the CanAI Emotional Sovereignty Platform, ensuring seamless delivery across the 9-stage user journey with robust testing, security scanning, and automated deployment processes.
+Enable secure, efficient, and reliable deployments for the CanAI Emotional Sovereignty Platform across its 9-stage user journey (F1-F9), guided by PRD Sections 13, 14, and 15. Support rapid iteration, robust testing, and high availability while prioritizing flexibility.
 
-## Standards
+## Scope
+Provide high-level guidance for CI/CD pipelines, focusing on code quality, testing, security, and deployment. Align with PRD objectives, allowing adaptability to project needs and evolving requirements.
 
-### Pipeline Architecture
-- **Primary Pipeline**: `.github/workflows/ci.yml` (currently exists) - extends to full deployment pipeline
-- **Specialized Workflows**: Create dedicated workflows for security, deployment, and rollback operations
-- **Environment Strategy**: Development → Staging → Production with automated promotion gates
-- **Deployment Targets**: 
-  - Frontend: `https://canai-frontend.onrender.com` (Webflow integrated)
-  - Backend: `https://canai-router.onrender.com:10000` (Render serverless)
-  - Admin: `https://canai-admin.onrender.com` (secured dashboard)
+## Guiding Principles
 
-### Mandatory Pipeline Stages
-Execute in strict sequence with failure gates:
+### PRD Alignment
+- Design pipelines to support PRD goals, such as user trust, performance, and journey completion.
+- Adapt to changes in PRD or project scope.
 
-1. **Code Quality & Validation**
-   - ESLint with CanAI TypeScript rules (zero warnings tolerance)
-   - TypeScript strict compilation with `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess`
-   - Prettier formatting validation
-   - Security audit with `npm audit --audit-level=moderate`
+### Reliability
+- Ensure consistent, error-free deployments with minimal downtime.
+- Support quick recovery through rollback mechanisms.
 
-2. **Testing Suite** (Must achieve >90% coverage)
-   - **Unit Tests**: Jest for `backend/routes/`, `backend/services/`, `frontend/src/components/`
-   - **Integration Tests**: Supertest for API endpoints and Make.com flows (`backend/webhooks/make_scenarios/`)
-   - **Accessibility Tests**: axe-core for WCAG 2.2 AA compliance (zero critical issues)
-   - **Load Tests**: Locust for 10,000 concurrent users (<2s response, <1% errors)
-   - **Journey Tests**: End-to-end validation of 9-stage user journey (F1-F9)
-   - **Scenario Tests**: Validate PRD scenarios (Sprinkle Haven Bakery, Serenity Yoga, TechTrend)
+### Quality
+- Enforce code quality, test coverage, and accessibility standards.
+- Validate AI outputs for resonance and trust as per PRD.
 
-3. **Security Scanning**
-   - **Secret Scanning**: TruffleHog for exposed credentials
-   - **Dependency Scanning**: `npm audit` with critical vulnerability blocking
-   - **SAST Scanning**: Semgrep for code vulnerabilities
-   - **DAST Scanning**: OWASP ZAP for runtime security testing
-   - **Container Scanning**: Trivy for Docker image vulnerabilities
+### Security
+- Integrate security checks to prevent vulnerabilities.
+- Protect sensitive data and credentials.
 
-4. **AI Model Validation**
-   - **Prompt Testing**: Adversarial prompt testing (`backend/tests/adversarial_prompts.test.js`)
-   - **Emotional Resonance**: Hume AI validation (arousal >0.5, valence >0.6)
-   - **Trust Score Validation**: Ensure TrustDelta ≥4.0/5.0 for generated outputs
-   - **Response Time**: GPT-4o integration <2s response validation
+## Pipeline Structure
 
-5. **Build & Packaging**
-   - **Frontend Build**: Vite compilation with TypeScript strict mode
-   - **Backend Build**: Node.js/TypeScript compilation for serverless deployment
-   - **Docker Containerization**: Multi-stage builds for production optimization
-   - **Asset Optimization**: Image compression, bundle size analysis
-
-6. **Deployment Validation**
-   - **Health Checks**: Validate `backend/health.js` endpoints
-   - **Database Migrations**: Supabase schema updates with rollback capability
-   - **Integration Testing**: Validate external service connections (Stripe, Hume AI, GPT-4o)
-   - **Performance Monitoring**: Sentry and PostHog integration validation
-
-### Quality Gates & Promotion Criteria
-**Development → Staging**:
-- All tests pass with >90% coverage
-- Zero critical security vulnerabilities
-- Accessibility compliance (WCAG 2.2 AA)
-- Code review approval required
-
-**Staging → Production**:
-- Load testing passes (10k users, <2s response)
-- Integration tests validate full user journey
-- Security scans complete with zero critical issues
-- Manual approval for production deployment
-- Rollback plan validated and ready
-
-### Environment Configuration
-
-#### Development Environment
-```yaml
-environment: development
-url: https://canai-dev.onrender.com
-database: supabase_dev
-monitoring: basic_logging
-ai_services: development_keys
-testing: full_suite_required
-```
-
-#### Staging Environment  
-```yaml
-environment: staging
-url: https://canai-staging.onrender.com
-database: supabase_staging
-monitoring: sentry_posthog_enabled
-ai_services: production_keys_limited
-testing: production_mirror_required
-load_testing: required
-```
-
-#### Production Environment
-```yaml
-environment: production
-url: https://canai-router.onrender.com
-database: supabase_production
-monitoring: full_observability
-ai_services: production_keys
-testing: smoke_tests_only
-rollback: automated_on_failure
-```
-
-### Performance & SLA Requirements
-- **Deployment Time**: <15 minutes from merge to production
-- **Build Trigger Latency**: <200ms from push to pipeline start
-- **Test Execution**: <10 minutes for complete test suite
-- **Security Scans**: <5 minutes for all security validations
-- **Rollback Time**: <5 minutes for emergency rollback
-- **Uptime Target**: 99.9% availability during and after deployments
-
-### Artifact Management
-- **Retention Policy**: 90 days for GitHub Actions artifacts
-- **Build Artifacts**: Store compiled frontend/backend bundles
-- **Test Reports**: Coverage reports, accessibility reports, load test results
-- **Security Reports**: Vulnerability scans, dependency audit results
-- **Deployment Logs**: Complete deployment history with rollback points
-
-### Rollback Strategy
-- **Automatic Rollback Triggers**:
-  - Health check failures post-deployment
-  - Error rate spike >1% within 5 minutes
-  - Response time degradation >2s for critical endpoints
-  - User journey completion rate drop >10%
-
-- **Manual Rollback Process**:
-  - Git tagged releases (`v1.0.0`, `v1.1.0`) for version control
-  - Database migration rollback scripts in `databases/migrations/`
-  - Service rollback via Render API with health validation
-  - Complete rollback validation within 5 minutes
-
-### Secret Management
-Organize secrets by service category:
-
-```yaml
-# Infrastructure Secrets
-RENDER_API_KEY: "Primary deployment platform"
-RENDER_FRONTEND_SERVICE_ID: "Frontend service identifier"
-RENDER_BACKEND_SERVICE_ID: "Backend API service identifier"
-RENDER_ADMIN_SERVICE_ID: "Admin dashboard service identifier"
-
-# Database & Storage
-SUPABASE_URL: "Production database connection"
-SUPABASE_ANON_KEY: "Public API access key"
-SUPABASE_SERVICE_KEY: "Administrative database access"
-
-# AI Services
-OPENAI_API_KEY: "GPT-4o integration for content generation"
-HUME_API_KEY: "Emotional resonance validation service"
-
-# Payment Processing
-STRIPE_SECRET_KEY: "Payment processing integration"
-STRIPE_WEBHOOK_SECRET: "Webhook signature validation"
-
-# Monitoring & Analytics
-POSTHOG_API_KEY: "User analytics and behavior tracking"
-SENTRY_DSN: "Error tracking and performance monitoring"
-SENTRY_AUTH_TOKEN: "Release management and deployment tracking"
-
-# Integration Services
-MAKE_COM_API_KEY: "Workflow automation platform"
-MEMBERSTACK_API_KEY: "User authentication and management"
-```
-
-### Roo Code-Specific Development Rules
-- **Generated Files**: Must include header comment:
-  ```typescript
-  // Generated by Roo Code for CanAI Platform on [YYYY-MM-DD]
-  // Task: [TaskMaster ID] - [Description]
-  // Stage: [F1-F9 Journey Stage if applicable]
-  ```
-
-- **AI Model Registry**: Maintain formal versioning for AI model configurations:
-  ```typescript
-  interface AIModelVersion {
-    model: "gpt-4o" | "hume-ai";
-    version: string;
-    configuration: object;
-    performance_metrics: {
-      response_time: number;
-      accuracy: number;
-      emotional_resonance: number;
-    };
-    deployment_date: string;
-    validation_status: "passed" | "failed" | "pending";
-  }
-  ```
-
-### Monitoring & Observability Integration
-- **PostHog Events**: Track CI/CD pipeline events
-  ```typescript
-  // Pipeline Events
-  posthog.capture('deploy_started', { environment, branch, commit_sha });
-  posthog.capture('deploy_completed', { environment, duration_ms, success });
-  posthog.capture('deploy_failed', { environment, error_type, stage });
-  posthog.capture('rollback_triggered', { environment, reason, duration_ms });
-  
-  // Quality Events  
-  posthog.capture('test_coverage', { coverage_percentage, test_type });
-  posthog.capture('security_scan_completed', { vulnerabilities_found, severity });
-  posthog.capture('performance_test_completed', { users_simulated, response_time });
-  ```
-
-- **Sentry Integration**: Monitor deployment errors and performance
-  ```typescript
-  // Deployment Monitoring
-  Sentry.addBreadcrumb({ message: 'Deployment started', level: 'info' });
-  Sentry.captureException(deploymentError, { tags: { stage: 'deployment' } });
-  Sentry.setTag('deployment_id', deploymentId);
-  ```
-
-### File Structure Requirements
-Enforce consistent CI/CD file organization:
-
-```
-.github/
-├── workflows/
-│   ├── ci.yml                    # Main CI/CD pipeline (exists)
-│   ├── security.yml              # Security scanning pipeline
-│   ├── deploy-staging.yml        # Staging deployment
-│   ├── deploy-production.yml     # Production deployment  
-│   ├── rollback.yml              # Emergency rollback
-│   └── performance.yml           # Load testing pipeline
-├── actions/                      # Custom GitHub Actions
-│   ├── setup-canai/             # CanAI-specific setup
-│   ├── deploy-render/           # Render deployment action
-│   └── validate-journey/        # User journey validation
-└── templates/                    # Issue/PR templates
-    ├── deployment.md            # Deployment checklist
-    └── rollback.md              # Rollback procedure
-```
-
-### Testing Integration Requirements
-Map tests to PRD sections and user journey stages:
-
-```typescript
-interface TestSuiteMapping {
-  // Unit Tests by Component
-  "backend/routes/": ["F1-F9 API endpoint tests"];
-  "backend/services/": ["GPT-4o, Hume AI, Stripe integration tests"];
-  "frontend/components/": ["UI component functionality tests"];
-  
-  // Integration Tests by Journey Stage  
-  "F1-discovery-hook": ["Landing page, trust indicators"];
-  "F2-discovery-funnel": ["2-step input collection, validation"];
-  "F3-spark-layer": ["Concept generation, selection"];
-  "F4-purchase-flow": ["Stripe integration, payment processing"];
-  "F5-detailed-input": ["12-field collection, auto-save"];
-  "F6-intent-mirror": ["Summary generation, validation"];
-  "F7-deliverable-generation": ["AI content creation, revision"];
-  "F8-sparksplit": ["Comparison generation, TrustDelta calculation"];
-  "F9-feedback-capture": ["Rating collection, analytics"];
-  
-  // Scenario Tests
-  "sprinkle-haven-bakery": ["Business plan generation, $75k funding"];
-  "serenity-yoga-studio": ["Social media strategy, email campaign"];
-  "techtrend-innovations": ["Website audit, feedback system"];
-}
-```
-
-## Validation
-
-### Pipeline Validation
-- **CI/CD Logs**: Confirm stage completion in `.github/workflows/` execution logs
-- **Quality Gates**: Validate >90% test coverage, zero critical vulnerabilities
-- **Performance Metrics**: Confirm <15min deployment, <5min rollback times
-- **Health Checks**: Validate all services respond within SLA after deployment
-
-### Monitoring Validation  
-- **PostHog Tracking**: Verify deployment events (`deploy_success`, `rollback_triggered`)
-- **Sentry Monitoring**: Confirm error tracking for deployment issues
-- **Performance Monitoring**: Validate response times <2s for critical endpoints
-- **User Journey Metrics**: Ensure no degradation in completion rates post-deployment
-
-### Security Validation
-- **Secret Scanning**: Zero exposed credentials in codebase
-- **Vulnerability Assessment**: Zero critical, <5 high severity issues
-- **Access Controls**: Validate production deployment requires manual approval
-- **Audit Trails**: Complete deployment history with rollback capabilities
-
-## References
-- **PRD Sections**: 13 (Testing Strategy), 14 (Security Strategy), 15 (Deployment Strategy), 16 (Risk Assessment)
-- **Project Structure**: `.github/workflows/`, `backend/tests/`, `backend/scripts/`, `databases/migrations/`
-- **Current Implementation**: `.github/workflows/ci.yml` (TypeScript rules enforcement)
-- **Performance Targets**: <15min deployments, 99.9% uptime, <2s API responses
-- **Quality Standards**: >90% test coverage, WCAG 2.2 AA compliance, zero critical vulnerabilities
-
-### Mandatory Checks
-Run comprehensive test suites with strict quality gates:
-
-- **Jest Unit Tests**: >90% coverage for `backend/routes/`, `backend/services/`, `frontend/src/components/`
-- **Supertest Integration Tests**: Validate API endpoints and Make.com webhook flows
-- **axe-core Accessibility Tests**: WCAG 2.2 AA compliance with zero critical issues
-- **OWASP ZAP Security Scans**: Runtime security testing for all endpoints
-- **Semgrep SAST Scanning**: Static analysis for code vulnerabilities
-- **Adversarial Prompt Testing**: Validate AI model security (`backend/tests/adversarial_prompts.test.js`)
-
-### Secret Scanning
-Enable comprehensive secret detection:
-- **GitHub Secret Scanning**: Built-in credential leak detection
-- **TruffleHog Integration**: Advanced secret pattern detection
-- **Pre-commit Hooks**: Prevent credential commits at development time
-- **Rotation Policies**: Automated secret rotation for production keys
-
-### Artifact Retention
-- **GitHub Actions Artifacts**: 90-day retention policy
-- **Build Outputs**: Frontend/backend compiled bundles
-- **Test Reports**: Coverage, accessibility, and security scan results
-- **Deployment Logs**: Complete audit trail with rollback points
-- **Performance Metrics**: Load test results and response time data
-
-### Promotion Gates
-Strict advancement criteria between environments:
-
-**Development → Staging Requirements**:
-- 100% test pass rate with >90% coverage
-- Zero critical security vulnerabilities
-- Code review approval from authorized reviewer
-- Successful integration with external services (GPT-4o, Hume AI, Stripe)
-
-**Staging → Production Requirements**:
-- Load testing validation (10,000 users, <2s response, <1% error rate)
-- Complete user journey testing (F1-F9 stages)
-- Security scan completion with zero critical issues
-- Manual production deployment approval
-- Validated rollback plan with <5min recovery time
-
-### Rollback Mechanism
-Multi-layered rollback strategy:
-
-- **Git Tagged Releases**: Version control with semantic versioning (`v1.0.0`)
-- **Database Rollback Scripts**: Automated migration reversal (`databases/migrations/rollback/`)
-- **Service Rollback**: Render API integration for instant service reversion
-- **Health Check Validation**: Post-rollback system validation
-- **Automated Triggers**: Error rate, response time, and availability thresholds
+### Stages
+Incorporate flexible stages tailored to project needs:
+- **Code Quality**: Validate syntax, formatting, and dependency safety.
+- **Testing**: Run unit, integration, accessibility, and load tests.
+- **Security**: Scan for vulnerabilities and secrets.
+- **AI Validation**: Verify AI model performance and output quality.
+- **Build**: Compile optimized assets for frontend and backend.
+- **Deployment**: Apply migrations, validate integrations, and confirm health.
 
 ### Environments
-Maintain isolated deployment environments:
+- **Development**: Support feature testing and iteration.
+- **Staging**: Mirror production for final validation.
+- **Production**: Serve live users with full monitoring.
 
-- **Development**: `canai-dev.onrender.com` - Feature development and initial testing
-- **Staging**: `canai-staging.onrender.com` - Production mirror for final validation  
-- **Production**: `canai-router.onrender.com` - Live user-facing platform
+### Quality Gates
+- **Development to Staging**: Require passing tests, code reviews, and security checks.
+- **Staging to Production**: Validate performance, user journeys, and obtain approval.
 
-### SLAs
-Performance and reliability targets:
+## Implementation Guidance
 
-- **Deployment Speed**: <15 minutes from merge to production deployment
-- **System Uptime**: 99.9% availability validated by Sentry monitoring
-- **Rollback Time**: <5 minutes for emergency recovery procedures
-- **Test Execution**: <10 minutes for complete test suite validation
-- **Build Trigger**: <200ms latency from code push to pipeline initiation
+### Code Quality
+- Use linters and formatters for consistent code.
+- Audit dependencies to mitigate vulnerabilities.
 
-### AI Model Registry & Versioning
-Establish formal AI model management:
+### Testing
+- Test APIs, components, and user journeys (F1-F9).
+- Ensure WCAG 2.2 AA accessibility compliance.
+- Validate AI outputs for quality, resonance, and performance.
 
-```typescript
-interface AIModelRegistry {
-  models: {
-    "gpt-4o": {
-      version: string;
-      deployment_date: string;
-      configuration: GPT4oConfig;
-      performance_metrics: {
-        response_time_p95: number;
-        token_efficiency: number;
-        emotional_resonance_score: number;
-      };
-      validation_status: "active" | "deprecated" | "testing";
-    };
-    "hume-ai": {
-      version: string;
-      deployment_date: string;
-      configuration: HumeAIConfig;
-      performance_metrics: {
-        arousal_accuracy: number;
-        valence_accuracy: number;
-        response_time_p95: number;
-      };
-      validation_status: "active" | "deprecated" | "testing";
-    };
-  };
-  traceability: {
-    model_version: string;
-    input_hash: string;
-    output_hash: string;
-    generation_timestamp: string;
-    user_journey_stage: "F1" | "F2" | "F3" | "F4" | "F5" | "F6" | "F7" | "F8" | "F9";
-  }[];
-}
-```
+### Security
+- Scan code, dependencies, and runtime for vulnerabilities.
+- Secure secrets and prevent leaks.
 
-### Roo Code-Generated Files
-Enforce consistent file headers for AI-generated code:
+### AI Validation
+- Verify AI prompts and outputs align with PRD metrics (e.g., TrustDelta, resonance).
+- Monitor AI service performance and reliability.
 
-```typescript
-// Generated by Roo Code for CanAI Platform on [YYYY-MM-DD HH:MM:SS]
-// Task: [TaskMaster ID] - [Task Description]
-// Stage: [F1-F9 Journey Stage] (if applicable)
-// Dependencies: [List of dependent files/services]
-// Validation: [Testing requirements and success criteria]
-```
+### Deployment
+- Build and deploy optimized assets.
+- Apply safe database migrations.
+- Validate integrations (e.g., payment, AI services).
 
-### Roo Code AI Integration Guidelines
-Specific rules for AI-assisted development within CI/CD:
+### Monitoring
+- Track pipeline and deployment events.
+- Monitor post-deployment errors, performance, and user metrics.
 
-```typescript
-interface Roo CodeCIGuidelines {
-  pre_commit_validation: {
-    ai_generated_code_review: boolean;
-    type_safety_validation: boolean;
-    security_pattern_check: boolean;
-    performance_impact_analysis: boolean;
-  };
-  
-  automated_testing: {
-    ai_prompt_validation: boolean;
-    emotional_resonance_testing: boolean;
-    trust_score_validation: boolean;
-    user_journey_integrity: boolean;
-  };
-  
-  deployment_safety: {
-    ai_model_version_tracking: boolean;
-    output_quality_monitoring: boolean;
-    rollback_trigger_sensitivity: "high" | "medium" | "low";
-    human_approval_required: boolean;
-  };
-}
-```
+## Environment Setup
+- Configure environments to balance testing and production needs.
+- Use isolated databases and limited AI access for non-production environments.
+- Enable comprehensive monitoring in production.
 
-**Roo Code-Specific CI/CD Rules**:
-- All AI-generated code must pass TypeScript strict mode compilation
-- Emotional AI outputs (Hume AI) must maintain >0.7 resonance score
-- GPT-4o integrations must complete within <2s response time
-- User journey stages (F1-F9) must maintain >95% completion rate
-- Trust metrics (TrustDelta ≥4.0) must be validated in staging environment
+## Rollback
+- Support automated or manual rollback using tagged releases.
+- Validate system health after rollback.
 
-## Implementation Priority
-1. **Immediate**: Extend existing `ci.yml` with security scanning and deployment stages
-2. **Short-term**: Implement staging/production deployment workflows with rollback
-3. **Medium-term**: Add performance testing and AI model validation pipelines  
-4. **Long-term**: Implement advanced monitoring, automated rollback triggers, and self-healing deployment processes
+## Secret Management
+- Store credentials securely and rotate regularly.
+- Use secret scanning to prevent leaks.
 
-## Roo Code Development Workflow Integration
-- **Pre-Development**: Validate task requirements against PRD sections
-- **During Development**: Enforce TypeScript rules and security patterns
-- **Pre-Commit**: Run automated tests and quality checks
-- **Post-Deployment**: Monitor AI model performance and user journey metrics
-- **Continuous**: Track emotional resonance and trust score trends
+## Documentation
+- Document pipeline workflows, tests, and rollback plans.
+- Map tests to PRD goals and user journey stages.
+- Record security and performance results.
 
+## Ownership
+- **DevOps Team**: Manages pipelines and deployments.
+- **Backend Team**: Implements and tests APIs.
+- **QA Team**: Validates quality and compliance.
+- **Product Team**: Defines requirements and metrics.
 
+## References
+- **PRD Sections**: 13 (Testing), 14 (Security), 15 (Deployment).
+- **Standards**: Emphasize PRD precedence, accessibility, and security.
 
+---
 
-
-
+**Created**: June 19, 2025
+**Version**: 1.0.0
+**Alignment**: PRD Sections 13, 14, 15

@@ -2,6 +2,7 @@
  * Detailed Input Integration
  */
 
+import { supabase } from '@/integrations/supabase/client';
 import { generateCorrelationId } from './tracing';
 
 export interface DetailedInputData {
@@ -36,22 +37,36 @@ export const saveDetailedInput = async (
   data: DetailedInputData
 ): Promise<DetailedInputResponse> => {
   try {
-    console.log('[Detailed Input] Saving data:', data);
+    console.log('[Detailed Input] Saving data');
 
-    // Store in localStorage for development
-    localStorage.setItem(
-      'canai_detailed_input',
-      JSON.stringify({
-        ...data,
-        id: generateCorrelationId(),
-        timestamp: new Date().toISOString(),
-      })
-    );
+    // Validate input data
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid input data');
+    }
 
-    // TODO: Replace with actual API call
+    // Transform data to match Supabase schema
+    const inputData = {
+      session_id: generateCorrelationId(),
+      prompt_type: 'detailed_input',
+      user_input: JSON.stringify(data),
+      canai_output: '',
+      sterile_output: '',
+      created_at: new Date().toISOString(),
+    };
+
+    // Store in Supabase
+    const { error } = await supabase
+      .from('prompt_types')
+      .insert([inputData])
+      .select();
+
+    if (error) {
+      throw error;
+    }
+
     return {
       success: true,
-      promptId: generateCorrelationId(),
+      promptId: inputData.session_id,
     };
   } catch (error) {
     console.error('[Detailed Input] Save failed:', error);

@@ -1,19 +1,18 @@
-import React from 'react';
-import { FileText, MessageSquare, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
-import StandardBackground from '@/components/StandardBackground';
 import PageHeader from '@/components/PageHeader';
-import StandardCard from '@/components/StandardCard';
 import SampleMetricBadge from '@/components/Samples/SampleMetricBadge';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import StandardBackground from '@/components/StandardBackground';
+import StandardCard from '@/components/StandardCard';
 import {
-  PageTitle,
-  BodyText,
-  SectionTitle,
-  CardTitle,
-  AccentText,
+    AccentText,
+    BodyText,
+    CardTitle,
+    PageTitle,
+    SectionTitle,
 } from '@/components/StandardTypography';
+import { Button } from '@/components/ui/button';
+import { OptimizedImage } from '@/components/ui/optimized-image';
+import { FileText, MessageSquare, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Card data lives here so that it's scalable to future additions/changes.
 const sampleCards = [
@@ -38,7 +37,7 @@ const sampleCards = [
             , cutting costs <b>25%</b> for offices, retail, and healthcare.
           </p>
           <p>
-            Founded in 2024, we're built for scale.{' '}
+            Founded in 2024, we&apos;re built for scale.{' '}
             <span className="font-bold">Proprietary green agents</span> and
             smart sensors keep quality high{' '}
             <span className="text-[#36d1fe]">and the planet safe.</span>
@@ -103,9 +102,9 @@ const sampleCards = [
             Email Subject
           </div>
           <div className="bg-[rgba(25,60,101,0.4)] border-l-4 border-pink-400 rounded-xl px-5 py-4 text-[#cce7fa] font-semibold shadow-lg border border-[rgba(255,182,193,0.2)]">
-            "How Sarah Cut Cleaning Costs{' '}
+            &quot;How Sarah Cut Cleaning Costs{' '}
             <span className="text-[#36d1fe] font-bold">25%</span> (and helped
-            the planet)"
+            the planet)&quot;
           </div>
         </div>
         <div>

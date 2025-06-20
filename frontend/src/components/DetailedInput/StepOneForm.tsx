@@ -1,6 +1,4 @@
-import React from 'react';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -9,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { HelpCircle } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Tooltip,
   TooltipContent,
@@ -17,6 +15,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { StepOneFormProps } from '@/types/formTypes';
+import { HelpCircle } from 'lucide-react';
+import React from 'react';
 
 const StepOneForm: React.FC<StepOneFormProps> = ({
   formData,
@@ -54,10 +54,10 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 />
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
-                <p>
-                  E.g., "Sprinkle Haven Bakery" - Your official business name
-                  (3-50 characters)
-                </p>
+                                  <p>
+                    E.g., &quot;Sprinkle Haven Bakery&quot; - Your official business name
+                    (3-50 characters)
+                  </p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -91,10 +91,10 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 />
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
-                <p>
-                  E.g., "Denver families with young children who value organic,
-                  artisanal baked goods"
-                </p>
+                                  <p>
+                    E.g., &quot;Denver families with young children who value organic,
+                    artisanal baked goods&quot;
+                  </p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -128,7 +128,7 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 />
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
-                <p>What's your main objective for this business plan?</p>
+                <p>What&apos;s your main objective for this business plan?</p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -188,8 +188,8 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 </TooltipTrigger>
                 <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
                   <p>
-                    E.g., "Blue Moon Bakery dominates downtown, but lacks
-                    organic options"
+                    E.g., &quot;Blue Moon Bakery dominates downtown, but lacks
+                    organic options&quot;
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -224,7 +224,7 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 </TooltipTrigger>
                 <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
                   <p>
-                    How should your brand communicate? "Warm" works great for
+                    How should your brand communicate? &quot;Warm&quot; works great for
                     community bakeries
                   </p>
                 </TooltipContent>
@@ -305,10 +305,10 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 />
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
-                <p>
-                  E.g., "Denver, CO" - Where your business operates or will
-                  operate
-                </p>
+                                  <p>
+                    E.g., &quot;Denver, CO&quot; - Where your business operates or will
+                    operate
+                  </p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -343,8 +343,8 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
                 <p>
-                  E.g., "Organic, community-focused pastries with
-                  locally-sourced ingredients"
+                  E.g., &quot;Organic, community-focused pastries with
+                  locally-sourced ingredients&quot;
                 </p>
               </TooltipContent>
             </Tooltip>

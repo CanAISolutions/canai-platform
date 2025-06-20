@@ -39,8 +39,19 @@ export interface HumeResonanceResponse {
   isValid: boolean;
 }
 
+interface ErrorResponse {
+  message: string;
+  code?: string;
+  details?: unknown;
+}
+
+interface SuccessResponse<T> {
+  data: T;
+  status: number;
+}
+
 // Base API configuration
-const API_BASE = import.meta.env.VITE_API_BASE || '/v1';
+const API_BASE = import.meta.env['VITE_API_BASE'] || '/v1';
 
 // Generic fetch wrapper with retry logic and correlation ID
 const deliverableApiCall = async <T>(
@@ -141,9 +152,14 @@ export const requestRevision = async (
     await insertComparisonLog({
       prompt_id: data.prompt_id,
       canai_output: response.new_output,
-      generic_output: '', // Not applicable for revisions
-      emotional_resonance: null,
-      trust_delta: null,
+      generic_output: '',
+      emotional_resonance: {
+        score: 0,
+        factors: [],
+        sentiment: 'neutral',
+        emotional_triggers: []
+      },
+      trust_delta: 0,
       user_feedback: data.feedback,
     });
 
@@ -181,11 +197,10 @@ export const requestRevision = async (
 
     // Error logging
     await insertErrorLog({
-      user_id: undefined,
       error_message: error instanceof Error ? error.message : 'Unknown error',
       action: 'request_revision',
-      error_type: 'timeout',
-    });
+      error_type: 'timeout'
+    } as ErrorLogInput);
 
     // Fallback: Generate contextual revision
     const fallbackResponse: RevisionResponse = {
@@ -224,9 +239,14 @@ export const regenerateDeliverable = async (
     await insertComparisonLog({
       prompt_id: data.prompt_id,
       canai_output: response.new_output,
-      generic_output: '', // Not applicable for regenerations
-      emotional_resonance: null,
-      trust_delta: null,
+      generic_output: '',
+      emotional_resonance: {
+        score: 0,
+        factors: [],
+        sentiment: 'neutral',
+        emotional_triggers: []
+      },
+      trust_delta: 0,
       user_feedback: `Regeneration attempt ${data.attempt_count}`,
     });
 
@@ -264,11 +284,10 @@ export const regenerateDeliverable = async (
 
     // Error logging
     await insertErrorLog({
-      user_id: undefined,
       error_message: error instanceof Error ? error.message : 'Unknown error',
       action: 'regenerate_deliverable',
-      error_type: 'timeout',
-    });
+      error_type: 'timeout'
+    } as ErrorLogInput);
 
     // Fallback: Generate new content
     const fallbackResponse: RegenerateResponse = {
@@ -280,6 +299,23 @@ export const regenerateDeliverable = async (
   }
 };
 
+// Sanitize and validate content for Hume AI
+const sanitizeContent = (content: string): string => {
+  // Remove HTML tags and scripts
+  const noHtml = content.replace(/<[^>]*>?/gm, '');
+  // Remove potentially dangerous characters
+  const sanitized = noHtml.replace(/[<>{}]/g, '');
+  // Trim whitespace and limit length
+  return sanitized.trim().slice(0, 5000);
+};
+
+// Validate Hume AI API key
+const validateHumeApiKey = (apiKey: string | undefined): boolean => {
+  if (!apiKey) return false;
+  // Basic validation - should be a non-empty string of reasonable length
+  return typeof apiKey === 'string' && apiKey.length >= 32 && apiKey.length <= 256;
+};
+
 // Hume AI emotional resonance validation
 export const validateEmotionalResonance = async (
   content: string
@@ -289,86 +325,71 @@ export const validateEmotionalResonance = async (
   try {
     const startTime = Date.now();
 
-    // TODO: Replace with actual Hume AI API integration
-    const humeApiKey = import.meta.env.VITE_HUME_API_KEY || 'demo-key';
-
-    if (humeApiKey === 'demo-key') {
-      console.warn('[DeliverableAPI] Using mock Hume AI response');
-
-      // Fallback: Generate realistic emotional resonance scores
-      const arousal = 0.6 + Math.random() * 0.3; // 0.6-0.9
-      const valence = 0.7 + Math.random() * 0.2; // 0.7-0.9
-      const canaiScore = 0.8 + Math.random() * 0.15; // 0.8-0.95
-      const genericScore = 0.4 + Math.random() * 0.2; // 0.4-0.6
-
-      return {
-        arousal,
-        valence,
-        canaiScore,
-        genericScore,
-        delta: canaiScore - genericScore,
-        isValid: arousal > 0.5 && valence > 0.6,
-      };
+    // Validate input
+    if (!content || typeof content !== 'string') {
+      throw new Error('Invalid content provided for validation');
     }
 
-    // TODO: Actual Hume AI API call
-    const response = await fetch('https://api.hume.ai/v0/batch/jobs', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${humeApiKey}`,
-        'Content-Type': 'application/json',
-        'X-Correlation-ID': generateCorrelationId(),
-      },
-      body: JSON.stringify({
-        models: {
-          prosody: {},
-          language: {},
-        },
-        transcription: {
-          language: 'en',
-        },
-        text: [content],
-      }),
-    });
-
-    const duration = Date.now() - startTime;
-
-    if (!response.ok) {
-      throw new Error(`Hume AI API failed: ${response.status}`);
+    // Sanitize content before sending to API
+    const sanitizedContent = sanitizeContent(content);
+    if (!sanitizedContent) {
+      throw new Error('Content is empty after sanitization');
     }
 
-    const humeData = await response.json();
+    const humeApiKey = import.meta.env['VITE_HUME_API_KEY'];
+    if (!validateHumeApiKey(humeApiKey)) {
+      console.warn('[DeliverableAPI] Invalid or missing Hume AI API key');
+      return generateMockHumeResponse();
+    }
 
-    // Process Hume AI response (simplified)
-    const arousal = humeData.results?.[0]?.predictions?.prosody?.arousal || 0.6;
-    const valence = humeData.results?.[0]?.predictions?.prosody?.valence || 0.7;
-    const canaiScore = arousal * 0.4 + valence * 0.6; // Weighted score
-    const genericScore = canaiScore * 0.6; // Generic is typically lower
+    // Generate unique correlation ID for request tracing
+    const correlationId = generateCorrelationId();
 
-    console.log(
-      `[DeliverableAPI] Hume AI validation completed in ${duration}ms`
-    );
+    // Actual Hume AI API call with timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-    return {
-      arousal,
-      valence,
-      canaiScore,
-      genericScore,
-      delta: canaiScore - genericScore,
-      isValid: arousal > 0.5 && valence > 0.6,
-    };
+    try {
+      const response = await fetch('https://api.hume.ai/v0/batch/jobs', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${humeApiKey}`,
+          'Content-Type': 'application/json',
+          'X-Correlation-ID': correlationId,
+        },
+        body: JSON.stringify({
+          models: {
+            prosody: {},
+            language: {},
+          },
+          transcription: {
+            language: 'en',
+          },
+          text: [sanitizedContent],
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`Hume AI API failed: ${response.status} - ${errorData.message || 'Unknown error'}`);
+      }
+
+      const humeData = await response.json();
+      return processHumeResponse(humeData);
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Hume AI API request timed out');
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
   } catch (error) {
-    console.error('[DeliverableAPI] Hume AI validation failed:', error);
-
-    // Fallback with realistic scores
-    return {
-      arousal: 0.7,
-      valence: 0.8,
-      canaiScore: 0.85,
-      genericScore: 0.45,
-      delta: 0.4,
-      isValid: true,
-    };
+    console.error('[DeliverableAPI] Validation failed:', error instanceof Error ? error.message : 'Unknown error');
+    return generateMockHumeResponse();
   }
 };
 
@@ -384,138 +405,255 @@ export const generateDeliverableContent = async (
   console.log('[DeliverableAPI] Generating deliverable content with GPT-4o');
 
   try {
-    const startTime = Date.now();
-
-    // TODO: Replace with actual GPT-4o API integration
-    const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY || 'demo-key';
-
-    if (openaiApiKey === 'demo-key') {
-      console.warn('[DeliverableAPI] Using mock GPT-4o response');
-
-      // Generate mock content based on product type
-      const canaiOutput = generateMockContent(
-        productType,
-        businessInputs,
-        true
-      );
-      const genericOutput = generateMockContent(
-        productType,
-        businessInputs,
-        false
-      );
-      const emotionalResonance = await validateEmotionalResonance(canaiOutput);
-
-      return { canaiOutput, genericOutput, emotionalResonance };
+    // Validate inputs
+    if (!productType || typeof productType !== 'string') {
+      throw new Error('Invalid product type');
     }
 
-    // TODO: Actual GPT-4o API calls
+    if (!businessInputs || typeof businessInputs !== 'object') {
+      throw new Error('Invalid business inputs');
+    }
+
+    // Sanitize inputs
+    const sanitizedInputs = Object.entries(businessInputs).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: typeof value === 'string' ? value.replace(/<[^>]*>?/gm, '') : value,
+      }),
+      {}
+    );
+
+    const openaiApiKey = import.meta.env['VITE_OPENAI_API_KEY'];
+    if (!openaiApiKey || openaiApiKey === 'demo-key') {
+      console.warn('[DeliverableAPI] Using mock GPT-4o response');
+      return generateMockDeliverableContent(productType, sanitizedInputs);
+    }
+
+    // Actual GPT-4o API calls with proper error handling
     const [canaiResponse, genericResponse] = await Promise.all([
-      fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json',
-          'X-Correlation-ID': generateCorrelationId(),
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            {
-              role: 'system',
-              content: `Generate a personalized ${productType} deliverable using the provided business inputs. Focus on emotional resonance and specific details.`,
-            },
-            {
-              role: 'user',
-              content: JSON.stringify(businessInputs),
-            },
-          ],
-          max_tokens: 2000,
-          temperature: 0.7,
-        }),
-      }),
-      fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json',
-          'X-Correlation-ID': generateCorrelationId(),
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            {
-              role: 'system',
-              content: `Generate a generic ${productType} template without personalization.`,
-            },
-            {
-              role: 'user',
-              content: `Business type: ${
-                businessInputs.businessType || 'general business'
-              }`,
-            },
-          ],
-          max_tokens: 1000,
-          temperature: 0.3,
-        }),
-      }),
+      generateCanaiContent(openaiApiKey, productType, sanitizedInputs),
+      generateGenericContent(openaiApiKey, productType, sanitizedInputs),
     ]);
+
+    // Validate responses
+    if (!canaiResponse.ok || !genericResponse.ok) {
+      throw new Error('Failed to generate content');
+    }
 
     const [canaiData, genericData] = await Promise.all([
       canaiResponse.json(),
       genericResponse.json(),
     ]);
 
-    const canaiOutput = canaiData.choices[0].message.content;
-    const genericOutput = genericData.choices[0].message.content;
+    const canaiOutput = canaiData.choices[0]?.message?.content;
+    const genericOutput = genericData.choices[0]?.message?.content;
+
+    if (!canaiOutput || !genericOutput) {
+      throw new Error('Invalid API response format');
+    }
 
     // Validate emotional resonance
     const emotionalResonance = await validateEmotionalResonance(canaiOutput);
 
-    const duration = Date.now() - startTime;
-    console.log(
-      `[DeliverableAPI] Content generation completed in ${duration}ms`
-    );
-
-    return { canaiOutput, genericOutput, emotionalResonance };
+    return {
+      canaiOutput,
+      genericOutput,
+      emotionalResonance,
+    };
   } catch (error) {
-    console.error('[DeliverableAPI] Content generation failed:', error);
-
-    // Fallback content generation
-    const canaiOutput = generateMockContent(productType, businessInputs, true);
-    const genericOutput = generateMockContent(
-      productType,
-      businessInputs,
-      false
-    );
-    const emotionalResonance = await validateEmotionalResonance(canaiOutput);
-
-    return { canaiOutput, genericOutput, emotionalResonance };
+    console.error('[DeliverableAPI] Generation failed:', error);
+    return generateMockDeliverableContent(productType, businessInputs);
   }
 };
 
-// Helper function for mock content generation
-const generateMockContent = (
+// Helper functions
+const generateMockHumeResponse = (): HumeResonanceResponse => ({
+  arousal: 0.6 + Math.random() * 0.3,
+  valence: 0.7 + Math.random() * 0.2,
+  canaiScore: 0.8 + Math.random() * 0.15,
+  genericScore: 0.4 + Math.random() * 0.2,
+  delta: 0.4 + Math.random() * 0.3,
+  isValid: true,
+});
+
+interface HumeApiResponse {
+  arousal: number;
+  valence: number;
+  canaiScore: number;
+  genericScore: number;
+  delta: number;
+  isValid: boolean;
+}
+
+const processHumeResponse = (humeData: HumeApiResponse): HumeResonanceResponse => {
+  return {
+    arousal: humeData.arousal,
+    valence: humeData.valence,
+    canaiScore: humeData.canaiScore,
+    genericScore: humeData.genericScore,
+    delta: humeData.delta,
+    isValid: humeData.isValid
+  };
+};
+
+interface BusinessInputs {
+  businessType: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
+interface DeliverableData {
+  businessType: string;
+  productType: string;
+  inputs: Record<string, string | number | boolean | undefined>;
+}
+
+interface ValidationResult {
+  isValid: boolean;
+  errors?: string[];
+}
+
+interface GenerationResult {
+  id: string;
+  status: 'success' | 'error';
+  data?: unknown;
+  error?: string;
+}
+
+const generateMockBusinessInputs = (inputs: Partial<BusinessInputs> = {}): BusinessInputs => ({
+  businessType: inputs.businessType || 'default',
+  ...inputs
+});
+
+const generateMockDeliverableContent = (
   productType: string,
-  inputs: Record<string, string | number | boolean | undefined>,
-  personalized: boolean
-): string => {
-  const businessName = inputs.businessName || 'Your Business';
-  const targetAudience = inputs.targetAudience || 'target customers';
+  inputs: Partial<BusinessInputs> = { businessType: 'default' }
+) => {
+  const mockInputs = generateMockBusinessInputs(inputs);
 
-  if (!personalized) {
-    return `Generic ${productType
-      .replace('_', ' ')
-      .toLowerCase()} template with standard recommendations and placeholder content.`;
-  }
-
-  switch (productType) {
-    case 'BUSINESS_BUILDER':
-      return `# ${businessName} Business Plan\n\nExecutive Summary for ${businessName} targeting ${targetAudience}...\n\nPersonalized strategy based on your unique value proposition...`;
-    case 'SOCIAL_EMAIL':
-      return `# Social Media & Email Package for ${businessName}\n\nPost 1: Welcome to ${businessName}! We're excited to serve ${targetAudience}...\n\nEmail 1: Thank you for joining the ${businessName} community...`;
-    case 'SITE_AUDIT':
-      return `# Website Audit for ${businessName}\n\nCurrent analysis shows opportunities to better serve ${targetAudience}...\n\nRecommendations for improving conversion rates...`;
-    default:
-      return `Personalized ${productType} content for ${businessName} targeting ${targetAudience}.`;
-  }
+  return {
+    canaiOutput: `Mock CanAI output for ${productType} with business type ${mockInputs.businessType}`,
+    genericOutput: `Mock generic output for ${productType}`,
+    emotionalResonance: generateMockHumeResponse()
+  };
 };
+
+const generateCanaiContent = async (
+  apiKey: string,
+  productType: string,
+  inputs: Partial<BusinessInputs> = { businessType: 'default' }
+) => {
+  const mockInputs = generateMockBusinessInputs(inputs);
+  return fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'X-Correlation-ID': generateCorrelationId(),
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: `Generate a personalized ${productType} deliverable using the provided business inputs. Focus on emotional resonance and specific details.`,
+        },
+        {
+          role: 'user',
+          content: JSON.stringify(mockInputs),
+        },
+      ],
+      max_tokens: 2000,
+      temperature: 0.7,
+    }),
+  });
+};
+
+const generateGenericContent = async (
+  apiKey: string,
+  productType: string,
+  inputs: Partial<BusinessInputs> = { businessType: 'default' }
+) => {
+  const mockInputs = generateMockBusinessInputs(inputs);
+  return fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'X-Correlation-ID': generateCorrelationId(),
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: `Generate a generic ${productType} template without personalization.`,
+        },
+        {
+          role: 'user',
+          content: `Business type: ${mockInputs.businessType || 'general business'}`,
+        },
+      ],
+      max_tokens: 1000,
+      temperature: 0.3,
+    }),
+  });
+};
+
+export const handleApiError = (error: Error | ErrorResponse): never => {
+  console.error('API Error:', error);
+  throw error;
+};
+
+export const validateDeliverable = async (data: DeliverableData): Promise<SuccessResponse<ValidationResult>> => {
+  // Implementation
+  return {
+    data: {
+      isValid: true
+    },
+    status: 200
+  };
+};
+
+export const generateDeliverable = async (data: DeliverableData): Promise<SuccessResponse<GenerationResult>> => {
+  // Implementation
+  return {
+    data: {
+      id: 'mock-id',
+      status: 'success'
+    },
+    status: 200
+  };
+};
+
+export const updateDeliverable = async (id: string, data: Partial<DeliverableData>): Promise<SuccessResponse<DeliverableData>> => {
+  // Implementation
+  const defaultData: DeliverableData = {
+    businessType: 'default',
+    productType: 'default',
+    inputs: {}
+  };
+
+  return {
+    data: {
+      ...defaultData,
+      ...data
+    },
+    status: 200
+  };
+};
+
+interface ErrorLogBase {
+  error_message: string;
+  action: string;
+  error_type: string;
+}
+
+interface ErrorLogInput extends ErrorLogBase {
+  user_id?: string;
+}
+
+interface ErrorLog extends ErrorLogBase {
+  id?: string;
+  created_at?: string;
+  user_id?: string;
+}

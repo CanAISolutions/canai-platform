@@ -1,8 +1,9 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import type { Mock } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import DeliverableGeneration from '../pages/DeliverableGeneration';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // Mock fetch
 global.fetch = vi.fn();
@@ -29,28 +30,79 @@ const renderWithProviders = (component: React.ReactElement) => {
   );
 };
 
+interface MockDeliverableResponse {
+  id: string;
+  content: string;
+  canaiOutput: string;
+  genericOutput: string;
+  pdfUrl: string;
+  emotionalResonance: {
+    canaiScore: number;
+    genericScore: number;
+  };
+}
+
+interface MockResponse {
+  status: number;
+  json: () => Promise<unknown>;
+}
+
+interface MockFetchOptions {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
+interface MockFetchResult {
+  status: number;
+  json: () => Promise<unknown>;
+}
+
+interface MockFetchFunction {
+  (url: string, options?: MockFetchOptions): Promise<MockFetchResult>;
+}
+
+type GlobalWithFetch = typeof globalThis & {
+  fetch: typeof fetch;
+};
+
+const mockFetch = (response: MockResponse): jest.Mock<Promise<MockFetchResult>, [string, MockFetchOptions?]> => {
+  return jest.fn().mockImplementation(() => Promise.resolve(response));
+};
+
+// Mock the Memberstack client
+const mockMemberstackClient = {
+  getCurrentMember: jest.fn().mockResolvedValue({
+    data: {
+      id: 'test-user-id',
+      email: 'test@example.com',
+      metadata: {},
+      auth: {
+        uid: 'test-uid',
+        accessToken: 'test-token',
+        refreshToken: 'test-refresh-token'
+      }
+    }
+  })
+} as const;
+
 describe('F7-tests: Enhanced Deliverable Generation Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Mock successful API responses
-    (global.fetch as any).mockResolvedValue({
+    (global.fetch as Mock).mockResolvedValue({
       ok: true,
-      json: () =>
-        Promise.resolve({
-          id: 'test-deliverable-id',
-          content: 'Test generated content',
-          canaiOutput: 'Enhanced content',
-          genericOutput: 'Generic content',
-          pdfUrl: 'https://example.com/test.pdf',
-          emotionalResonance: {
-            canaiScore: 0.85,
-            genericScore: 0.45,
-            delta: 0.4,
-            arousal: 0.7,
-            valence: 0.8,
-            isValid: true,
-          },
-        }),
+      json: () => Promise.resolve<MockDeliverableResponse>({
+        id: 'test-id',
+        content: 'Test content',
+        canaiOutput: 'Enhanced content',
+        genericOutput: 'Generic content',
+        pdfUrl: 'https://example.com/test.pdf',
+        emotionalResonance: {
+          canaiScore: 0.85,
+          genericScore: 0.65,
+        },
+      }),
     });
   });
 

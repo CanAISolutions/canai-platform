@@ -1,12 +1,26 @@
-import React from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { EnhancedButton } from '@/components/ui/enhanced-button';
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface ErrorBoundaryFallbackProps {
   error: Error;
   resetError: () => void;
 }
+
+// Sanitize error message to prevent sensitive info leakage
+const sanitizeErrorMessage = (error: Error): string => {
+  // Remove potential stack traces
+  const message = error.message || 'An unknown error occurred';
+  // Remove potential file paths
+  return message.replace(/([A-Za-z]:\\|\/)[^\s]+/g, '[PATH]')
+    // Remove potential URLs
+    .replace(/(https?:\/\/[^\s]+)/g, '[URL]')
+    // Remove potential API keys or tokens
+    .replace(/([A-Za-z0-9+/=]){40,}/g, '[REDACTED]')
+    // Remove potential email addresses
+    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL]');
+};
 
 const ErrorBoundaryFallback: React.FC<ErrorBoundaryFallbackProps> = ({
   error,
@@ -19,6 +33,16 @@ const ErrorBoundaryFallback: React.FC<ErrorBoundaryFallbackProps> = ({
     resetError();
   };
 
+  // Log error to monitoring service
+  React.useEffect(() => {
+    // TODO: Add proper error logging service integration
+    console.error('[ErrorBoundary]', {
+      name: error.name,
+      message: sanitizeErrorMessage(error),
+      timestamp: new Date().toISOString(),
+    });
+  }, [error]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A0F1C] to-[#00B2E3] flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-gradient-to-br from-[#172b47]/90 to-[#1e314f]/90 backdrop-blur-sm rounded-2xl border-2 border-[#36d1fe]/40 p-8 text-center">
@@ -28,14 +52,14 @@ const ErrorBoundaryFallback: React.FC<ErrorBoundaryFallbackProps> = ({
             Oops! Something went wrong
           </h1>
           <p className="text-[#cce7fa] font-manrope">
-            We're sorry for the inconvenience. Our team has been notified.
+            We&apos;re sorry for the inconvenience. Our team has been notified.
           </p>
         </div>
 
-        {process.env.NODE_ENV === 'development' && (
+        {import.meta.env['MODE'] === 'development' && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-left">
             <p className="text-red-300 text-sm font-mono break-all">
-              {error.message}
+              {sanitizeErrorMessage(error)}
             </p>
           </div>
         )}

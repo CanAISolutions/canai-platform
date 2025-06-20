@@ -1,34 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import StandardBackground from '@/components/StandardBackground';
 import {
-  PageTitle,
-  SectionTitle,
-  BodyText,
+    BodyText,
+    PageTitle,
+    SectionTitle,
 } from '@/components/StandardTypography';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StandardButton } from '@/components/ui/standard-button';
 import {
-  StandardForm,
-  StandardFormGroup,
-  StandardFormLabel,
-  StandardFormTextarea,
+    StandardForm,
+    StandardFormGroup,
+    StandardFormLabel,
+    StandardFormTextarea,
 } from '@/components/ui/standard-form';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, RefreshCw, ArrowRight, Star } from 'lucide-react';
+import { ArrowRight, RefreshCw, Sparkles, Star } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // API and analytics imports
 import {
-  generateSparks,
-  regenerateSparks,
-  SparkData,
-} from '@/utils/sparkLayerApi';
-import {
-  trackPageView,
-  trackFunnelStep,
-  trackSparkSelected,
-  trackSparksRegenerated,
+    trackFunnelStep,
+    trackPageView,
+    trackSparkSelected,
+    trackSparksRegenerated,
 } from '@/utils/analytics';
 import { logInteraction } from '@/utils/api';
+import {
+    generateSparks,
+    regenerateSparks
+} from '@/utils/sparkLayerApi';
 
 interface Spark {
   id: string;
@@ -47,11 +46,7 @@ const SparkLayer = () => {
   const [feedback, setFeedback] = useState('');
   const [trustScore] = useState(85); // Mock trust score
 
-  useEffect(() => {
-    initializeSparks();
-  }, []);
-
-  const initializeSparks = async () => {
+  const initializeSparks = useCallback(async () => {
     try {
       trackPageView('spark_layer');
       trackFunnelStep('spark_layer_viewed');
@@ -114,7 +109,11 @@ const SparkLayer = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [trustScore]);
+
+  useEffect(() => {
+    initializeSparks();
+  }, [initializeSparks]);
 
   const handleRegenerate = async () => {
     if (attemptCount >= 3) return; // Limit regeneration attempts
@@ -208,7 +207,7 @@ const SparkLayer = () => {
         <div className="text-center mb-8 sm:mb-12">
           <PageTitle className="text-white mb-4">Choose Your Spark</PageTitle>
           <BodyText className="text-xl text-white opacity-90 max-w-3xl mx-auto">
-            We've created three unique concepts tailored to your vision. Select
+            We&apos;ve created three unique concepts tailored to your vision. Select
             the one that resonates most with your goals.
           </BodyText>
         </div>
@@ -260,7 +259,7 @@ const SparkLayer = () => {
               Want Different Options?
             </SectionTitle>
             <BodyText className="text-white text-center mb-4 opacity-90">
-              Not quite right? Share what you'd like to see different and we'll
+              Not quite right? Share what you&apos;d like to see different and we&apos;ll
               generate new concepts.
             </BodyText>
 

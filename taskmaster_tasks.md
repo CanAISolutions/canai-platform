@@ -105,6 +105,28 @@ tasks:
       - Integrate Supabase client to query pricing table
       - Implement caching with node-cache
       - Log pricing_modal_viewed event with PostHog
+
+  - id: T6.1.6-standardize-error-handling
+    description: Standardize retry and error handling for messages APIs with input sanitization.
+    inputs:
+      - backend/middleware/retry.js
+      - backend/middleware/validation.js
+      - backend/services/supabase.js
+      - backend/services/sentry.js
+      - .env (SENTRY_DSN, SUPABASE_URL, PROJECT_ID)
+    outputs:
+      - Standardized retry middleware with 3 attempts and exponential backoff (500ms base)
+      - Sanitized inputs using DOMPurify for GET /v1/messages
+      - Error logs in Supabase error_logs with retry_count and error_type
+    dependencies:
+      - T6.1.1-messages-api
+      - T9.3.1-error-logs-schema
+    cursor-ai-instructions:
+      - Update retry.js with exponential backoff (2^i * 500ms, max 5s)
+      - Integrate DOMPurify in validation.js for all input fields
+      - Log retries and errors to error_logs with fields error_type, retry_count
+      - Send critical errors to Sentry
+      - Write Jest tests for retry and sanitization (backend/tests/retry.test.js)
 ```
 
 ## Section 6.2: Backend Development - Funnel Input Validation
@@ -190,6 +212,25 @@ tasks:
       - Update retry middleware for funnel APIs
       - Implement localStorage fallback
       - Log errors to Supabase error_logs with PostHog
+  - id: T6.2.5-optimize-input-validation
+    description: Enhance input validation with standardized caching and sanitization.
+    inputs:
+      - backend/routes/funnel.js
+      - backend/middleware/validation.js
+      - backend/services/cache.js
+      - .env (SUPABASE_URL, PROJECT_ID)
+    outputs:
+      - Sanitized inputs for POST /v1/validate-input using DOMPurify
+      - Standardized 5-minute TTL cache for trust scores
+      - Validation latency under 500ms
+    dependencies:
+      - T6.2.1-validate-input-api
+    cursor-ai-instructions:
+      - Integrate DOMPurify in validation.js for all funnel inputs
+      - Set 5-minute TTL in cache.js for trust scores
+      - Optimize Joi validation to minimize regex complexity
+      - Log validation latency to PostHog (funnel_validation)
+      - Write Jest tests for sanitization and caching (backend/tests/funnel.test.js)
 ```
 
 ## Section 6.3: Backend Development - Spark Generation
@@ -253,6 +294,29 @@ tasks:
       - Update retry middleware for spark APIs
       - Implement localStorage fallback
       - Log errors to Supabase error_logs with PostHog
+
+  - id: T6.3.4-spark-scalability
+    description: Optimize spark generation for scalability and edge case handling.
+    inputs:
+      - backend/routes/sparks.js
+      - backend/services/cache.js
+      - backend/services/gpt4o.js
+      - databases/migrations/spark_logs.sql
+      - .env (SUPABASE_URL, PROJECT_ID, OPENAI_API_KEY)
+    outputs:
+      - POST /v1/generate-sparks API with latency under 1.5s for 10,000 users
+      - Handling for empty GPT-4o responses with cached fallback
+      - Composite index on spark_logs (user_id, created_at)
+    dependencies:
+      - T6.3.1-generate-sparks-api
+      - T7.4.1-scalability
+    cursor-ai-instructions:
+      - Optimize GPT-4o prompts for efficiency in sparks.js
+      - Implement cached fallback for empty responses in cache.js
+      - Add composite index idx_spark_logs_user_id_created_at
+      - Test scalability with Locust for 10,000 users
+      - Log spark_generation_latency to PostHog
+      - Write Jest tests for edge cases (backend/tests/sparks.test.js)
 ```
 
 ## Section 6.4: Backend Development - Payment Processing
@@ -340,6 +404,27 @@ tasks:
       - Update retry middleware for Stripe APIs
       - Implement exponential backoff
       - Log errors to Supabase error_logs with PostHog
+
+  - id: T6.4.5-auth-webhook-reliability
+    description: Enhance Stripe APIs with JWT refresh and webhook idempotency.
+    inputs:
+      - backend/middleware/auth.js
+      - backend/webhooks/add_project.js
+      - backend/services/stripe.js
+      - .env (SUPABASE_URL, PROJECT_ID, STRIPE_SECRET_KEY)
+    outputs:
+      - JWT refresh logic for Memberstack authentication
+      - Idempotent webhook handler with unique request IDs
+      - Webhook failure alerts to Sentry
+    dependencies:
+      - T6.4.1-stripe-session-api
+      - T9.4.1-dlq-webhook
+    cursor-ai-instructions:
+      - Implement JWT refresh in auth.js with 1-hour expiry
+      - Add request_id to add_project.js for idempotency
+      - Send webhook failure alerts to Sentry after 3 retries
+      - Log webhook_idempotency to PostHog
+      - Write Jest tests for refresh and idempotency (backend/tests/stripe.test.js)
 ```
 
 ## Section 6.5: Backend Development - Input Collection
@@ -425,6 +510,27 @@ tasks:
       - Authenticate with Memberstack
       - Fetch inputs from Supabase prompt_logs
       - Log input_saved event with PostHog
+
+  - id: T6.5.5-accessible-inputs
+    description: Ensure WCAG 2.2 AA compliance for input collection APIs.
+    inputs:
+      - frontend/public/inputs.html
+      - backend/routes/inputs.js
+      - backend/tests/accessibility.test.js
+      - .env (SUPABASE_URL, PROJECT_ID)
+    outputs:
+      - ARIA labels and ≥48px tap targets in inputs.html
+      - Keyboard navigation and VoiceOver support
+      - Accessibility tests with 0 critical issues
+    dependencies:
+      - T6.5.1-save-progress-api
+      - T7.5.1-accessibility
+    cursor-ai-instructions:
+      - Add ARIA labels to input fields in inputs.html
+      - Ensure ≥48px tap targets for mobile inputs
+      - Test keyboard navigation and VoiceOver with axe-core
+      - Log accessibility_error to PostHog
+      - Write accessibility tests (backend/tests/accessibility.test.js)
 ```
 
 ## Section 6.6: Backend Development - Intent Mirroring
@@ -497,6 +603,27 @@ tasks:
       - Implement localStorage fallback
       - Trigger support link after 2 low-confidence tries
       - Log errors to Supabase error_logs with PostHog
+
+  - id: T6.6.4-emotional-driver-mapping
+    description: Define and validate emotional driver mappings for intent mirroring.
+    inputs:
+      - backend/prompts/intent.js
+      - backend/services/gpt4o.js
+      - backend/config/driverRules.json
+      - .env (OPENAI_API_KEY)
+    outputs:
+      - driverRules.json mapping 12 fields to drivers (e.g., community, trust)
+      - Validated mappings with >90% accuracy
+      - Updated intent.js prompts with driver inference
+    dependencies:
+      - T6.6.1-intent-mirror-api
+      - T8.6.3-emotional-drivers
+    cursor-ai-instructions:
+      - Create driverRules.json (e.g., businessType: "local retail" → community)
+      - Update intent.js prompts to use driverRules.json
+      - Validate mappings with user feedback from feedback_logs
+      - Log driver_inference_accuracy to PostHog
+      - Write Jest tests for driver inference (backend/tests/intent.test.js)
 ```
 
 ## Section 6.7: Backend Development - Deliverable Generation
@@ -582,6 +709,28 @@ tasks:
       - Implement localStorage fallback
       - Handle 15s timeout with partial output
       - Log errors to Supabase error_logs with PostHog
+
+  - id: T6.7.5-ai-edge-case-handling
+    description: Handle AI edge cases for deliverable generation.
+    inputs:
+      - backend/routes/deliverables.js
+      - backend/services/gpt4o.js
+      - backend/services/hume.js
+      - backend/services/cache.js
+      - .env (OPENAI_API_KEY, HUME_API_KEY)
+    outputs:
+      - Handling for empty GPT-4o responses and Hume AI failures
+      - Cached fallback for failed API calls
+      - Error logs with edge_case_type
+    dependencies:
+      - T6.7.1-deliverable-api
+      - T8.6.1-output-quality-validation
+    cursor-ai-instructions:
+      - Implement fallback to cached outputs in cache.js for empty responses
+      - Retry Hume AI calls (max 2 attempts) on failure
+      - Log edge cases (e.g., empty_response, hume_failure) to error_logs
+      - Log edge_case_handled to PostHog
+      - Write Jest tests for edge cases (backend/tests/deliverables.test.js)
 ```
 
 ## Section 6.8: Backend Development - SparkSplit Comparisons
@@ -654,6 +803,26 @@ tasks:
       - Implement localStorage fallback
       - Enable Supabase vault encryption
       - Log errors to Supabase error_logs with PostHog
+  - id: T6.8.4-webhook-reliability
+    description: Enhance SparkSplit webhook reliability with alerts and idempotency.
+    inputs:
+      - backend/webhooks/save_comparison.js
+      - backend/services/supabase.js
+      - backend/services/sentry.js
+      - .env (SUPABASE_URL, PROJECT_ID, SENTRY_DSN)
+    outputs:
+      - Idempotent webhook with request_id
+      - Admin alerts for webhook failures after 3 retries
+      - Error logs with webhook_failure_reason
+    dependencies:
+      - T6.8.1-spark-split-api
+      - T9.4.1-dlq-webhook
+    cursor-ai-instructions:
+      - Add request_id to save_comparison.js for idempotency
+      - Send Sentry alerts for webhook failures after 3 retries
+      - Log failures to error_logs with webhook_failure_reason
+      - Log webhook_idempotency to PostHog
+      - Write Jest tests for webhook reliability (backend/tests/webhooks.test.js)
 ```
 
 ## Section 6.9: Backend Development - Feedback and Referrals
@@ -752,6 +921,27 @@ tasks:
       - Trigger Make.com webhook
       - Cache purge status
       - Log purge event with PostHog
+
+  - id: T6.9.5-api-docs-maintenance
+    description: Maintain and validate feedback API documentation.
+    inputs:
+      - backend/docs/api.yaml
+      - backend/routes/feedback.js
+      - backend/tests/api.test.js
+      - .env
+    outputs:
+      - Updated OpenAPI spec for /v1/feedback and /v1/refer
+      - CI/CD validation for API schema
+      - Documentation tests with 0 errors
+    dependencies:
+      - T6.9.1-feedback-api
+      - T8.6.6-api-documentation
+    cursor-ai-instructions:
+      - Update api.yaml with feedback and refer endpoints
+      - Add CI/CD step to validate spec with swagger-cli
+      - Test schema accuracy with Jest
+      - Log api_docs_updated to PostHog
+      - Write Jest tests for API docs (backend/tests/api.test.js)
 ```
 
 ## Section 7.7: Backend Development - Optimization and Security
@@ -869,7 +1059,6 @@ tasks:
       - Write axe-core tests
       - Run pa11y-ci for contrast
       - Log accessibility_error events with PostHog
-
   - id: T7.6.1-cost-controls
     description: Implement Hume AI circuit breaker and cost tracking
     inputs:
@@ -888,6 +1077,67 @@ tasks:
       - Create usage_logs table
       - Track Hume AI and GPT-4o usage
       - Log hume_fallback_triggered events with PostHog
+
+  - id: T7.7.1-query-optimization
+    description: Optimize Supabase queries for high-traffic tables.
+    inputs:
+      - databases/migrations/prompt_logs.sql
+      - databases/migrations/spark_logs.sql
+      - backend/services/supabase.js
+      - .env (SUPABASE_URL, PROJECT_ID)
+    outputs:
+      - Composite indexes for prompt_logs and spark_logs
+      - Query plans with <100ms execution time
+      - Test results for 10,000 users
+    dependencies:
+      - T8.2.1-supabase-schema
+      - T7.4.1-scalability
+    cursor-ai-instructions:
+      - Add composite indexes (e.g., idx_prompt_logs_user_id_created_at)
+      - Analyze query plans with EXPLAIN ANALYZE
+      - Test queries with Locust for 10,000 users
+      - Log query_latency to PostHog
+      - Write Supatest tests for queries (backend/tests/supabase.test.js)
+  - id: T7.7.2-comprehensive-monitoring
+    description: Implement comprehensive API and error monitoring.
+    inputs:
+      - backend/services/posthog.js
+      - backend/services/sentry.js
+      - databases/migrations/error_logs.sql
+      - .env (POSTHOG_API_KEY, SENTRY_DSN, SUPABASE_URL, PROJECT_ID)
+    outputs:
+      - Standardized logging for API latency and success/failure rates
+      - Error aggregation view in Supabase
+      - Alerts for outages >5 minutes
+    dependencies:
+      - T8.5.1-monitoring-setup
+      - T9.3.1-error-logs-schema
+    cursor-ai-instructions:
+      - Log latency and status for all APIs in posthog.js
+      - Create Supabase view for error aggregation by error_type
+      - Set up Sentry alerts for outages >5 minutes
+      - Log monitoring_alert to PostHog
+      - Write Jest tests for monitoring (backend/tests/monitoring.test.js)
+  - id: T7.7.3-continuous-accessibility
+    description: Implement continuous accessibility monitoring.
+    inputs:
+      - frontend/public/
+      - backend/tests/accessibility.test.js
+      - .github/workflows/accessibility.yml
+      - .env
+    outputs:
+      - CI/CD step for pa11y-ci accessibility tests
+      - Tests for keyboard navigation and screen readers
+      - Accessibility report with 0 critical issues
+    dependencies:
+      - T7.5.1-accessibility
+      - T13.1.3-accessibility-tests
+    cursor-ai-instructions:
+      - Add pa11y-ci to CI/CD for frontend/public/
+      - Test keyboard navigation and NVDA/JAWS compatibility
+      - Generate accessibility report in accessibility-report.md
+      - Log accessibility_error to PostHog
+      - Write accessibility tests (backend/tests/accessibility.test.js)
 ```
 
 ## Section 8.8: Backend Development - Quality and Integration
@@ -1159,6 +1409,45 @@ tasks:
       - Create plugin system
       - Define integration interfaces
       - Write Jest tests
+
+  - id: T8.8.2-dependency-validation
+    description: Validate TaskMaster dependency graph for circular dependencies.
+    inputs:
+      - .github/workflows/taskmaster.yml
+      - backend/tests/taskmaster.test.js
+      - .env
+    outputs:
+      - Validated acyclic dependency graph
+      - CI/CD step for dependency validation
+      - Error logs for circular dependencies
+    dependencies:
+      - T8.1.1-backend-setup
+      - T16.1.3-taskmaster-validation
+    cursor-ai-instructions:
+      - Use dependency-cruiser to detect circular dependencies
+      - Add CI/CD step to validate TaskMaster tasks
+      - Log circular dependencies to error_logs
+      - Log task_validation_success to PostHog
+      - Write Jest tests for dependencies (backend/tests/taskmaster.test.js)
+  - id: T8.8.3-finetuning-dataset
+    description: Ensure high-quality dataset for GPT-4o fine-tuning.
+    inputs:
+      - backend/services/gpt4o.js
+      - databases/feedback_logs.sql
+      - backend/tests/filter.test.js
+      - .env (OPENAI_API_KEY)
+    outputs:
+      - Dataset with ≥10,000 anonymized samples
+      - Cross-validation for >95% accuracy
+      - Test suite for contradiction/NSFW detection
+    dependencies:
+      - T8.6.7-gpt4o-finetuning
+    cursor-ai-instructions:
+      - Collect ≥10,000 samples from feedback_logs
+      - Implement 5-fold cross-validation for fine-tuning
+      - Test contradiction/NSFW detection with Jest
+      - Log finetuning_dataset_validated to PostHog
+      - Write Jest tests for dataset quality (backend/tests/filter.test.js)
 ```
 
 ## Section 9.6: Backend Development - Error Handling and Recovery
@@ -1271,6 +1560,27 @@ tasks:
       - Send resume link via email
       - Log timeout_recovery event with PostHog
       - Write Jest tests
+
+  - id: T9.6.2-error-handling-standardization
+    description: Standardize error handling across all APIs with empathetic responses.
+    inputs:
+      - backend/middleware/error.js
+      - backend/services/sentry.js
+      - backend/services/posthog.js
+      - .env (SENTRY_DSN, POSTHOG_API_KEY)
+    outputs:
+      - Centralized error middleware with empathetic messages
+      - Standardized logging for all API errors
+      - Error aggregation for trend analysis
+    dependencies:
+      - T9.1.1-error-middleware
+      - T9.3.1-error-logs-schema
+    cursor-ai-instructions:
+      - Centralize error handling in error.js with user-friendly messages
+      - Log all errors to error_logs with endpoint, status, error_type
+      - Create Supabase view for error trends by endpoint
+      - Log error_trend_analyzed to PostHog
+      - Write Jest tests for error handling (backend/tests/error.test.js)
 ```
 
 ## Section 10.4: Backend Development - Deliverable Scenarios
@@ -1363,6 +1673,28 @@ tasks:
       - Send resume link emails
       - Log timeout_recovery event with PostHog
       - Write Jest tests
+
+  - id: T10.4.1-edge-case-testing
+    description: Enhance test coverage for scenario-specific edge cases.
+    inputs:
+      - backend/tests/deliverables.test.js
+      - backend/tests/sparkSplit.test.js
+      - backend/routes/deliverables.js
+      - backend/routes/sparkSplit.js
+      - .env
+    outputs:
+      - Tests for invalid JWTs, timeouts, and malformed inputs
+      - >90% test coverage for deliverables and sparkSplit
+      - Mocked GPT-4o and Hume AI responses
+    dependencies:
+      - T10.1.1-deliverable-generation
+      - T13.1.1-unit-tests
+    cursor-ai-instructions:
+      - Write Jest tests for edge cases (e.g., invalid JWT, 429 responses)
+      - Use nock to mock GPT-4o and Hume AI APIs
+      - Achieve >90% coverage with coverage report
+      - Log test_coverage_achieved to PostHog
+      - Write Jest tests for edge cases (backend/tests/deliverables.test.js)
 ```
 
 ## Section 11.4: Backend Development - Funnel and Compliance
@@ -1486,6 +1818,27 @@ tasks:
       - Run axe-core tests
       - Log security_violation with PostHog
       - Write Jest tests
+
+  - id: T11.4.1-glossary-enforcement
+    description: Enforce glossary term consistency in code and prompts.
+    inputs:
+      - .eslintrc.js
+      - backend/prompts/
+      - docs/glossary.md
+      - backend/tests/docs.test.js
+      - .env
+    outputs:
+      - ESLint rules for glossary terms
+      - Consistent terminology in prompts
+      - Tests for term usage
+    dependencies:
+      - T18.1.1-glossary-documentation
+    cursor-ai-instructions:
+      - Add ESLint rule to check glossary terms in code comments
+      - Update prompts to use glossary terms (e.g., TrustDelta)
+      - Test term consistency with Jest
+      - Log glossary_enforced to PostHog
+      - Write Jest tests for glossary (backend/tests/docs.test.js)
 ```
 
 ## Section 12.9: Backend Development - Metrics and Monitoring
@@ -1654,6 +2007,28 @@ tasks:
       - Validate product switch
       - Use seed data
       - Log test_completion with PostHog
+
+  - id: T13.4.1-test-maintenance
+    description: Update test suites for new features and regressions.
+    inputs:
+      - backend/tests/*.test.js
+      - backend/routes/
+      - backend/services/
+      - .env
+    outputs:
+      - Updated test suites for voice mode, i18n, and integrations
+      - Regression tests with >90% coverage
+      - CI/CD step for test maintenance
+    dependencies:
+      - T13.1.1-unit-tests
+      - T17.1.1-voice-mode
+      - T17.1.2-i18n-support
+    cursor-ai-instructions:
+      - Update Jest tests for new endpoints and services
+      - Add regression tests for existing APIs
+      - Add CI/CD step to validate test coverage
+      - Log test_maintenance_complete to PostHog
+      - Write Jest tests for new features (backend/tests/*.test.js)
 ```
 
 ## Section 14.3: Backend Development - Security
@@ -1762,6 +2137,28 @@ tasks:
       - Create consent modal and /v1/consent
       - Configure pg_cron for purge
       - Log consent_granted with PostHog
+
+  - id: T14.3.1-early-encryption
+    description: Implement early encryption for sensitive Supabase fields.
+    inputs:
+      - databases/migrations/prompt_logs.sql
+      - databases/migrations/comparisons.sql
+      - backend/services/supabase.js
+      - supabase/vault/config.yaml
+      - .env (SUPABASE_URL, PROJECT_ID)
+    outputs:
+      - Encrypted fields (e.g., canai_output, generic_output) in Supabase
+      - RLS policies for encrypted data
+      - Tests for encryption integrity
+    dependencies:
+      - T8.2.1-supabase-schema
+      - T14.1.2-supabase-security
+    cursor-ai-instructions:
+      - Configure Supabase Vault for prompt_logs and comparisons
+      - Add RLS policies for encrypted fields
+      - Test encryption with Supatest
+      - Log encryption_enabled to PostHog
+      - Write Supatest tests for encryption (backend/tests/rls.test.js)
 ```
 
 ## Section 15.3: Deployment
@@ -2048,6 +2445,27 @@ tasks:
       - Fallback to GPT-4o
       - Log fallbacks
       - Log hume_fallback_triggered with PostHog
+
+  - id: T16.3.1-webhook-rate-limiting
+    description: Mitigate Make.com webhook rate limits with backoff.
+    inputs:
+      - backend/webhooks/*
+      - backend/middleware/retry.js
+      - backend/services/supabase.js
+      - .env (SUPABASE_URL, PROJECT_ID)
+    outputs:
+      - Exponential backoff for webhook retries
+      - Error logs for rate limit failures
+      - Tests for rate limit handling
+    dependencies:
+      - T9.4.1-dlq-webhook
+      - T14.1.3-rate-limiting
+    cursor-ai-instructions:
+      - Add exponential backoff (2^i * 1000ms) to webhook retries
+      - Log rate limit failures to error_logs
+      - Test rate limit handling with Jest
+      - Log webhook_rate_limit_handled to PostHog
+      - Write Jest tests for webhooks (backend/tests/webhooks.test.js)
 ```
 
 ## Section 17.3: Frontend and AI Enhancements

@@ -1,711 +1,107 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
-# CanAI Documentation Rules
+---
+description: Principle-based guidelines for documentation in the CanAI Emotional Sovereignty Platform.
+globs:
+  alwaysApply: true
+---
 
-## Role and Expertise
-You are a technical documentation expert for the **CanAI Emotional Sovereignty Platform**, ensuring consistent, comprehensive, and PRD-aligned documentation that drives an extremely supportive Roo Code experience with clear context, expectations, and structure.
-
-## Documentation Philosophy
-- **Precision Over Verbosity**: Document with intent, avoid redundant explanations
-- **PRD Alignment**: Every documentation decision must align with current PRD requirements
-- **Developer Experience**: Optimize for rapid onboarding and maintenance efficiency
-- **Emotional Intelligence**: Reflect CanAI's emotional sovereignty in documentation tone
-- **Roo Code AI Optimization**: Structure documentation to maximize AI-assisted development effectiveness
+# CanAI Documentation Guidelines
 
 ## Purpose
-Ensure clear, accessible documentation compliant with WCAG 2.2 AA, including reusable rule patterns that support the 9-stage user journey (F1-F9) and comprehensive backend/frontend architecture.
-
-## Core Documentation Standards
-
-### 1. Format and Organization
-- **Markdown Standard**: Write all docs in Markdown under `docs/`
-- **Directory Structure**: Organize as `api/`, `deployment/`, `development/`, `user/`, `rules/` (for reusable patterns)
-- **File Naming**: Use kebab-case consistently (e.g., `api-contract-specification.md`)
-- **Metadata Requirements**: Include title, date (YYYY-MM-DD), version in each document header
-- **Markdownlint Compliance**: Enforce via `.markdownlintrc` with MD013 (line_length: 80), MD032, MD041
-
-### 2. File-Level Documentation Standards
-- **File Headers**: Required for all code files
-  ```typescript
-  // File: [path/to/file.ts]
-  // Purpose: [Brief functional description]
-  // Journey Stage: [F1-F9 mapping if applicable]
-  // Dependencies: [Key external dependencies]
-  // Performance Target: [<2s response time, etc.]
-  // PRD Section: [Reference to specific PRD section]
-  // Last Updated: [Date and context]
-  ```
-
-### 3. JSDoc Standards (Google Technical Writing Style)
-- **Function Documentation**: Mandatory for all exported functions
-  ```typescript
-  /**
-   * Generates 700-800 word business plan with emotional resonance validation
-   * Implements F7 Deliverable Generation with GPT-4o integration
-   * 
-   * @param {Object} inputs - 12-field user inputs from F5 stage
-   * @param {string} inputs.businessDescription - Core business description (required)
-   * @param {string} inputs.targetAudience - Primary customer segment
-   * @param {string} inputs.primaryGoal - Main business objective
-   * @param {number} trustScore - Trust score from F2 validation (0-100)
-   * @returns {Promise<{output: string, resonance: number, wordCount: number, trustDelta: number}>}
-   * @throws {ValidationError} When inputs fail GPT-4o validation
-   * @throws {ResonanceError} When Hume AI resonance < 0.7
-   * @performance Target: <2s response time, cached 5min TTL
-   * @security Requires MemberStack JWT authentication
-   * @example
-   * const plan = await generateBusinessPlan(userInputs, 85);
-   * console.log(`Generated ${plan.wordCount} words with ${plan.resonance} resonance`);
-   * // Expected: 700-800 words, resonance > 0.7, trustDelta >= 4.0
-   */
-  ```
-
-- **Class/Interface Documentation**: Include usage patterns and constraints
-  ```typescript
-  /**
-   * Handles Supabase RLS-compliant prompt logging for 9-stage journey
-   * Enforces 24-month data retention and GDPR compliance per PRD Section 7.3
-   * 
-   * @interface PromptLogger
-   * @security Implements Row-Level Security with auth.uid() validation
-   * @compliance GDPR/CCPA compliant with automated anonymization
-   * @performance Indexed on user_id, created_at for <200ms queries
-   * @example
-   * const logger = new PromptLogger();
-   * await logger.saveProgress(userId, promptData, 'F5');
-   * // Automatically applies RLS and logs to session_logs
-   */
-  ```
-
-### 4. API Documentation Standards
-- **Endpoint Documentation**: Follow OpenAPI 3.0 schema format in `docs/api/endpoints.md`
-- **Complete Request/Response Examples**: Include curl examples and response schemas
-  ```bash
-  # F3 Spark Layer Generation - POST /v1/generate-sparks
-  # Performance: <1.5s response, 100 req/min/IP rate limit
-  # Authentication: MemberStack JWT required
-  curl -X POST https://canai-router.onrender.com/v1/generate-sparks \
-    -H "Authorization: Bearer $MEMBERSTACK_JWT" \
-    -H "Content-Type: application/json" \
-    -H "Idempotency-Key: $(uuidgen)" \
-    -d '{
-      "user_id": "uuid",
-      "inputs": {
-        "businessType": "bakery",
-        "primaryChallenge": "marketing"
-      },
-      "regeneration_count": 0
-    }'
-
-  # Response Schema (200 OK)
-  {
-    "sparks": [
-      {"title": "Community Spark", "tagline": "Building neighborhood connections"},
-      {"title": "Artisan Spark", "tagline": "Crafting memorable experiences"},
-      {"title": "Growth Spark", "tagline": "Scaling with purpose"}
-    ],
-    "regenerationsLeft": 3,
-    "trustScore": 85,
-    "error": null,
-    "correlationId": "uuid"
-  }
-  ```
-
-- **Error Documentation**: Document all error codes and recovery patterns
-  ```bash
-  # Error Response Examples
-  # 429 Rate Limit Exceeded
-  {
-    "error": "You're moving fast! Please take a moment and try again in a few seconds.",
-    "code": 429,
-    "details": {"retryAfter": 60, "limit": 100},
-    "correlationId": "uuid"
-  }
-
-  # F3-E1 Timeout Error
-  {
-    "error": "We're sparking your ideas! This is taking a moment longer than usual.",
-    "code": 408,
-    "details": {"timeout": "1500ms", "stage": "F3"},
-    "correlationId": "uuid"
-  }
-  ```
-
-- **Performance Requirements**: Include latency targets and rate limits per PRD
-- **Authentication**: Document MemberStack JWT requirements and Supabase RLS implementation
-
-### 5. User Journey Documentation
-- **Stage Mapping**: Document all components with explicit F1-F9 stage references
-- **Flow Documentation**: Include Mermaid diagrams for complex interactions
-  ```mermaid
-  graph TD
-    A[F1: Discovery Hook] --> B[F2: 2-Step Funnel]
-    B --> C[F3: Spark Layer]
-    C --> D[F4: Purchase Flow]
-    D --> E[F5: Detailed Input]
-    E --> F[F6: Intent Mirror]
-    F --> G[F7: Deliverable Generation]
-    G --> H[F8: SparkSplit]
-    H --> I[F9: Feedback Capture]
-  ```
-- **Performance Context**: Document <2s deliverable, <1.5s spark, <200ms auto-save targets
-- **Error Handling**: Reference F1-E1 through F9-E1 error patterns with recovery procedures
-
-### 6. Database Schema Documentation
-- **RLS Policies**: Document Row-Level Security implementation with code examples
-- **Index Strategy**: Explain performance optimization choices with query patterns
-- **Data Retention**: Include 24-month GDPR compliance requirements and purge procedures
-- **Migration Scripts**: Document upgrade and rollback procedures with validation steps
-
-## Documentation File Management
-
-### 1. Permanent Documentation Files
-- `docs/README.md` - Primary development guide with 9-stage journey mapping
-- `docs/api/endpoints.md` - Complete API reference with OpenAPI schemas
-- `docs/technical-architecture-document-(TAD).md` - System architecture and integration flows
-- `docs/deployment/guide.md` - Render deployment and CI/CD procedures
-- `docs/test-case-specification.md` - Testing strategy and coverage requirements
-- `docs/rules/library.md` - Reusable Roo Code Rule patterns (e.g., Joi validation, PostHog logging)
-- `docs/ai-review-checklist.md` - AI usage validation and hallucination checks
-- `docs/version-history.md` - Change tracking and versioning matrix
-- `docs/rules/interdependency-matrix.md` - Cross-rule validation and dependencies
-
-### 2. Context Documentation (`.roo/rules/`)
-- Individual rule files (e.g., `canai-docs-rules.md`)
-- Architecture decision records (ADRs) using `docs/development/adr-template.md`
-- Cross-rule validation patterns and explicit interdependency documentation
-
-### 3. Temporary Documentation Protocol
-- Prefix temporary files with `TEMP-` (e.g., `TEMP-task-analysis.md`)
-- Include auto-deletion header:
-  ```markdown
-  # TEMPORARY: [Purpose]
-  <!-- AUTO-DELETE: Remove after task completion -->
-  Created: [Date] - [Time] MDT
-  Task Context: [Brief description]
-  Dependencies: [Related permanent docs]
-  PRD Section: [Reference to relevant PRD section]
-  ```
-- Archive outdated docs to `docs/archive/` after 24 months per retention policy
-
-### 4. Documentation Update Protocol
-- **Version Control**: Track changes in `docs/version-history.md` with semantic versioning
-- **Review Process**: Require one GitHub PR review per update
-- **Validation Steps**: Automated tests (e.g., `backend/tests/docs.test.js`), manual review steps
-- **Update Requirements**: Log significant changes with context
-  ```markdown
-  ## [Date] - [Time] MDT - Version X.Y.Z
-  **Change**: [Brief description aligned with PRD section]
-  **Impact**: [System areas affected - F1-F9 stages]
-  **Files Modified**: [backend/routes/, frontend/src/, databases/]
-  **Performance Impact**: [Latency, throughput, or uptime changes]
-  **Breaking Changes**: [API, schema, or integration changes]
-  **PRD Section**: [Reference to PRD section number]
-  **Validation**: [Tests run, quality checks performed]
-  **Dependencies**: [Other rules or systems affected]
-  ```
-
-## Component-Specific Documentation Requirements
-
-### 1. Frontend Components (`frontend/src/components/`)
-- **Component Purpose**: Map to specific F1-F9 journey stages with clear stage identification
-- **Props Documentation**: Include TypeScript interfaces with comprehensive examples
-- **Accessibility Requirements**: WCAG 2.2 AA compliance (≥48px tap targets, 4.5:1 contrast)
-- **Performance Targets**: <1.5s load time, lazy loading patterns, RSC optimization
-- **Integration Points**: API endpoints, analytics events, error boundaries, Make.com webhooks
-- **Example Documentation**:
-  ```typescript
-  /**
-   * F1 Discovery Hook Hero Component
-   * Renders trust indicators and CTA buttons with WCAG 2.2 AA compliance
-   * Integrates with /v1/messages API and PostHog analytics
-   * 
-   * @component DiscoveryHookHero
-   * @stage F1 - Discovery Hook
-   * @param {Object} props
-   * @param {TrustIndicator[]} props.trustIndicators - From /v1/messages API
-   * @param {Function} props.onBeginJourney - F2 navigation handler
-   * @param {boolean} props.showPricingModal - Modal visibility state
-   * @param {Function} props.onPricingView - PostHog tracking callback
-   * 
-   * @performance <1.5s load time with lazy loading, cached trust indicators
-   * @accessibility ARIA labels, keyboard navigation, 48px+ tap targets
-   * @analytics Tracks pricing_modal_viewed, begin_journey_clicked
-   * @integration /v1/messages, /v1/log-interaction, PostHog events
-   * 
-   * @example
-   * <DiscoveryHookHero
-   *   trustIndicators={indicators}
-   *   onBeginJourney={() => navigate('/funnel')}
-   *   showPricingModal={isModalOpen}
-   *   onPricingView={(product) => trackEvent('pricing_modal_viewed', {product})}
-   * />
-   */
-  ```
-
-### 2. Backend Routes (`backend/routes/`)
-- **Endpoint Purpose**: Clear mapping to PRD functional requirements with section references
-- **Middleware Chain**: Authentication, validation, rate limiting (100 req/min/IP), error handling
-- **Service Dependencies**: GPT-4o, Hume AI, Supabase, Make.com integrations with fallback strategies
-- **Performance Specifications**: Response time targets, caching strategy (5min TTL), optimization techniques
-- **Error Scenarios**: Specific error codes and recovery patterns with empathetic messaging
-- **Security Context**: RLS enforcement, input sanitization, GDPR compliance, JWT validation
-- **Example Documentation**:
-  ```javascript
-  /**
-   * POST /v1/generate-sparks - F3 Spark Layer Generation
-   * Implements PRD Section 6.3 - Spark Layer functionality
-   * 
-   * Generates three concept sparks using GPT-4o with emotional driver inference.
-   * Enforces regeneration limits (3 max, 4 if trust score <50%).
-   * Integrates with Hume AI for emotional resonance validation.
-   * 
-   * @route POST /v1/generate-sparks
-   * @stage F3 - Spark Layer
-   * @access Protected (MemberStack JWT)
-   * 
-   * Middleware Chain:
-   * - auth.js: MemberStack JWT validation
-   * - rateLimit.js: 100 req/min/IP
-   * - validation.js: Joi schema validation
-   * - idempotency.js: UUID v4 key requirement
-   * 
-   * Service Dependencies:
-   * - backend/services/gpt4o.js: Spark generation with emotional drivers
-   * - backend/services/supabase.js: spark_logs storage with RLS
-   * - backend/middleware/hume.js: Circuit breaker (>900 req/day fallback)
-   * - backend/services/cache.js: Response caching (5min TTL)
-   * 
-   * @performance <1.5s response, cached results, exponential backoff retries
-   * @security MemberStack JWT required, input sanitization, RLS enforcement
-   * @error_handling F3-E1 (timeout), F3-E2 (rate limit), F3-E3 (validation)
-   * @compliance GDPR data logging, 24-month retention
-   * 
-   * @param {Object} req.body
-   * @param {string} req.body.user_id - Authenticated user UUID
-   * @param {Object} req.body.inputs - User inputs from F2 funnel
-   * @param {number} req.body.regeneration_count - Current regeneration attempt
-   * 
-   * @returns {Object} {sparks: Array, regenerationsLeft: number, trustScore: number, error: string|null}
-   * 
-   * @example
-   * // Request
-   * POST /v1/generate-sparks
-   * Authorization: Bearer jwt_token
-   * Idempotency-Key: uuid_v4
-   * {
-   *   "user_id": "uuid",
-   *   "inputs": {"businessType": "bakery", "primaryChallenge": "marketing"},
-   *   "regeneration_count": 0
-   * }
-   * 
-   * // Response (200 OK)
-   * {
-   *   "sparks": [
-   *     {"title": "Community Spark", "tagline": "Building neighborhood connections"},
-   *     {"title": "Artisan Spark", "tagline": "Crafting memorable experiences"},
-   *     {"title": "Growth Spark", "tagline": "Scaling with purpose"}
-   *   ],
-   *   "regenerationsLeft": 3,
-   *   "trustScore": 85,
-   *   "error": null
-   * }
-   */
-  ```
-
-### 3. Database Schemas (`databases/migrations/`)
-- **Table Purpose**: Map to 9-stage journey data requirements with clear stage associations
-- **RLS Implementation**: Row-Level Security policies with auth.uid() validation examples
-- **Performance Optimization**: Index strategy for user_id, created_at queries with query patterns
-- **Data Lifecycle**: 24-month retention, anonymization procedures, purge automation
-- **Compliance Requirements**: GDPR/CCPA data protection measures with audit trails
-- **Example Documentation**:
-  ```sql
-  -- F5 Detailed Input Collection - Prompt Logs Table
-  -- PRD Section 6.5 - Stores 12-field user inputs with RLS and 24-month retention
-  -- Performance: Indexed on user_id, created_at for <200ms queries
-  -- Compliance: GDPR-compliant with automated anonymization via pg_cron
-
-  CREATE TABLE prompt_logs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
-    
-    -- Core business inputs (F5 stage - 12 fields)
-    business_description TEXT NOT NULL CHECK (length(business_description) >= 10),
-    primary_goal TEXT NOT NULL,
-    target_audience TEXT,
-    revenue_model TEXT,
-    competitive_advantage TEXT,
-    funding_status TEXT,
-    timeline TEXT,
-    resources TEXT,
-    challenges TEXT,
-    success_metrics TEXT,
-    additional_context TEXT,
-    emotional_drivers JSONB, -- Inferred by GPT-4o
-    
-    -- Journey context
-    stage VARCHAR(3) DEFAULT 'F5' CHECK (stage IN ('F1','F2','F3','F4','F5','F6','F7','F8','F9')),
-    trust_score INTEGER CHECK (trust_score >= 0 AND trust_score <= 100),
-    
-    -- Metadata
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    anonymized_at TIMESTAMP WITH TIME ZONE, -- For GDPR compliance
-    
-    -- Constraints
-    CONSTRAINT valid_input_length CHECK (
-      length(business_description) + length(primary_goal) >= 20
-    )
-  );
-
-  -- RLS Policy: Users can only access their own data
-  ALTER TABLE prompt_logs ENABLE ROW LEVEL SECURITY;
-  
-  CREATE POLICY prompt_logs_rls ON prompt_logs
-    FOR ALL TO authenticated
-    USING (auth.uid() = user_id)
-    WITH CHECK (auth.uid() = user_id);
-
-  -- Performance indexes for <200ms query targets
-  CREATE INDEX idx_prompt_logs_user_id ON prompt_logs(user_id);
-  CREATE INDEX idx_prompt_logs_created_at ON prompt_logs(created_at DESC);
-  CREATE INDEX idx_prompt_logs_stage ON prompt_logs(stage);
-  CREATE INDEX idx_prompt_logs_trust_score ON prompt_logs(trust_score) WHERE trust_score IS NOT NULL;
-
-  -- GDPR compliance: Automated anonymization after 24 months
-  SELECT cron.schedule(
-    'anonymize-old-prompts',
-    '0 2 * * 0', -- Weekly on Sunday at 2 AM
-    $$
-    UPDATE prompt_logs 
-    SET 
-      business_description = '[ANONYMIZED]',
-      primary_goal = '[ANONYMIZED]',
-      target_audience = '[ANONYMIZED]',
-      anonymized_at = NOW()
-    WHERE created_at < NOW() - INTERVAL '24 months'
-      AND anonymized_at IS NULL;
-    $$
-  );
-
-  -- Trigger for updated_at timestamp
-  CREATE OR REPLACE FUNCTION update_updated_at_column()
-  RETURNS TRIGGER AS $$
-  BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-  END;
-  $$ language 'plpgsql';
-
-  CREATE TRIGGER update_prompt_logs_updated_at
-    BEFORE UPDATE ON prompt_logs
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
-  ```
-
-## AI-Specific Documentation Guidelines
-
-### 1. AI Usage Documentation
-For each TaskMaster task, include:
-
-#### Validation Steps
-- **Automated Tests**: Reference specific test files (e.g., `backend/tests/taskX.test.js`)
-- **Manual Review Steps**: Checklist for human validation
-- **Cross-Verification**: Compare outputs with expected schemas and PRD requirements
-
-#### Edge Cases
-- **Invalid Inputs**: Document handling of malformed or missing data
-- **API Failures**: Timeout handling, retry logic, fallback strategies
-- **Rate Limits**: Circuit breaker patterns, degraded service modes
-
-#### Performance Metrics
-- **API Response Time**: Target ≤200ms for standard endpoints, ≤2s for AI generation
-- **Throughput**: Concurrent user handling (10,000 users target)
-- **Error Rates**: <1% error rate across all endpoints
-
-#### Hallucination Checks
-- **Cross-Verification**: Validate AI outputs against `backend/routes/` implementations
-- **Schema Validation**: Ensure outputs match defined TypeScript interfaces
-- **Content Validation**: Check for appropriate content, tone, and accuracy
-
-#### Drift Monitoring
-- **Task Success Rate**: Track via PostHog events and dashboard metrics
-- **Performance Degradation**: Monitor latency trends and error rate increases
-- **Quality Metrics**: TrustDelta scores, emotional resonance, user satisfaction
-
-### 2. Centralized AI Usage Rules
-Create `canai-ai-usage-rules.md` with:
-- **Task Definitions**: Standardized AI task patterns and templates
-- **Code Patterns**: Reusable AI integration patterns and best practices
-- **Testing Requirements**: AI-specific testing strategies and validation
-- **Monitoring Standards**: Performance and quality monitoring for AI components
-- **Oversight Procedures**: Human review requirements and escalation paths
-- **TaskMaster Integration**: Enforce via CI/CD and automated validation
-- **Reference Integration**: Link from `canai-docs-rules.md` and `canai-structure-rules.md`
-
-## Quality Standards and Validation
-
-### 1. PRD Alignment Requirements
-- **Word Count Compliance**: 700-800 words for business plans, 300-400 for audits
-- **Emotional Resonance**: Document >0.7 arousal, >0.6 valence targets with Hume AI validation
-- **TrustDelta Metrics**: ≥4.0/5.0 comparison scores in SparkSplit with measurement methodology
-- **Performance SLAs**: 99.9% uptime, <2s response times, <1% error rates with monitoring setup
-
-### 2. Documentation Testing Standards
-- **Code Examples**: All examples must compile and execute successfully
-- **API Schemas**: Validate against actual endpoint implementations using automated testing
-- **Link Validation**: Internal and external references must be functional (automated checking)
-- **Accessibility Compliance**: Documentation itself must meet WCAG 2.2 AA standards
-- **Markdownlint Validation**: Enforce consistent formatting with `.markdownlintrc` configuration
-
-### 3. Security Documentation Requirements
-- **Authentication Flow**: MemberStack JWT validation patterns with code examples
-- **Data Protection**: Encryption, anonymization, and purge procedures with automation
-- **Input Validation**: DOMPurify sanitization and GPT-4o NSFW filtering implementation
-- **Compliance Auditing**: GDPR/CCPA compliance verification procedures and audit trails
-
-## Integration Documentation Standards
-
-### 1. Third-Party Service Integration
-- **PostHog Analytics**: Event schema, tracking patterns, dashboard configuration with examples
-- **Supabase Database**: RLS policies, migration procedures, type generation automation
-- **Make.com Automation**: Webhook signatures, scenario configurations, error handling patterns
-- **Stripe Payments**: Payment flows, webhook validation, refund procedures with security
-- **AI Services**: GPT-4o prompts, Hume AI circuit breakers, fallback strategies with performance metrics
-
-### 2. Monitoring and Observability
-- **Logging Standards**: Structured logging with correlation IDs and trace information
-- **Performance Metrics**: Latency tracking, error rate monitoring, throughput measurement
-- **Alert Configuration**: Threshold definitions and escalation procedures
-- **Dashboard Setup**: PostHog analytics and Sentry error tracking configuration
-
-## Templates and Reusable Patterns
-
-### 1. ADR Template
-Use `docs/development/adr-template.md` for architectural decisions:
-```markdown
-# ADR-XXX: [Decision Title]
-
-## Status
-[Proposed | Accepted | Deprecated | Superseded]
-
-## Context
-[Description of the situation and forces at play]
-
-## Decision
-[The change that we're proposing or have agreed to implement]
-
-## Consequences
-[What becomes easier or more difficult to do because of this change]
-
-## PRD Alignment
-[How this decision supports PRD requirements and objectives]
-
-## Implementation
-[Technical details and migration path]
-```
-
-### 2. Rule Library Patterns
-Document in `docs/rules/library.md`:
-- **Joi Validation Patterns**: Reusable schema validation templates
-- **PostHog Logging Patterns**: Standardized event tracking implementations
-- **Error Handling Patterns**: Consistent error response and recovery templates
-- **Authentication Patterns**: MemberStack JWT validation and RLS implementation
-- **Performance Patterns**: Caching, optimization, and monitoring templates
-
-## Validation and Enforcement
-
-### 1. Automated Documentation Validation
-- **CI/CD Integration**: Validate documentation in `.github/workflows/docs.yml`
-- **Schema Validation**: Verify API documentation matches implementations using Jest tests
-- **Link Checking**: Automated validation of internal and external references
-- **Spell Checking**: Continuous spell check for all documentation files
-- **Accessibility Testing**: axe-core validation for documentation accessibility
-- **Markdownlint Integration**: Enforce consistent formatting with `.markdownlintrc` configuration
-
-### 2. Manual Review Process
-- **Technical Review**: Accuracy and completeness verification by development team
-- **Architecture Review**: Alignment with system design principles and PRD requirements
-- **Security Review**: Compliance with security requirements and best practices
-- **User Experience Review**: Developer experience improvements and clarity enhancements
-
-### 3. Quality Metrics and Tracking
-- **Documentation Coverage**: Track percentage of code with adequate documentation
-- **Update Frequency**: Monitor documentation freshness and relevance
-- **Usage Analytics**: Track which documentation is most accessed and useful
-- **Feedback Integration**: Collect and act on developer feedback for continuous improvement
-
-## Cross-Rule Validation and Interdependencies
-
-### 1. Rule Interdependency Matrix
-Document in `docs/rules/interdependency-matrix.md`:
-- **Direct Dependencies**: Rules that directly depend on each other
-- **Indirect Dependencies**: Secondary relationships between rules
-- **Conflict Resolution**: How to handle conflicting rule requirements
-- **Update Propagation**: How changes in one rule affect others
-
-### 2. Validation Process
-- **Cross-Rule Consistency**: Ensure rules don't contradict each other
-- **Completeness Checking**: Verify all aspects of the system are covered
-- **Gap Analysis**: Identify areas where additional rules may be needed
-- **Impact Assessment**: Understand the full impact of rule changes
-
-## README.md Structure Standard
-
-### Required Sections for Primary README
-1. **Project Overview**: CanAI Emotional Sovereignty Platform comprehensive description
-2. **9-Stage Journey Map**: Visual flow with component mapping (F1-F9) and Mermaid diagrams
-3. **Quick Start Guide**: <5 minute setup for new developers with prerequisites
-4. **Architecture Overview**: Backend/frontend/database relationships with integration points
-5. **API Reference**: Key endpoints with curl examples, schemas, and authentication
-6. **Performance Targets**: PRD-defined SLAs (<2s deliverable, 99.9% uptime) with monitoring
-7. **Security Requirements**: Authentication, RLS, GDPR compliance with implementation details
-8. **Testing Strategy**: Unit, integration, accessibility, load testing with coverage targets
-9. **Deployment Guide**: Render setup and CI/CD procedures with rollback instructions
-10. **Troubleshooting**: Common issues and solutions with error codes and recovery procedures
-
-### Example README Structure
-```markdown
-# CanAI Emotional Sovereignty Platform
-
-> AI-driven solutions that deliver emotional intelligence and business growth through a comprehensive 9-stage user journey, achieving TrustDelta ≥4.2 and emotional resonance >0.7.
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ and npm 8+
-- Supabase account with project setup
-- MemberStack account with API keys
-- GPT-4o API access
-- Hume AI API access (optional, with fallback)
-
-### Setup
-```bash
-# Clone and setup
-git clone [repo-url]
-cd canai-platform
-npm install
-
-# Environment configuration
-cp .env.example .env
-# Required: SUPABASE_URL, SUPABASE_ANON_KEY, MEMBERSTACK_PUBLIC_KEY
-# Required: OPENAI_API_KEY, STRIPE_PUBLISHABLE_KEY
-# Optional: HUME_API_KEY (fallback to GPT-4o sentiment)
-
-# Database setup
-npm run db:migrate
-npm run db:seed
-
-# Start development servers
-npm run dev:backend  # Port 10000 - API server
-npm run dev:frontend # Port 5173 - React application
-```
-
-## 🏗️ Architecture
-
-### 9-Stage User Journey
-```
-F1 → F2 → F3 → F4 → F5 → F6 → F7 → F8 → F9
-Discovery → Funnel → Sparks → Purchase → Input → Mirror → Generate → Split → Feedback
-```
-
-### System Components
-- **Frontend**: React/Next.js with TypeScript (`frontend/src/`)
-- **Backend**: Express.js API server (`backend/routes/`)
-- **Database**: Supabase with RLS (`databases/migrations/`)
-- **AI Services**: GPT-4o + Hume AI with circuit breakers
-- **Integrations**: Stripe, Make.com, PostHog, MemberStack
-
-## 📊 Performance Targets
-
-| Metric | Target | Monitoring |
-|--------|--------|------------|
-| Response Time | <2s deliverable, <1.5s sparks | PostHog + Sentry |
-| Uptime | 99.9% | Render monitoring |
-| Concurrency | 10,000 users | Load balancing |
-| Error Rate | <1% | Error tracking |
-| TrustDelta | ≥4.0/5.0 | SparkSplit comparison |
-| Emotional Resonance | >0.7 | Hume AI validation |
-
-## 🔐 Security
-
-### Authentication & Authorization
-- **MemberStack JWT**: User authentication with token validation
-- **Supabase RLS**: Row-Level Security for data isolation
-- **API Rate Limiting**: 100 req/min/IP across all endpoints
-- **Input Sanitization**: DOMPurify + GPT-4o NSFW filtering
-
-### Data Protection
-- **Encryption**: At-rest and in-transit encryption
-- **GDPR Compliance**: 24-month retention with automated anonymization
-- **Audit Trails**: Comprehensive logging for compliance
-- **Secure Headers**: CSP, HSTS, and security middleware
-
-## 🧪 Testing Strategy
-
-### Test Coverage Requirements
-- **Unit Tests**: >80% coverage with Jest
-- **Integration Tests**: API endpoints with Supertest
-- **Accessibility Tests**: WCAG 2.2 AA with axe-core
-- **Load Tests**: 10k concurrent users with Locust
-- **E2E Tests**: Full journey validation
-
-### Running Tests
-```bash
-npm run test:unit      # Unit tests with coverage
-npm run test:integration # API integration tests
-npm run test:accessibility # WCAG compliance
-npm run test:load      # Performance testing
-npm run test:e2e       # End-to-end scenarios
-```
-```
-
-## Technical Implementation Notes
-- **Target Directories**: `frontend/src/`, `backend/`, `databases/`, `docs/`
-- **File Patterns**: `*.ts`, `*.tsx`, `*.js`, `*.sql`, `*.md`, `*.yaml`
-- **Architecture Stack**: React/Next.js, Express, Supabase, Render deployment
-- **Integration Points**: Stripe, MemberStack, Make.com, GPT-4o, Hume AI, PostHog
-- **Performance Targets**: <2s deliverable generation, 99.9% uptime, 10k concurrent users
-- **Compliance Requirements**: GDPR/CCPA, WCAG 2.2 AA, 24-month data retention
-
-## Enforcement and Automation
-
-### 1. CI/CD Integration
-- **Pre-commit Hooks**: Validate documentation completeness before commits
-- **PR Checks**: Automated documentation review in pull requests using `.github/workflows/docs.yml`
-- **Deployment Gates**: Documentation requirements for production deployments
-- **Quality Metrics**: Track documentation coverage and quality over time
-
-### 2. Monitoring and Feedback
-- **Usage Analytics**: Track documentation access patterns and effectiveness
-- **Developer Feedback**: Regular surveys and feedback collection
-- **Continuous Improvement**: Monthly review cycles with quarterly comprehensive audits
-- **Tool Enhancement**: Documentation generation and validation improvements
+Provide clear, concise, and maintainable documentation to support the 9-stage user journey (F1-F9), aligning with PRD goals (Sections 5, 6, 12) and enhancing developer and user experience.
+
+## Scope
+Offer flexible guidance for creating and maintaining documentation, ensuring alignment with PRD objectives, ease of use, and adaptability to project evolution.
+
+## Guiding Principles
+
+### Clarity
+- Write concise, accessible documentation for developers and users.
+- Avoid jargon and overly technical details unless necessary.
+
+### PRD Alignment
+- Map documentation to PRD-defined stages and goals (e.g., user journey, metrics).
+- Update documentation to reflect PRD changes.
+
+### Maintainability
+- Keep documentation current with project updates.
+- Use consistent formats to simplify maintenance.
+
+### Accessibility
+- Ensure documentation is easy to navigate and understand.
+- Support both technical and non-technical audiences.
+
+## Documentation Structure
+
+### Format
+- Use Markdown for consistency and portability.
+- Organize into logical categories (e.g., API, developer guides, user guides).
+- Name files clearly (e.g., kebab-case) and include metadata (title, purpose, date).
+
+### Key Documentation Areas
+- **Project Overview**: Summarize the platform, its goals, and key components.
+- **API Reference**: Document endpoints with clear schemas, requests, and responses.
+- **Developer Guides**: Provide setup, integration, and troubleshooting steps.
+- **User Journey**: Map components and processes to F1-F9 stages.
+- **Database**: Describe schemas, access policies, and retention guidelines.
+
+### User Journey Documentation
+- Align documentation with the 9-stage journey (F1-F9):
+  - **F1: Discovery Hook**: Document trust-building features and interactions.
+  - **F2: Discovery Funnel**: Explain input validation and user flows.
+  - **F3: Spark Layer**: Cover spark generation and selection processes.
+  - **F4: Purchase Flow**: Detail payment integration and checkout.
+  - **F5: Input Collection**: Describe input collection and progress saving.
+  - **F6: Intent Mirror**: Outline summarization and confidence scoring.
+  - **F7: Deliverable**: Document output generation and quality validation.
+  - **F8: SparkSplit**: Explain output comparison and preference tracking.
+  - **F9: Feedback**: Cover feedback collection and sentiment analysis.
+- Use simple diagrams (e.g., flowcharts) to illustrate processes where helpful.
+
+## Implementation Guidance
+
+### Code Documentation
+- Include brief, clear comments in code to explain purpose and context.
+- Link code to relevant PRD sections and journey stages where applicable.
+
+### API Documentation
+- Provide endpoint descriptions, example requests, and responses.
+- Highlight authentication, rate limits, and input validation requirements.
+
+### Integrations
+- Document connections to external services (e.g., Supabase, Stripe, PostHog).
+- Include high-level setup and configuration steps.
+
+### Validation
+- Verify code examples and links for accuracy.
+- Use linting tools to ensure consistent Markdown formatting.
+- Gather feedback from developers to improve usability.
+
+### README
+- Include an overview, quick setup guide, journey map, key components, and performance goals.
+- Keep it concise and beginner-friendly.
+
+## Quality Assurance
+- Regularly update documentation to reflect project changes.
+- Ensure documentation remains concise and relevant.
+- Validate alignment with PRD and user journey stages.
+
+## Ownership
+- **Product Team**: Defines documentation requirements.
+- **Backend Team**: Documents APIs and integrations.
+- **QA Team**: Verifies accuracy and usability.
+- **DevOps Team**: Supports documentation for deployment and monitoring.
+
+## References
+- **PRD Sections**: 5 (User Journey), 6 (Requirements), 12 (Metrics).
+- **Standards**: Prioritize clarity, PRD alignment, and maintainability.
 
 ---
 
-**Version**: 3.1.0 - Enhanced with markdownlint integration and centralized AI usage rules
-**Last Updated**: June 18, 2025 - Final audit enhancements for maximum Roo Code IDE support
-**Review Cycle**: Monthly PRD alignment check, quarterly comprehensive audit
-**Dependencies**: PRD.md, project-structure-mapping.md, coding-standards-style-guide.md, technical-architecture-document-(TAD).md
-**Validation**: CI/CD enforced via `.github/workflows/docs.yml` with automated testing and quality gates
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+**Created**: June 19, 2025
+**Version**: 1.0.0
+**Alignment**: PRD Sections 5, 6, 12

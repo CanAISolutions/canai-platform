@@ -1,12 +1,12 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
 import StandardCard from '@/components/StandardCard';
 import {
-  SectionTitle,
-  BodyText,
-  CaptionText,
+    BodyText,
+    CaptionText,
+    SectionTitle,
 } from '@/components/StandardTypography';
-import { Instagram, Facebook, Share2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Facebook, Instagram, Share2 } from 'lucide-react';
+import React from 'react';
 
 interface EnhancedSocialShareProps {
   onShare: (platform: 'instagram' | 'facebook') => void;
@@ -31,7 +31,7 @@ const EnhancedSocialShare: React.FC<EnhancedSocialShareProps> = ({
         </div>
 
         <BodyText className="text-sm opacity-90 mb-0">
-          Help other founders discover CanAI's power
+          Help other founders discover CanAI&apos;s power
         </BodyText>
       </div>
 

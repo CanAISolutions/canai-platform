@@ -1,8 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Star, Users, Award } from 'lucide-react';
+import { Award, Star, Users } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 // CountUp animation helper
-function useCountUp({ to, duration = 1200, step = 1, start = 0 }) {
+function useCountUp({
+  to,
+  duration = 1200,
+  step = 1,
+  start = 0
+}: {
+  to: number;
+  duration?: number;
+  step?: number;
+  start?: number;
+}) {
   const [value, setValue] = useState(start);
   const startTime = useRef<number | null>(null);
 
@@ -94,7 +104,7 @@ const TrustIndicators = () => {
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`text-yellow-300 fill-current transition-all duration-300 will-change-transform 
+                className={`text-yellow-300 fill-current transition-all duration-300 will-change-transform
                   ${
                     starVisible[i]
                       ? 'scale-110 opacity-100 animate-glow-pop'
@@ -119,8 +129,8 @@ const TrustIndicators = () => {
             }}
             id="trust-testimonial"
           >
-            "CanAI launched my bakery! The business plan was exactly what I
-            needed for investors."
+            &quot;CanAI launched my bakery! The business plan was exactly what I
+            needed for investors.&quot;
           </blockquote>
           <cite
             className="text-canai-light opacity-95 not-italic font-manrope font-semibold"

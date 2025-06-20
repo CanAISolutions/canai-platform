@@ -824,6 +824,7 @@ PRs must pass `lint.yml` checks.
 - Update `.mdc`, `.eslintrc.json`, `.prettierrc`, `.markdownlintrc`, and Taskmaster AI settings.
 - Run `npm outdated` to update dependencies.
 - Document in `CHANGELOG.md`:
+
   ```markdown
   # Changelog
 

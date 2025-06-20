@@ -15,10 +15,13 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Database schemas as defined in PRD
 export interface SessionLog {
   id: string;
-  user_id?: string;
+  user_id?: string | null;
   stripe_payment_id?: string;
   interaction_type: string;
-  interaction_details: Record<string, string | number | boolean | null | undefined>;
+  interaction_details: Record<
+    string,
+    string | number | boolean | null | undefined
+  >;
   created_at: string;
 }
 
@@ -50,20 +53,13 @@ export interface SparkLog {
 
 // Enhanced error log interface with support_request column
 export interface ErrorLog {
-  id: string;
+  id?: string;
+  created_at?: string;
   user_id?: string;
   error_message: string;
   action: string;
+  error_type: 'timeout' | 'invalid_input' | 'stripe_failure' | 'low_confidence' | 'contradiction' | 'nsfw' | 'token_limit';
   support_request?: boolean;
-  error_type:
-    | 'timeout'
-    | 'invalid_input'
-    | 'stripe_failure'
-    | 'low_confidence'
-    | 'contradiction'
-    | 'nsfw'
-    | 'token_limit';
-  created_at: string;
 }
 
 // RLS Policies (to be applied in Supabase dashboard)
@@ -280,22 +276,19 @@ export const insertIntentMirrorLog = async (log: {
 };
 
 // Enhanced error logging with support_request
-export const insertErrorLog = async (
-  log: Omit<ErrorLog, 'id' | 'created_at'>
-) => {
+export const insertErrorLog = async (log: Omit<ErrorLog, 'id' | 'created_at'>) => {
   const { data, error } = await supabase
     .from('error_logs')
-    .insert([
-      {
-        ...log,
-        support_request: log.support_request || false,
-      },
-    ])
-    .select();
+    .insert({
+      ...log,
+      support_request: log.support_request ?? false
+    })
+    .select()
+    .single();
 
   if (error) {
-    console.error('[Supabase] Error inserting error log:', error);
-    throw error;
+    console.error('Error inserting error log:', error);
+    return null;
   }
 
   return data;

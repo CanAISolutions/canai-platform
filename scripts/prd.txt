@@ -165,7 +165,7 @@ personal tone, emotional drivers, or local context. **CanAI** addresses this wit
 - **Low-Friction Onboarding**: A 2-step **Discovery Funnel** (≤30s, stored in
   `databases/initial_prompt_logs`) captures minimal inputs.
 - **Emotionally Intelligent Outputs**: **GPT-4o** (`backend/prompts/`) and **Hume AI**
-  (`backend/services/hume.js`) deliver tailored deliverables with TrustDelta ≥4.0/5.0 and emotional
+  (`backend/services/hume.js`) deliver tailored deliverables with TrustDelta ≥4.2/5.0 and emotional
   resonance >0.7.
 - **Robust Backend Processes**: **Supabase** (`databases/`) ensures data persistence, **Make.com**
   (`backend/webhooks/`) orchestrates flows, and middleware (`backend/middleware/error.js`) handles
@@ -179,7 +179,7 @@ personal tone, emotional drivers, or local context. **CanAI** addresses this wit
   completion) via `backend/routes/funnel.js`, stored in `databases/initial_prompt_logs`, driving
   purchase intent.
 - **Personalized Outputs**: Deliver AI-driven solutions using 12-field inputs
-  (`backend/routes/inputs.js`, `databases/prompt_logs`), achieving TrustDelta ≥4.0/5.0 and emotional
+  (`backend/routes/inputs.js`, `databases/prompt_logs`), achieving TrustDelta ≥4.2/5.0 and emotional
   resonance >0.7 via **GPT-4o** (`backend/prompts/`) and **Hume AI** (`backend/services/hume.js`).
 - **Trust and Transparency**: Prove CanAI’s superiority via **SparkSplit**
   (`backend/services/sparkSplit.js`, `databases/comparisons`), with ≥65% user preference, supported
@@ -389,9 +389,9 @@ graph TD
       `trust_indicators_cache`, TTL: 5min). Backend retries 3 times (500ms intervals) via
       `backend/middleware/retry.js`.
 
-    6.1 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
-    implementing Section 6.1, focusing on backend development. Each task includes a description,
-    inputs, outputs, dependencies, and Cursor AI instructions.
+      6.1 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
+      implementing Section 6.1, focusing on backend development. Each task includes a description,
+      inputs, outputs, dependencies, and Cursor AI instructions.
 
 ```yaml
 tasks:
@@ -838,9 +838,9 @@ tasks:
       `sparks_cache`, TTL: 5min). Backend retries 3 times (500ms intervals) via
       `backend/middleware/retry.js`.
 
-    6.3 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
-    implementing Section 6.3, focusing on backend development. Tasks are granular, tied to project
-    files, and optimized for Cursor AI.
+      6.3 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
+      implementing Section 6.3, focusing on backend development. Tasks are granular, tied to project
+      files, and optimized for Cursor AI.
 
 ```yaml
 tasks:
@@ -1022,9 +1022,9 @@ tasks:
     - **F4-E1**: On authentication failure, retry 3 times (exponential backoff, 2^i \* 1000ms) via
       `backend/middleware/retry.js`. Log to `databases/error_logs`.
 
-    6.4 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
-    implementing Section 6.4, focusing on backend development. Tasks are granular, tied to project
-    files, and optimized for Cursor AI.
+      6.4 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
+      implementing Section 6.4, focusing on backend development. Tasks are granular, tied to project
+      files, and optimized for Cursor AI.
 
 ```yaml
 tasks:
@@ -1255,9 +1255,9 @@ validation, 1hr expiry) Service: backend/services/supabase.js (fetch prompt_logs
       (key: `input_progress_cache`, TTL: 5min). Backend retries 3 times (500ms intervals) via
       `backend/middleware/retry.js`.
 
-    6.5 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
-    implementing Section 6.5, focusing on backend development. Tasks are granular, tied to project
-    files, and optimized for Cursor AI.
+      6.5 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
+      implementing Section 6.5, focusing on backend development. Tasks are granular, tied to project
+      files, and optimized for Cursor AI.
 
 ```yaml
 tasks:
@@ -1680,9 +1680,9 @@ tasks:
       localStorage (key: `deliverable_cache`, TTL: 5min). Backend retries 3 times (500ms intervals)
       via `backend/middleware/retry.js`.
 
-    6.7 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
-    implementing Section 6.7, focusing on backend development. Tasks are granular, tied to project
-    files, and optimized for Cursor AI.
+      6.7 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
+      implementing Section 6.7, focusing on backend development. Tasks are granular, tied to project
+      files, and optimized for Cursor AI.
 
 ```yaml
 tasks:
@@ -1881,9 +1881,9 @@ tasks:
       If `/v1/spark-split` fails, cache response in localStorage (key: `spark_split_cache`, TTL:
       5min). Backend retries 3 times (500ms intervals) via `backend/middleware/retry.js`.
 
-    6.8 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
-    implementing Section 6.8, focusing on backend development. Tasks are granular, tied to project
-    files, and optimized for Cursor AI.
+      6.8 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
+      implementing Section 6.8, focusing on backend development. Tasks are granular, tied to project
+      files, and optimized for Cursor AI.
 
 ```yaml
 tasks:
@@ -2091,9 +2091,9 @@ tasks:
       `purge_status_cache`, TTL: 5min). Backend retries 3 times (500ms intervals) via
       `backend/middleware/retry.js`.
 
-    6.9 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
-    implementing Section 6.9, focusing on backend development. Tasks are granular, tied to project
-    files, and optimized for Cursor AI.
+      6.9 TaskMaster-Compatible Task Breakdown Below is a TaskMaster-compatible task breakdown for
+      implementing Section 6.9, focusing on backend development. Tasks are granular, tied to project
+      files, and optimized for Cursor AI.
 
 ```yaml
 tasks:
