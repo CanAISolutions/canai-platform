@@ -1,7 +1,7 @@
 ---
-description:
-globs: *.md
-alwaysApply: false
+description: Guidelines for continuously improving Roo Code rules based on emerging code patterns and best practices.
+globs: **/*
+alwaysApply: true
 ---
 
 - **Rule Improvement Triggers:**
@@ -38,7 +38,7 @@ alwaysApply: false
     select: { id: true, email: true },
     where: { status: 'ACTIVE' }
   });
-
+  
   // Consider adding to [prisma.md](mdc:.roo/rules/prisma.md):
   // - Standard select fields
   // - Common where conditions

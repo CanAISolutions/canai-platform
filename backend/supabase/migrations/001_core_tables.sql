@@ -47,6 +47,9 @@ CREATE INDEX idx_prompt_logs_completion ON prompt_logs(completion_percentage DES
 CREATE INDEX idx_prompt_logs_validation_status ON prompt_logs(validation_status, updated_at DESC);
 CREATE INDEX idx_prompt_logs_spark_log_id ON prompt_logs(spark_log_id);
 
+-- Composite index for prompt_logs: (user_id, created_at)
+CREATE INDEX IF NOT EXISTS idx_prompt_logs_user_id_created_at ON prompt_logs(user_id, created_at DESC);
+
 -- Row Level Security
 ALTER TABLE prompt_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY prompt_logs_rls ON prompt_logs FOR ALL TO authenticated USING (auth.uid() = user_id);
@@ -88,6 +91,9 @@ CREATE INDEX idx_spark_logs_product_track ON spark_logs(product_track, status, c
 CREATE INDEX idx_spark_logs_status ON spark_logs(status, expires_at);
 CREATE INDEX idx_spark_logs_attempt_count ON spark_logs(attempt_count, created_at DESC);
 CREATE INDEX idx_spark_logs_initial_prompt_id ON spark_logs(initial_prompt_id, created_at DESC);
+
+-- Composite index for spark_logs: (user_id, created_at)
+CREATE INDEX IF NOT EXISTS idx_spark_logs_user_id_created_at ON spark_logs(user_id, created_at DESC);
 
 -- Row Level Security
 ALTER TABLE spark_logs ENABLE ROW LEVEL SECURITY;
@@ -134,6 +140,9 @@ CREATE INDEX idx_comparisons_user_id ON comparisons(user_id, created_at DESC);
 CREATE INDEX idx_comparisons_trust_delta ON comparisons(trust_delta DESC, created_at DESC);
 CREATE INDEX idx_comparisons_user_preference ON comparisons(user_preference, created_at DESC);
 CREATE INDEX idx_comparisons_status ON comparisons(status, updated_at DESC);
+
+-- Composite index for comparisons: (user_id, created_at)
+CREATE INDEX IF NOT EXISTS idx_comparisons_user_id_created_at ON comparisons(user_id, created_at DESC);
 
 -- Row Level Security
 ALTER TABLE comparisons ENABLE ROW LEVEL SECURITY;
