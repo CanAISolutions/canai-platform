@@ -1,5 +1,12 @@
 # Supabase Database Setup
 
+> **STATUS: Preparation/Design Phase**
+> 
+> - Migration files and RLS policy scripts are written and staged in `backend/supabase/migrations/`.
+> - Integration tests for RLS enforcement are ready in `backend/tests/integration/rls-policies.test.js`.
+> - **Note:** The actual Supabase tables and policies are not yet deployed. Testing will be performed after initial schema migration.
+> - See PRD.md and tasks.json for the planned schema and security requirements.
+
 This directory contains the database schema and migration files for the CanAI Emotional Sovereignty Platform.
 
 ## Quick Start
