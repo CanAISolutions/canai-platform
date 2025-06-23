@@ -1,4 +1,9 @@
 const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+const morgan = require('morgan');
+require('dotenv').config();
+
 const app = express();
 
 // ==============================================
@@ -14,28 +19,90 @@ app.set('case sensitive routing', true);
 app.set('strict routing', true);
 
 // ==============================================
-// Middleware Stack
+// Security & Middleware Stack
 // ==============================================
 
-// Core body parsing middleware
-app.use(express.json());
+// Security headers middleware (helmet)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+    },
+  },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  }
+}));
 
-// TODO: Add security middleware (helmet)
-// TODO: Add CORS configuration
-// TODO: Add request logging (morgan)
-// TODO: Add rate limiting
-// TODO: Add static file serving
+// CORS configuration
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || ['http://localhost:3000', 'http://localhost:5173'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Request logging middleware (morgan)
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ==============================================
 // Routes
 // ==============================================
 
 // Health check endpoint
-app.get('/', (req, res) => res.send('Backend is running'));
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    message: 'CanAI Backend Server is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Dedicated health endpoint for monitoring
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    memory: process.memoryUsage()
+  });
+});
 
 // TODO: Add API routes
 // TODO: Add authentication routes
 // TODO: Add webhook routes
+
+// ==============================================
+// Error Handling
+// ==============================================
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `Route ${req.originalUrl} not found`,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(err.status || 500).json({
+    error: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message,
+    timestamp: new Date().toISOString()
+  });
+});
 
 // ==============================================
 // Server Configuration
@@ -43,4 +110,21 @@ app.get('/', (req, res) => res.send('Backend is running'));
 
 // Match Render's port or local testing
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+const server = app.listen(PORT, () => {
+  console.log(`🚀 CanAI Backend Server running on port ${PORT}`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔒 Security headers: enabled`);
+  console.log(`🌐 CORS: configured`);
+  console.log(`📝 Logging: ${process.env.NODE_ENV === 'production' ? 'combined' : 'dev'}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+  });
+});
+
+module.exports = app;
