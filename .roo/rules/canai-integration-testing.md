@@ -3,34 +3,23 @@ description:
 globs:
 alwaysApply: false
 ---
-
 # CanAI Integration Testing Patterns Guidelines
 
 ## Purpose
-
-Standardize integration testing patterns across the CanAI platform's 9-stage user journey (F1-F9),
-ensuring comprehensive coverage of external service integrations (Supabase, Make.com, AI services,
-Stripe) while maintaining emotional resonance validation and trust score verification.
+Standardize integration testing patterns across the CanAI platform's 9-stage user journey (F1-F9), ensuring comprehensive coverage of external service integrations (Supabase, Make.com, AI services, Stripe) while maintaining emotional resonance validation and trust score verification.
 
 ## Scope
-
-Apply to all integration tests covering the user journey flow, API integrations, database
-operations, and third-party service interactions, based on the
-[test case specification](mdc:docs/test-case-specification.md) and existing
-[testing patterns](mdc:frontend/src/tests/IntentMirror.test.tsx).
+Apply to all integration tests covering the user journey flow, API integrations, database operations, and third-party service interactions, based on the [test case specification](mdc:docs/test-case-specification.md) and existing [testing patterns](mdc:frontend/src/tests/IntentMirror.test.tsx).
 
 ## Core Principles
 
 ### Testing Architecture
-
 - **Journey-Based Testing**: Test complete user flows through F1-F9 stages
 - **Service Integration**: Validate all external service interactions
 - **Emotional Validation**: Test trust scores and emotional resonance metrics
-- **Performance Testing**: Ensure response times meet PRD requirements (<200ms API, <1.5s
-  generation)
+- **Performance Testing**: Ensure response times meet PRD requirements (<200ms API, <1.5s generation)
 
 ### Test Environment Strategy
-
 - **Isolated Test Environment**: Use dedicated test database and service mocks
 - **Realistic Data**: Test with scenario-based, consistent test data
 - **Cleanup Automation**: Ensure proper test data cleanup after each run
@@ -39,7 +28,6 @@ operations, and third-party service interactions, based on the
 ## Implementation Patterns
 
 ### ✅ Journey Flow Testing
-
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -58,7 +46,9 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <JourneyProvider initialStage="F1">{children}</JourneyProvider>
+        <JourneyProvider initialStage="F1">
+          {children}
+        </JourneyProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
@@ -98,13 +88,10 @@ describe('F1 to F3 Journey Integration', () => {
     fireEvent.click(generateButton);
 
     // Verify spark generation with trust scores
-    await waitFor(
-      () => {
-        expect(screen.getByText(/Trust Score:/)).toBeInTheDocument();
-        expect(screen.getByText(/Emotional Resonance:/)).toBeInTheDocument();
-      },
-      { timeout: 10000 }
-    );
+    await waitFor(() => {
+      expect(screen.getByText(/Trust Score:/)).toBeInTheDocument();
+      expect(screen.getByText(/Emotional Resonance:/)).toBeInTheDocument();
+    }, { timeout: 10000 });
 
     // Validate trust metrics
     const trustScoreElements = screen.getAllByText(/\d+\.\d+/);
@@ -116,7 +103,6 @@ describe('F1 to F3 Journey Integration', () => {
 ```
 
 ### ✅ API Integration Testing
-
 ```typescript
 describe('API Integration Tests', () => {
   const apiMock = {
@@ -139,16 +125,15 @@ describe('API Integration Tests', () => {
       .mockRejectedValueOnce(new Error('Server unavailable'))
       .mockResolvedValueOnce({
         ok: true,
-        json: () =>
-          Promise.resolve({
-            sparks: mockSparks,
-            correlation_id: correlationId,
-          }),
+        json: () => Promise.resolve({
+          sparks: mockSparks,
+          correlation_id: correlationId
+        }),
       });
 
     const result = await generateSparks({
       businessType: 'service',
-      primaryChallenge: 'Need marketing strategy',
+      primaryChallenge: 'Need marketing strategy'
     });
 
     // Verify retry attempts
@@ -174,7 +159,7 @@ describe('API Integration Tests', () => {
 
     const result = await generateIntentMirror({
       businessName: 'Test Business',
-      targetMarket: 'Small businesses',
+      targetMarket: 'Small businesses'
     });
 
     // Should receive fallback response with emotional consideration
@@ -186,7 +171,6 @@ describe('API Integration Tests', () => {
 ```
 
 ### ✅ Database Integration Testing
-
 ```typescript
 describe('Supabase Integration', () => {
   let testClient: SupabaseClient;
@@ -213,7 +197,7 @@ describe('Supabase Integration', () => {
       stage: 'F3',
       business_type: 'service',
       trust_score: 0.85,
-      emotional_resonance: 0.92,
+      emotional_resonance: 0.92
     };
 
     // Insert journey log
@@ -241,8 +225,8 @@ describe('Supabase Integration', () => {
       error_details: {
         endpoint: '/v1/sparks/generate',
         duration: 5000,
-        retry_count: 3,
-      },
+        retry_count: 3
+      }
     };
 
     const result = await insertErrorLog(errorData);
@@ -261,7 +245,6 @@ describe('Supabase Integration', () => {
 ```
 
 ### ✅ External Service Integration Testing
-
 ```typescript
 describe('Make.com Integration', () => {
   beforeEach(() => {
@@ -276,18 +259,18 @@ describe('Make.com Integration', () => {
       business_data: {
         name: 'Test Business',
         type: 'service',
-        selected_spark_id: 'spark-123',
+        selected_spark_id: 'spark-123'
       },
       trust_metrics: {
         trust_score: 0.88,
         emotional_resonance: 0.94,
-        confidence_level: 0.91,
-      },
+        confidence_level: 0.91
+      }
     };
 
     (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve({ success: true, workflow_id: 'wf-456' }),
+      json: () => Promise.resolve({ success: true, workflow_id: 'wf-456' })
     });
 
     const result = await triggerMakecomWorkflow('milestone_completed', milestoneData);
@@ -300,7 +283,7 @@ describe('Make.com Integration', () => {
           'Content-Type': 'application/json',
           'X-Correlation-ID': expect.any(String),
         }),
-        body: JSON.stringify(milestoneData),
+        body: JSON.stringify(milestoneData)
       })
     );
 
@@ -314,18 +297,17 @@ describe('Stripe Integration', () => {
       spark: {
         title: 'Premium Business Plan',
         product_id: 'prod_test123',
-        price: 97,
+        price: 97
       },
-      user_id: 'test-user-payment',
+      user_id: 'test-user-payment'
     };
 
     (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
-      json: () =>
-        Promise.resolve({
-          session_id: 'cs_test_123',
-          url: 'https://checkout.stripe.com/session/cs_test_123',
-        }),
+      json: () => Promise.resolve({
+        session_id: 'cs_test_123',
+        url: 'https://checkout.stripe.com/session/cs_test_123'
+      })
     });
 
     const result = await createStripeSession(paymentRequest);
@@ -349,9 +331,9 @@ describe('Stripe Integration', () => {
       spark: {
         title: '', // Invalid: empty title
         product_id: 'prod_test123',
-        price: 0, // Invalid: zero price
+        price: 0 // Invalid: zero price
       },
-      user_id: 'test-user-invalid',
+      user_id: 'test-user-invalid'
     };
 
     await expect(createStripeSession(invalidRequest)).rejects.toThrow(ValidationError);
@@ -360,7 +342,6 @@ describe('Stripe Integration', () => {
 ```
 
 ### ✅ Performance Integration Testing
-
 ```typescript
 describe('Performance Integration Tests', () => {
   it('meets PRD performance requirements across journey', async () => {
@@ -368,7 +349,7 @@ describe('Performance Integration Tests', () => {
       apiResponseTime: 0,
       sparkGenerationTime: 0,
       intentMirrorTime: 0,
-      deliverableGenerationTime: 0,
+      deliverableGenerationTime: 0
     };
 
     // Test API response time (<200ms)
@@ -380,7 +361,7 @@ describe('Performance Integration Tests', () => {
     const sparkStart = Date.now();
     await generateSparks({
       businessType: 'service',
-      primaryChallenge: 'Marketing strategy',
+      primaryChallenge: 'Marketing strategy'
     });
     performanceMetrics.sparkGenerationTime = Date.now() - sparkStart;
 
@@ -388,7 +369,7 @@ describe('Performance Integration Tests', () => {
     const intentStart = Date.now();
     await generateIntentMirror({
       businessName: 'Test Business',
-      targetMarket: 'SMBs',
+      targetMarket: 'SMBs'
     });
     performanceMetrics.intentMirrorTime = Date.now() - intentStart;
 
@@ -396,7 +377,7 @@ describe('Performance Integration Tests', () => {
     const deliverableStart = Date.now();
     await generateDeliverable({
       sparkId: 'test-spark-123',
-      userPreferences: {},
+      userPreferences: {}
     });
     performanceMetrics.deliverableGenerationTime = Date.now() - deliverableStart;
 
@@ -413,7 +394,7 @@ describe('Performance Integration Tests', () => {
       generateSparks({
         businessType: 'service',
         primaryChallenge: `Challenge ${i}`,
-        userId: `concurrent-user-${i}`,
+        userId: `concurrent-user-${i}`
       })
     );
 
@@ -435,7 +416,6 @@ describe('Performance Integration Tests', () => {
 ## Test Data Management
 
 ### ✅ Scenario-Based Test Data
-
 ```typescript
 // Test scenarios based on real user personas
 export const testScenarios = {
@@ -447,7 +427,7 @@ export const testScenarios = {
     preferredTone: 'inspirational',
     desiredOutcome: 'grow_customers',
     expectedTrustScore: 0.85,
-    expectedEmotionalResonance: 0.92,
+    expectedEmotionalResonance: 0.92
   },
 
   techStartup: {
@@ -458,7 +438,7 @@ export const testScenarios = {
     preferredTone: 'bold',
     desiredOutcome: 'scale_operations',
     expectedTrustScore: 0.78,
-    expectedEmotionalResonance: 0.86,
+    expectedEmotionalResonance: 0.86
   },
 
   localBakery: {
@@ -469,8 +449,8 @@ export const testScenarios = {
     preferredTone: 'warm',
     desiredOutcome: 'increase_revenue',
     expectedTrustScore: 0.91,
-    expectedEmotionalResonance: 0.95,
-  },
+    expectedEmotionalResonance: 0.95
+  }
 };
 
 // Test data factory
@@ -480,13 +460,12 @@ export const createTestUser = (scenario: keyof typeof testScenarios) => {
     ...baseData,
     userId: `test-${scenario}-${Date.now()}`,
     createdAt: new Date().toISOString(),
-    sessionId: generateCorrelationId(),
+    sessionId: generateCorrelationId()
   };
 };
 ```
 
 ### ✅ Environment Setup & Cleanup
-
 ```typescript
 // Test environment setup
 export const setupTestEnvironment = async () => {
@@ -526,11 +505,14 @@ export const cleanupTestData = async (testClient: SupabaseClient) => {
     'error_logs',
     'prompt_logs',
     'spark_generations',
-    'deliverable_generations',
+    'deliverable_generations'
   ];
 
   for (const table of tables) {
-    await testClient.from(table).delete().like('user_id', 'test-%');
+    await testClient
+      .from(table)
+      .delete()
+      .like('user_id', 'test-%');
   }
 };
 ```
@@ -538,7 +520,6 @@ export const cleanupTestData = async (testClient: SupabaseClient) => {
 ## Accessibility Integration Testing
 
 ### ✅ WCAG Compliance Testing
-
 ```typescript
 import { axe, toHaveNoViolations } from 'jest-axe';
 
@@ -550,7 +531,7 @@ describe('Accessibility Integration', () => {
       { component: DiscoveryHook, path: '/' },
       { component: SparkLayer, path: '/sparks' },
       { component: IntentMirror, path: '/intent-mirror' },
-      { component: PurchaseFlow, path: '/purchase' },
+      { component: PurchaseFlow, path: '/purchase' }
     ];
 
     for (const stage of journeyStages) {
@@ -594,7 +575,6 @@ describe('Accessibility Integration', () => {
 ## Test Execution Patterns
 
 ### ✅ CI/CD Integration
-
 ```typescript
 // Jest/Vitest configuration for CI
 export default {
@@ -602,16 +582,20 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/src/tests/setup.ts'],
   testMatch: [
     '<rootDir>/src/tests/**/*.integration.test.{ts,tsx}',
-    '<rootDir>/src/tests/**/*.e2e.test.{ts,tsx}',
+    '<rootDir>/src/tests/**/*.e2e.test.{ts,tsx}'
   ],
-  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/tests/**', '!src/**/*.d.ts'],
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/tests/**',
+    '!src/**/*.d.ts'
+  ],
   coverageThreshold: {
     global: {
       branches: 80,
       functions: 85,
       lines: 85,
-      statements: 85,
-    },
+      statements: 85
+    }
   },
   testTimeout: 30000, // 30 seconds for integration tests
   maxWorkers: 2, // Limit parallelism for integration tests
@@ -653,7 +637,6 @@ export const runIntegrationTests = async () => {
 ## Anti-Patterns
 
 ### ❌ Avoid These Patterns
-
 ```typescript
 // DON'T: Test individual functions in isolation without integration context
 it('generates sparks', () => {
@@ -678,7 +661,6 @@ it('creates user session', async () => {
 ```
 
 ### ✅ Correct Patterns
-
 ```typescript
 // DO: Test complete user flows with realistic scenarios
 it('completes yoga studio journey from F1 to F7', async () => {
@@ -688,15 +670,9 @@ it('completes yoga studio journey from F1 to F7', async () => {
 
 // DO: Test both success and failure scenarios
 describe('Spark Generation', () => {
-  it('succeeds with valid input', async () => {
-    /* ... */
-  });
-  it('handles network failures gracefully', async () => {
-    /* ... */
-  });
-  it('provides fallback on service unavailable', async () => {
-    /* ... */
-  });
+  it('succeeds with valid input', async () => { /* ... */ });
+  it('handles network failures gracefully', async () => { /* ... */ });
+  it('provides fallback on service unavailable', async () => { /* ... */ });
 });
 
 // DO: Use dedicated test environment
@@ -719,4 +695,6 @@ afterEach(async () => {
 
 ---
 
-**Created**: January 2025 **Version**: 1.0.0 **Alignment**: PRD Sections 8, 9, 10
+**Created**: January 2025
+**Version**: 1.0.0
+**Alignment**: PRD Sections 8, 9, 10

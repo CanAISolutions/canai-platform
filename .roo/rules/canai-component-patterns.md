@@ -3,38 +3,24 @@ description:
 globs:
 alwaysApply: false
 ---
-
 # CanAI Component Patterns Guidelines
 
 ## Purpose
-
-Standardize React component development patterns across the 9-stage user journey (F1-F9), ensuring
-consistency, reusability, accessibility, and emotional resonance through the established design
-system and component architecture.
+Standardize React component development patterns across the 9-stage user journey (F1-F9), ensuring consistency, reusability, accessibility, and emotional resonance through the established design system and component architecture.
 
 ## Scope
-
-Apply to all React components in the CanAI platform, leveraging the existing
-[ui component system](mdc:frontend/src/components/ui/README.md) and journey-specific components
-outlined in [component documentation](mdc:frontend/src/components/README.md).
+Apply to all React components in the CanAI platform, leveraging the existing [ui component system](mdc:frontend/src/components/ui/README.md) and journey-specific components outlined in [component documentation](mdc:frontend/src/components/README.md).
 
 ## Core Principles
 
 ### Component Architecture
-
 - **Journey-Based Organization**: Group components by user journey stage (F1-F9)
-- **UI Foundation**: Use [shadcn/ui components](mdc:frontend/src/components/ui) as the foundation
-  layer
-- **Standard Components**: Leverage
-  [StandardButton](mdc:frontend/src/components/ui/standard-button.tsx),
-  [StandardModal](mdc:frontend/src/components/ui/standard-modal.tsx), etc.
-- **Enhanced Variants**: Use [EnhancedButton](mdc:frontend/src/components/ui/enhanced-button.tsx)
-  for advanced interactions
+- **UI Foundation**: Use [shadcn/ui components](mdc:frontend/src/components/ui) as the foundation layer
+- **Standard Components**: Leverage [StandardButton](mdc:frontend/src/components/ui/standard-button.tsx), [StandardModal](mdc:frontend/src/components/ui/standard-modal.tsx), etc.
+- **Enhanced Variants**: Use [EnhancedButton](mdc:frontend/src/components/ui/enhanced-button.tsx) for advanced interactions
 
 ### Design System Compliance
-
-- **Emotional Variants**: Support `warm`, `bold`, `optimistic`, `inspirational` variants for
-  emotional resonance
+- **Emotional Variants**: Support `warm`, `bold`, `optimistic`, `inspirational` variants for emotional resonance
 - **Accessibility First**: WCAG 2.2 AA compliance is mandatory
 - **TypeScript Strict**: Full TypeScript support with proper interfaces
 - **Performance Optimized**: Lazy loading, memoization, and efficient rendering
@@ -42,7 +28,6 @@ outlined in [component documentation](mdc:frontend/src/components/README.md).
 ## Implementation Patterns
 
 ### ✅ Standard Component Usage
-
 ```typescript
 import { StandardButton } from '@/components/ui/standard-button';
 import { StandardCard } from '@/components/StandardCard';
@@ -74,7 +59,6 @@ export const DiscoveryHookSection = () => {
 ```
 
 ### ✅ Journey-Specific Component Structure
-
 ```typescript
 // F1: Discovery Hook Components
 export interface DiscoveryHookProps {
@@ -86,7 +70,7 @@ export interface DiscoveryHookProps {
 export const DiscoveryHook: React.FC<DiscoveryHookProps> = ({
   trustIndicators,
   onEngagement,
-  emotionalTone = 'optimistic',
+  emotionalTone = 'optimistic'
 }) => {
   return (
     <section className="discovery-hook" data-stage="F1">
@@ -95,14 +79,17 @@ export const DiscoveryHook: React.FC<DiscoveryHookProps> = ({
         trustIndicators={trustIndicators}
         onCtaClick={() => onEngagement('cta_clicked')}
       />
-      <PsychologicalTrustIndicators indicators={trustIndicators} variant="carousel" autoRotate />
+      <PsychologicalTrustIndicators
+        indicators={trustIndicators}
+        variant="carousel"
+        autoRotate
+      />
     </section>
   );
 };
 ```
 
 ### ✅ State Management Patterns
-
 ```typescript
 // Journey state management with proper types
 interface JourneyState {
@@ -119,7 +106,7 @@ export const useJourneyState = () => {
     setState(prev => ({
       ...prev,
       currentStage: stage,
-      progress: calculateProgress(stage),
+      progress: calculateProgress(stage)
     }));
 
     // Track stage progression
@@ -129,13 +116,12 @@ export const useJourneyState = () => {
   return {
     state,
     updateStage,
-    isComplete: state.progress.percentage >= 100,
+    isComplete: state.progress.percentage >= 100
   };
 };
 ```
 
 ### ✅ Error Boundary Implementation
-
 ```typescript
 // Journey-aware error boundaries
 export class JourneyErrorBoundary extends React.Component<
@@ -157,7 +143,7 @@ export class JourneyErrorBoundary extends React.Component<
       error: error.message,
       stage: this.props.stage,
       errorInfo,
-      action: 'component_error',
+      action: 'component_error'
     });
   }
 
@@ -178,21 +164,30 @@ export class JourneyErrorBoundary extends React.Component<
 ```
 
 ### ✅ Accessibility Patterns
-
 ```typescript
 // Comprehensive accessibility implementation
-export const AccessibleComponent: React.FC<ComponentProps> = ({ children, ...props }) => {
+export const AccessibleComponent: React.FC<ComponentProps> = ({
+  children,
+  ...props
+}) => {
   const { announce } = useAccessibility();
   const [isExpanded, setIsExpanded] = useState(false);
   const contentId = useId();
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
-    announce(isExpanded ? 'Section collapsed' : 'Section expanded', 'polite');
+    announce(
+      isExpanded ? 'Section collapsed' : 'Section expanded',
+      'polite'
+    );
   };
 
   return (
-    <div role="region" aria-labelledby={`heading-${contentId}`} className="accessible-component">
+    <div
+      role="region"
+      aria-labelledby={`heading-${contentId}`}
+      className="accessible-component"
+    >
       <h2 id={`heading-${contentId}`} className="sr-only">
         Component Section
       </h2>
@@ -209,7 +204,10 @@ export const AccessibleComponent: React.FC<ComponentProps> = ({ children, ...pro
       <div
         id={contentId}
         aria-hidden={!isExpanded}
-        className={cn('transition-all duration-300', isExpanded ? 'opacity-100' : 'opacity-0 h-0')}
+        className={cn(
+          'transition-all duration-300',
+          isExpanded ? 'opacity-100' : 'opacity-0 h-0'
+        )}
       >
         {children}
       </div>
@@ -221,13 +219,12 @@ export const AccessibleComponent: React.FC<ComponentProps> = ({ children, ...pro
 ## Journey-Specific Patterns
 
 ### F1: Discovery Hook Components
-
 ```typescript
 // Trust-building with emotional resonance
 export const PsychologicalTrustIndicators: React.FC<TrustIndicatorProps> = ({
   indicators,
   variant = 'grid',
-  autoRotate = false,
+  autoRotate = false
 }) => {
   return (
     <section className="trust-indicators" aria-label="Trust indicators">
@@ -242,13 +239,12 @@ export const PsychologicalTrustIndicators: React.FC<TrustIndicatorProps> = ({
 ```
 
 ### F3: Spark Layer Components
-
 ```typescript
 // Interactive spark selection with feedback
 export const SparkSelector: React.FC<SparkSelectorProps> = ({
   sparks,
   onSelection,
-  emotionalTone,
+  emotionalTone
 }) => {
   const [selectedSpark, setSelectedSpark] = useState<Spark | null>(null);
 
@@ -259,7 +255,7 @@ export const SparkSelector: React.FC<SparkSelectorProps> = ({
           key={spark.id}
           spark={spark}
           selected={selectedSpark?.id === spark.id}
-          onSelect={spark => {
+          onSelect={(spark) => {
             setSelectedSpark(spark);
             onSelection(spark);
             trackSparkSelection(spark);
@@ -274,13 +270,12 @@ export const SparkSelector: React.FC<SparkSelectorProps> = ({
 ```
 
 ### F8: SparkSplit Components
-
 ```typescript
 // Comparison interface with trust metrics
 export const SparkSplitComparison: React.FC<ComparisonProps> = ({
   canaiOutput,
   genericOutput,
-  onPreferenceSubmit,
+  onPreferenceSubmit
 }) => {
   return (
     <ComparisonContainer className="sparksplit-comparison">
@@ -309,7 +304,6 @@ export const SparkSplitComparison: React.FC<ComparisonProps> = ({
 ## Performance Patterns
 
 ### ✅ Lazy Loading & Code Splitting
-
 ```typescript
 // Route-based code splitting
 const DiscoveryHook = lazy(() => import('@/pages/DiscoveryHook'));
@@ -333,39 +327,35 @@ export const App = () => {
 ```
 
 ### ✅ Memoization Patterns
-
 ```typescript
 // Strategic memoization for expensive operations
-export const ExpensiveComponent: React.FC<Props> = memo(({ data, onUpdate, trustScore }) => {
+export const ExpensiveComponent: React.FC<Props> = memo(({
+  data,
+  onUpdate,
+  trustScore
+}) => {
   const processedData = useMemo(() => {
     return processLargeDataSet(data);
   }, [data]);
 
-  const handleUpdate = useCallback(
-    (newData: Data) => {
-      onUpdate(newData);
-      trackDataUpdate(newData);
-    },
-    [onUpdate]
-  );
+  const handleUpdate = useCallback((newData: Data) => {
+    onUpdate(newData);
+    trackDataUpdate(newData);
+  }, [onUpdate]);
 
   // Only re-render if trust score significantly changes
-  return useMemo(
-    () => (
-      <div className="expensive-component">
-        <TrustScoreDisplay score={trustScore} />
-        <DataVisualization data={processedData} />
-      </div>
-    ),
-    [processedData, Math.floor(trustScore * 10) / 10]
-  );
+  return useMemo(() => (
+    <div className="expensive-component">
+      <TrustScoreDisplay score={trustScore} />
+      <DataVisualization data={processedData} />
+    </div>
+  ), [processedData, Math.floor(trustScore * 10) / 10]);
 });
 ```
 
 ## Testing Patterns
 
 ### ✅ Component Testing
-
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
@@ -375,11 +365,17 @@ expect.extend(toHaveNoViolations);
 describe('SparkSelector', () => {
   const mockSparks = [
     { id: '1', title: 'Spark 1', trustScore: 0.85 },
-    { id: '2', title: 'Spark 2', trustScore: 0.92 },
+    { id: '2', title: 'Spark 2', trustScore: 0.92 }
   ];
 
   it('renders sparks with trust scores', () => {
-    render(<SparkSelector sparks={mockSparks} onSelection={vi.fn()} emotionalTone="optimistic" />);
+    render(
+      <SparkSelector
+        sparks={mockSparks}
+        onSelection={vi.fn()}
+        emotionalTone="optimistic"
+      />
+    );
 
     expect(screen.getByText('Spark 1')).toBeInTheDocument();
     expect(screen.getByText('Spark 2')).toBeInTheDocument();
@@ -387,7 +383,11 @@ describe('SparkSelector', () => {
 
   it('meets accessibility standards', async () => {
     const { container } = render(
-      <SparkSelector sparks={mockSparks} onSelection={vi.fn()} emotionalTone="optimistic" />
+      <SparkSelector
+        sparks={mockSparks}
+        onSelection={vi.fn()}
+        emotionalTone="optimistic"
+      />
     );
 
     const results = await axe(container);
@@ -398,7 +398,11 @@ describe('SparkSelector', () => {
     const onSelection = vi.fn();
 
     render(
-      <SparkSelector sparks={mockSparks} onSelection={onSelection} emotionalTone="optimistic" />
+      <SparkSelector
+        sparks={mockSparks}
+        onSelection={onSelection}
+        emotionalTone="optimistic"
+      />
     );
 
     fireEvent.click(screen.getByText('Spark 1'));
@@ -413,7 +417,6 @@ describe('SparkSelector', () => {
 ## Anti-Patterns
 
 ### ❌ Avoid These Patterns
-
 ```typescript
 // DON'T: Direct HTML elements without accessibility
 <button onClick={handleClick}>Click me</button>
@@ -434,7 +437,6 @@ const Component = ({ data, onUpdate }) => {
 ```
 
 ### ✅ Correct Patterns
-
 ```typescript
 // DO: Use standard components with proper accessibility
 <StandardButton
@@ -468,38 +470,33 @@ const Component: React.FC<ComponentProps> = ({ data, onUpdate }) => {
 ## Integration Requirements
 
 ### Analytics Integration
-
 ```typescript
 // Track component interactions
 const useComponentAnalytics = (componentName: string) => {
-  const trackInteraction = useCallback(
-    (action: string, properties?: object) => {
-      posthog.capture(`${componentName}_${action}`, {
-        component: componentName,
-        timestamp: new Date().toISOString(),
-        ...properties,
-      });
-    },
-    [componentName]
-  );
+  const trackInteraction = useCallback((action: string, properties?: object) => {
+    posthog.capture(`${componentName}_${action}`, {
+      component: componentName,
+      timestamp: new Date().toISOString(),
+      ...properties
+    });
+  }, [componentName]);
 
   return { trackInteraction };
 };
 ```
 
 ### Performance Monitoring
-
 ```typescript
 // Monitor component render performance
 const usePerformanceMonitor = (componentName: string) => {
   useEffect(() => {
-    const observer = new PerformanceObserver(list => {
-      list.getEntries().forEach(entry => {
+    const observer = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
         if (entry.name.includes(componentName)) {
           trackPerformanceMetric({
             component: componentName,
             renderTime: entry.duration,
-            type: 'component_render',
+            type: 'component_render'
           });
         }
       });
@@ -521,4 +518,7 @@ const usePerformanceMonitor = (componentName: string) => {
 
 ---
 
-**Created**: January 2025 **Version**: 1.0.0 **Alignment**: PRD Sections 5, 6, 7, 8
+**Created**: January 2025
+**Version**: 1.0.0
+**Alignment**: PRD Sections 5, 6, 7, 8
+
