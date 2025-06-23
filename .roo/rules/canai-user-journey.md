@@ -1,36 +1,27 @@
 ---
 description:
-globs:
+globs: frontend/src/pages/**/*.{tsx}, frontend/src/components/**/*.{tsx}, backend/routes/*.js
+alwaysApply: false
+---
+---
+description: Guides implementation of the 9-stage user journey
+globs: frontend/src/pages/**/*.{tsx}, frontend/src/components/**/*.{tsx}, backend/routes/*.js
 alwaysApply: true
----
-
----
-
-description: Guides implementation of the 9-stage user journey globs:
-frontend/src/pages/**/\*.{tsx}, frontend/src/components/**/_.{tsx}, backend/routes/_.js alwaysApply:
-true
-
 ---
 
 # CanAI User Journey Guidelines
 
 ## Purpose
 
-Guide the creation of a seamless, trust-building, and emotionally resonant 9-stage user journey for
-the CanAI Emotional Sovereignty Platform, aligning with PRD Sections 5 (User Journey), 6.1–6.9
-(Functional Requirements), and 12 (Success Metrics) to foster engagement, conversion, and user
-satisfaction through personalized AI-driven experiences.
+Guide the creation of a seamless, trust-building, and emotionally resonant 9-stage user journey for the CanAI Emotional Sovereignty Platform, aligning with PRD Sections 5 (User Journey), 6.1–6.9 (Functional Requirements), and 12 (Success Metrics) to foster engagement, conversion, and user satisfaction through personalized AI-driven experiences.
 
 ## Scope
 
-These guidelines shape the user journey across frontend and backend systems, prioritizing
-flexibility and PRD compliance. They balance user experience, performance, and trust while
-encouraging adaptability.
+These guidelines shape the user journey across frontend and backend systems, prioritizing flexibility and PRD compliance. They balance user experience, performance, and trust while encouraging adaptability.
 
 ## Core Principles
 
 ### Journey Structure
-
 - **Goal**: Deliver a cohesive 9-stage experience from discovery to feedback.
 - **Guidelines**:
   - Implement all stages (F1: Discovery Hook to F9: Feedback Capture) with clear progression.
@@ -38,7 +29,6 @@ encouraging adaptability.
   - Provide intuitive navigation, such as progress indicators.
 
 ### User Experience
-
 - **Goal**: Create an engaging, trust-building journey.
 - **Guidelines**:
   - Design intuitive interfaces with clear calls-to-action and contextual support (e.g., tooltips).
@@ -46,7 +36,6 @@ encouraging adaptability.
   - Personalize interactions using user inputs and AI insights.
 
 ### Performance
-
 - **Goal**: Ensure fast, reliable interactions.
 - **Guidelines**:
   - Optimize page loads, API responses, and AI generation to align with PRD performance goals.
@@ -54,7 +43,6 @@ encouraging adaptability.
   - Monitor performance to support PRD targets (e.g., response times, uptime).
 
 ### Accessibility
-
 - **Goal**: Promote inclusivity for all users.
 - **Guidelines**:
   - Aim for WCAG 2.2 AA compliance, including sufficient contrast and ARIA labels.
@@ -62,7 +50,6 @@ encouraging adaptability.
   - Provide clear, accessible error messages and feedback.
 
 ### Analytics
-
 - **Goal**: Monitor user behavior to refine the journey.
 - **Guidelines**:
   - Track funnel progression, engagement, and conversion with analytics tools.
@@ -70,7 +57,6 @@ encouraging adaptability.
   - Align analytics with PRD success metrics (e.g., trust scores, completion rates).
 
 ### Security
-
 - **Goal**: Safeguard user data and interactions.
 - **Guidelines**:
   - Use secure authentication and data access controls, such as Row-Level Security (RLS).
@@ -80,7 +66,6 @@ encouraging adaptability.
 ## Stage-Specific Guidelines
 
 ### F1: Discovery Hook
-
 - **Purpose**: Engage users with a compelling value proposition.
 - **Guidelines**:
   - Highlight products and trust indicators (e.g., social proof, previews).
@@ -88,7 +73,6 @@ encouraging adaptability.
   - Track initial engagement to gauge interest.
 
 ### F2: Discovery Funnel
-
 - **Purpose**: Gather initial inputs with ease.
 - **Guidelines**:
   - Design a concise, multi-step form with real-time validation and progress cues.
@@ -96,7 +80,6 @@ encouraging adaptability.
   - Display trust signals to build confidence.
 
 ### F3: Spark Layer
-
 - **Purpose**: Spark purchase intent with resonant concepts.
 - **Guidelines**:
   - Present AI-generated sparks with options for selection or regeneration.
@@ -104,7 +87,6 @@ encouraging adaptability.
   - Collect feedback on sparks to refine future outputs.
 
 ### F4: Purchase Flow
-
 - **Purpose**: Streamline payment processing.
 - **Guidelines**:
   - Create a clear checkout process with transparent pricing and product options.
@@ -112,7 +94,6 @@ encouraging adaptability.
   - Track payment completion and handle failures gracefully.
 
 ### F5: Detailed Input Collection
-
 - **Purpose**: Collect detailed inputs for tailored deliverables.
 - **Guidelines**:
   - Implement a multi-step form with auto-save and progress tracking.
@@ -120,7 +101,6 @@ encouraging adaptability.
   - Ensure data persistence across sessions.
 
 ### F6: Intent Mirror
-
 - **Purpose**: Confirm and summarize user inputs.
 - **Guidelines**:
   - Display a clear summary with AI-driven confidence scoring.
@@ -128,7 +108,6 @@ encouraging adaptability.
   - Monitor confirmation and edit rates to improve clarity.
 
 ### F7: Deliverable Generation
-
 - **Purpose**: Deliver high-quality, AI-driven outputs.
 - **Guidelines**:
   - Generate deliverables using AI, ensuring emotional resonance.
@@ -136,7 +115,6 @@ encouraging adaptability.
   - Align outputs with PRD quality standards (e.g., coherence, tone).
 
 ### F8: SparkSplit
-
 - **Purpose**: Showcase CanAI’s value through comparison.
 - **Guidelines**:
   - Present CanAI and generic outputs side-by-side with trust and emotional metrics.
@@ -144,7 +122,6 @@ encouraging adaptability.
   - Track user preferences and engagement with comparisons.
 
 ### F9: Feedback Capture
-
 - **Purpose**: Gather feedback and promote sharing.
 - **Guidelines**:
   - Offer a simple feedback form with ratings and sentiment analysis.
@@ -154,7 +131,6 @@ encouraging adaptability.
 ## Cross-Stage Guidelines
 
 ### Data Flow and State Management
-
 - **Goal**: Ensure consistent user progress.
 - **Guidelines**:
   - Manage state to share data across stages effectively.
@@ -162,7 +138,6 @@ encouraging adaptability.
   - Maintain data consistency with auto-save and recovery options.
 
 ### Error Handling
-
 - **Goal**: Deliver a resilient experience.
 - **Guidelines**:
   - Use error boundaries and clear, user-friendly messages.
@@ -170,7 +145,6 @@ encouraging adaptability.
   - Log errors for monitoring, integrating with tools like Sentry.
 
 ### AI Integration
-
 - **Goal**: Enhance personalization and quality with AI.
 - **Guidelines**:
   - Leverage AI for spark generation, summaries, and emotional validation.
@@ -178,7 +152,6 @@ encouraging adaptability.
   - Plan for AI service limitations (e.g., quotas) with fallbacks.
 
 ### Testing
-
 - **Goal**: Ensure reliability and quality.
 - **Guidelines**:
   - Test critical paths with unit, integration, and end-to-end tests.
@@ -186,7 +159,6 @@ encouraging adaptability.
   - Use A/B testing or feature flags to optimize flows.
 
 ### Continuous Improvement
-
 - **Goal**: Refine the journey based on insights.
 - **Guidelines**:
   - Analyze feedback and analytics to address friction points.
@@ -194,25 +166,23 @@ encouraging adaptability.
   - Iterate on features using data-driven insights.
 
 ## Development Workflow
-
 - **Plan Stages**: Align UX and API design with PRD Sections 6.1–6.9.
 - **Test Incrementally**: Validate functionality and metrics per stage.
 - **Monitor Metrics**: Track PRD-defined success criteria (e.g., trust, conversion).
 - **Adapt**: Refine stages based on user and developer feedback.
 
 ## Validation and Monitoring
-
 - **CI/CD**: Automate testing for functionality, performance, and accessibility.
 - **Monitoring**: Track latency, errors, and analytics in real time.
 - **Success Criteria**: Align with PRD metrics (e.g., completion, trust, satisfaction).
 - **Improvement**: Optimize conversion and UX with feedback and testing.
 
 ## References
-
 - **PRD Sections**: 5 (User Journey), 6.1–6.9 (Functional Requirements), 12 (Success Metrics).
 - **Tech Stack**: Guided by PRD, including frameworks, databases, AI services, and analytics tools.
 - **Standards**: WCAG 2.2 AA, secure authentication, performance optimization.
 
 ---
 
-**Created**: June 19, 2025 **Version**: 1.0.0
+**Created**: June 19, 2025
+**Version**: 1.0.0
