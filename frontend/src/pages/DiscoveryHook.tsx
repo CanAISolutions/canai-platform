@@ -12,10 +12,10 @@ import React, { useEffect, useState } from 'react';
 
 // Import API and analytics utilities
 import {
-    trackFunnelStep,
-    trackPageView,
-    trackPreviewView,
-    trackPricingView,
+  trackFunnelStep,
+  trackPageView,
+  trackPreviewView,
+  trackPricingView,
 } from '@/utils/analytics';
 import { getMessages } from '@/utils/api';
 
@@ -107,9 +107,7 @@ const DiscoveryHook: React.FC = () => {
 
         <PsychologicalTrustIndicators />
 
-        <ProductCardsSection
-          onOpenPricing={handlePricingOpen}
-        />
+        <ProductCardsSection onOpenPricing={handlePricingOpen} />
 
         <EnhancedSecondaryCTAs
           onOpenPricing={handlePricingOpen}

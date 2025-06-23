@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: databases/migrations/*.sql, databases/cron/*.sql, backend/routes/
+alwaysApply: false
 ---
 ---
 description: Enforces GDPR/CCPA-compliant data handling

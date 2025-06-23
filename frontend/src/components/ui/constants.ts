@@ -2,15 +2,18 @@
 export const badgeVariants = {
   default: 'bg-primary hover:bg-primary/80 text-primary-foreground',
   secondary: 'bg-secondary hover:bg-secondary/80 text-secondary-foreground',
-  destructive: 'bg-destructive hover:bg-destructive/80 text-destructive-foreground',
+  destructive:
+    'bg-destructive hover:bg-destructive/80 text-destructive-foreground',
   outline: 'text-foreground',
 };
 
 // Constants for button variants
 export const buttonVariants = {
   default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-  destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-  outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+  destructive:
+    'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+  outline:
+    'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
   secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
   ghost: 'hover:bg-accent hover:text-accent-foreground',
   link: 'text-primary underline-offset-4 hover:underline',
@@ -35,5 +38,6 @@ export const standardButtonVariants = {
 // Constants for toggle variants
 export const toggleVariants = {
   default: 'bg-transparent hover:bg-muted',
-  outline: 'border border-input bg-transparent hover:bg-accent hover:text-accent-foreground',
+  outline:
+    'border border-input bg-transparent hover:bg-accent hover:text-accent-foreground',
 };

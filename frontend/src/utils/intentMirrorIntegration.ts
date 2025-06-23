@@ -4,9 +4,9 @@
  */
 
 import {
-    POSTHOG_EVENTS,
-    trackIntentMirrorLoaded,
-    trackSupportRequested,
+  POSTHOG_EVENTS,
+  trackIntentMirrorLoaded,
+  trackSupportRequested,
 } from './analytics';
 import { triggerMakecomWorkflow } from './makecom';
 import { type ErrorLog } from './supabase';
@@ -30,7 +30,9 @@ export interface IntentMirrorWorkflowPayload {
 }
 
 // Trigger complete intent mirror workflow
-export const triggerIntentMirrorWorkflow = async (businessData: BusinessData) => {
+export const triggerIntentMirrorWorkflow = async (
+  businessData: BusinessData
+) => {
   const correlationId = generateCorrelationId();
 
   try {

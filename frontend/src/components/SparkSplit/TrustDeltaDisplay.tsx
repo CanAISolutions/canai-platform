@@ -19,24 +19,6 @@ const TrustDeltaDisplay: React.FC<TrustDeltaDisplayProps> = ({
     return `${sign}${value.toFixed(1)}`;
   };
 
-  const getColorClass = (value: number) => {
-    if (value >= 3) return 'text-emerald-400';
-    if (value >= 2) return 'text-amber-400';
-    return 'text-rose-400';
-  };
-
-  const getBackgroundGradient = (value: number) => {
-    if (value >= 3) return 'from-emerald-900/40 to-emerald-800/20';
-    if (value >= 2) return 'from-amber-900/40 to-amber-800/20';
-    return 'from-rose-900/40 to-rose-800/20';
-  };
-
-  const getBorderColor = (value: number) => {
-    if (value >= 3) return 'border-emerald-400/50';
-    if (value >= 2) return 'border-amber-400/50';
-    return 'border-rose-400/50';
-  };
-
   return (
     <div className="flex flex-col items-center">
       <Tooltip>
@@ -86,7 +68,7 @@ const TrustDeltaDisplay: React.FC<TrustDeltaDisplayProps> = ({
             Trust Delta Score
           </p>
           <p className="text-sm leading-relaxed">
-            Measures how well CanAI’s output aligns with{' '}
+            Measures how well CanAI&apos;s output aligns with{' '}
             <span className="font-semibold">your</span> vision versus generic
             alternatives.
             <br />

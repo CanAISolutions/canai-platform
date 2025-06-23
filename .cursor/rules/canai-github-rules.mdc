@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: .github/**/*.{yml,md}, .husky/*, .gitignore
+alwaysApply: false
 ---
 ---
 description: Guides Git version control workflows

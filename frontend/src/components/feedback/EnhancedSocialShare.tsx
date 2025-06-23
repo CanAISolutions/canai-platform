@@ -1,8 +1,8 @@
 import StandardCard from '@/components/StandardCard';
 import {
-    BodyText,
-    CaptionText,
-    SectionTitle,
+  BodyText,
+  CaptionText,
+  SectionTitle,
 } from '@/components/StandardTypography';
 import { Button } from '@/components/ui/button';
 import { Facebook, Instagram, Share2 } from 'lucide-react';

@@ -4,15 +4,15 @@ import RefinedFeedbackForm from '@/components/SparkSplit/RefinedFeedbackForm';
 import TrustDeltaDisplay from '@/components/SparkSplit/TrustDeltaDisplay';
 import StandardBackground from '@/components/StandardBackground';
 import {
-    BodyText,
-    PageTitle,
-    SectionTitle,
+  BodyText,
+  PageTitle,
+  SectionTitle,
 } from '@/components/StandardTypography';
 import LoadingState from '@/components/enhanced/LoadingState';
 import { EnhancedButton } from '@/components/ui/enhanced-button';
 import {
-    MobileOptimizedCard,
-    MobileOptimizedCardContent,
+  MobileOptimizedCard,
+  MobileOptimizedCardContent,
 } from '@/components/ui/mobile-optimized-card';
 import { useAccessibility } from '@/hooks/useAccessibility';
 import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
@@ -22,10 +22,10 @@ import { useNavigate } from 'react-router-dom';
 
 // API and analytics imports
 import {
-    trackFeedbackSubmission,
-    trackFunnelStep,
-    trackPageView,
-    trackSparkSplitView,
+  trackFeedbackSubmission,
+  trackFunnelStep,
+  trackPageView,
+  trackSparkSplitView,
 } from '@/utils/analytics';
 import { logInteraction } from '@/utils/api';
 import { generateSparkSplit, submitFeedback } from '@/utils/sparkSplitApi';
@@ -234,8 +234,9 @@ A bakery can be a profitable business with proper planning and execution.`);
         <div className="text-center mb-8 sm:mb-12">
           <PageTitle className="text-white mb-4">See The Difference</PageTitle>
           <BodyText className="text-xl text-white opacity-90 max-w-3xl mx-auto">
-            Experience how CanAI's emotional intelligence creates outputs that
-            truly resonate with your vision, compared to generic AI responses.
+            Experience how CanAI&apos;s emotional intelligence creates outputs
+            that truly resonate with your vision, compared to generic AI
+            responses.
           </BodyText>
         </div>
 

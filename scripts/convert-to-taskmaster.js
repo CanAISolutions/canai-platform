@@ -22,7 +22,8 @@ class TaskMasterConverter {
     const sections = [];
 
     // Split by sections (## Section X.X:)
-    const sectionRegex = /## Section (\d+\.\d+): ([^\n]+)\n\n```yaml\n([\s\S]*?)\n```/g;
+    const sectionRegex =
+      /## Section (\d+\.\d+): ([^\n]+)\n\n```yaml\n([\s\S]*?)\n```/g;
     let match;
 
     while ((match = sectionRegex.exec(content)) !== null) {
@@ -32,10 +33,13 @@ class TaskMasterConverter {
         sections.push({
           sectionId,
           sectionTitle,
-          tasks: parsedYaml.tasks || []
+          tasks: parsedYaml.tasks || [],
         });
       } catch (error) {
-        console.warn(`Failed to parse YAML in section ${sectionId}:`, error.message);
+        console.warn(
+          `Failed to parse YAML in section ${sectionId}:`,
+          error.message
+        );
       }
     }
 
@@ -51,8 +55,10 @@ class TaskMasterConverter {
 
     // Extract priority from description or default to medium
     let priority = 'medium';
-    if (yamlTask.description.toLowerCase().includes('critical') ||
-        yamlTask.description.toLowerCase().includes('urgent')) {
+    if (
+      yamlTask.description.toLowerCase().includes('critical') ||
+      yamlTask.description.toLowerCase().includes('urgent')
+    ) {
       priority = 'high';
     }
 
@@ -62,19 +68,25 @@ class TaskMasterConverter {
       .filter(id => id !== undefined);
 
     // Create title from ID and description
-    const title = yamlTask.id.replace(/^T\d+\.\d+\.\d+-/, '').replace(/-/g, ' ')
+    const title = yamlTask.id
+      .replace(/^T\d+\.\d+\.\d+-/, '')
+      .replace(/-/g, ' ')
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
 
     // Convert cursor-ai-instructions to implementation details
     const details = yamlTask['cursor-ai-instructions']
-      ? yamlTask['cursor-ai-instructions'].map(instruction => `- ${instruction}`).join('\n')
+      ? yamlTask['cursor-ai-instructions']
+          .map(instruction => `- ${instruction}`)
+          .join('\n')
       : 'Implementation details to be defined.';
 
     // Create test strategy from outputs
     const testStrategy = yamlTask.outputs
-      ? `Verify the following outputs:\n${yamlTask.outputs.map(output => `- ${output}`).join('\n')}`
+      ? `Verify the following outputs:\n${yamlTask.outputs
+          .map(output => `- ${output}`)
+          .join('\n')}`
       : 'Test implementation meets requirements and integrates properly.';
 
     return {
@@ -92,8 +104,8 @@ class TaskMasterConverter {
         originalId: yamlTask.id,
         section: sectionTitle,
         inputs: yamlTask.inputs || [],
-        outputs: yamlTask.outputs || []
-      }
+        outputs: yamlTask.outputs || [],
+      },
     };
   }
 
@@ -113,7 +125,9 @@ class TaskMasterConverter {
     for (const section of sections) {
       for (let i = 0; i < section.tasks.length; i++) {
         const yamlTask = section.tasks[i];
-        const convertedTask = this.convertedTasks.find(t => t.metadata.originalId === yamlTask.id);
+        const convertedTask = this.convertedTasks.find(
+          t => t.metadata.originalId === yamlTask.id
+        );
 
         if (convertedTask && yamlTask.dependencies) {
           convertedTask.dependencies = yamlTask.dependencies
@@ -131,25 +145,26 @@ class TaskMasterConverter {
    */
   generateTaskMasterJSON(tasks) {
     return {
-      version: "1.0.0",
+      version: '1.0.0',
       project: {
-        name: "CanAI Platform Backend",
-        description: "Backend development tasks for the CanAI Emotional Sovereignty Platform",
-        created: new Date().toISOString()
+        name: 'CanAI Platform Backend',
+        description:
+          'Backend development tasks for the CanAI Emotional Sovereignty Platform',
+        created: new Date().toISOString(),
       },
       tags: {
         master: {
-          name: "master",
-          description: "Main development tasks",
+          name: 'master',
+          description: 'Main development tasks',
           created: new Date().toISOString(),
-          tasks: tasks
-        }
+          tasks: tasks,
+        },
       },
       metadata: {
         totalTasks: tasks.length,
-        convertedFrom: "taskmaster_tasks.md",
-        conversionDate: new Date().toISOString()
-      }
+        convertedFrom: 'taskmaster_tasks.md',
+        conversionDate: new Date().toISOString(),
+      },
     };
   }
 
@@ -196,16 +211,17 @@ class TaskMasterConverter {
         tasksByPriority: {
           high: tasks.filter(t => t.priority === 'high').length,
           medium: tasks.filter(t => t.priority === 'medium').length,
-          low: tasks.filter(t => t.priority === 'low').length
+          low: tasks.filter(t => t.priority === 'low').length,
         },
-        tasksWithDependencies: tasks.filter(t => t.dependencies.length > 0).length
+        tasksWithDependencies: tasks.filter(t => t.dependencies.length > 0)
+          .length,
       },
       sections: sections.map(section => ({
         id: section.sectionId,
         title: section.sectionTitle,
-        taskCount: section.tasks.length
+        taskCount: section.tasks.length,
       })),
-      dependencyValidation: this.validateDependencies(tasks)
+      dependencyValidation: this.validateDependencies(tasks),
     };
 
     fs.writeFileSync('conversion-report.json', JSON.stringify(report, null, 2));
@@ -225,7 +241,7 @@ class TaskMasterConverter {
           issues.push({
             taskId: task.id,
             taskTitle: task.title,
-            missingDependency: depId
+            missingDependency: depId,
           });
         }
       }
@@ -233,7 +249,7 @@ class TaskMasterConverter {
 
     return {
       valid: issues.length === 0,
-      issues
+      issues,
     };
   }
 }

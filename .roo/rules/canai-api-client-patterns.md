@@ -3,23 +3,32 @@ description:
 globs:
 alwaysApply: false
 ---
+
 # CanAI API Client Patterns Guidelines
 
 ## Purpose
-Standardize API client implementation patterns across the CanAI platform, ensuring consistent error handling, retry logic, performance monitoring, and security practices while maintaining the emotional resonance and trust-building aspects of the user experience.
+
+Standardize API client implementation patterns across the CanAI platform, ensuring consistent error
+handling, retry logic, performance monitoring, and security practices while maintaining the
+emotional resonance and trust-building aspects of the user experience.
 
 ## Scope
-Apply to all API client functions, utilities, and service integrations, leveraging the existing [API utilities](mdc:frontend/src/utils/api.ts), [tracing system](mdc:frontend/src/utils/tracing.ts), and integration patterns for Supabase, Make.com, and AI services.
+
+Apply to all API client functions, utilities, and service integrations, leveraging the existing
+[API utilities](mdc:frontend/src/utils/api.ts), [tracing system](mdc:frontend/src/utils/tracing.ts),
+and integration patterns for Supabase, Make.com, and AI services.
 
 ## Core Principles
 
 ### API Architecture
+
 - **Correlation ID Tracking**: Every API call must include correlation IDs for request tracing
 - **Retry with Backoff**: Implement exponential backoff for transient failures
 - **Graceful Degradation**: Provide fallback responses to maintain user experience
 - **Security First**: Input sanitization, rate limiting, and secure error messages
 
 ### Error Handling Strategy
+
 - **User-Friendly Messages**: Never expose technical errors to users
 - **Comprehensive Logging**: Track all errors for analytics and improvement
 - **Recovery Options**: Provide clear paths for users to recover from errors
@@ -28,6 +37,7 @@ Apply to all API client functions, utilities, and service integrations, leveragi
 ## Implementation Patterns
 
 ### ✅ Standard API Client Structure
+
 ```typescript
 import { retryWithBackoff, generateCorrelationId } from '@/utils/tracing';
 import { insertErrorLog } from '@/utils/supabase';
@@ -37,10 +47,7 @@ const API_BASE = import.meta.env['VITE_API_BASE'] || '/v1';
 const DEFAULT_TIMEOUT = 5000;
 
 // Generic API call wrapper with full error handling
-const apiCall = async <T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> => {
+const apiCall = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
   const url = `${API_BASE}${endpoint}`;
   const correlationId = generateCorrelationId();
 
@@ -56,7 +63,7 @@ const apiCall = async <T>(
           'Content-Type': 'application/json',
           ...options.headers,
           'X-Correlation-ID': correlationId,
-          'X-Client-Version': import.meta.env['VITE_APP_VERSION'] || '1.0.0'
+          'X-Client-Version': import.meta.env['VITE_APP_VERSION'] || '1.0.0',
         },
       });
 
@@ -80,6 +87,7 @@ const apiCall = async <T>(
 ```
 
 ### ✅ Journey-Specific API Patterns
+
 ```typescript
 // F1: Discovery Hook - Messages API with fallback
 export const getMessages = async (): Promise<MessageResponse> => {
@@ -118,7 +126,7 @@ export const generateIntentMirror = async (
       user_id: data.user_id,
       prompt_type: 'intent_mirror',
       confidence_score: response.confidence_score,
-      emotional_resonance: response.emotional_resonance
+      emotional_resonance: response.emotional_resonance,
     });
 
     return response;
@@ -144,6 +152,7 @@ export const generateIntentMirror = async (
 ```
 
 ### ✅ Error Handling Classes
+
 ```typescript
 // Custom error classes for better error categorization
 export class APIError extends Error {
@@ -189,6 +198,7 @@ const sanitizeErrorMessage = (error: unknown): string => {
 ```
 
 ### ✅ Retry Logic with Emotional Considerations
+
 ```typescript
 // Enhanced retry with user feedback
 export const retryWithUserFeedback = async <T>(
@@ -222,10 +232,7 @@ export const retryWithUserFeedback = async <T>(
         onRetry(attempt + 1);
       }
 
-      console.warn(
-        `Attempt ${attempt + 1} failed, retrying in ${delay}ms:`,
-        error
-      );
+      console.warn(`Attempt ${attempt + 1} failed, retrying in ${delay}ms:`, error);
 
       await new Promise(resolve => setTimeout(resolve, delay));
     }
@@ -237,18 +244,15 @@ export const retryWithUserFeedback = async <T>(
 // Usage with toast notifications
 const handleAPICallWithFeedback = async () => {
   try {
-    await retryWithUserFeedback(
-      () => apiCall('/some-endpoint'),
-      {
-        maxRetries: 3,
-        userFeedback: true,
-        onRetry: (attemptNumber) => {
-          toast.info(`Retrying... (${attemptNumber}/3)`, {
-            duration: 1000,
-          });
-        }
-      }
-    );
+    await retryWithUserFeedback(() => apiCall('/some-endpoint'), {
+      maxRetries: 3,
+      userFeedback: true,
+      onRetry: attemptNumber => {
+        toast.info(`Retrying... (${attemptNumber}/3)`, {
+          duration: 1000,
+        });
+      },
+    });
   } catch (error) {
     toast.error('Unable to complete request. Please try again later.');
   }
@@ -256,6 +260,7 @@ const handleAPICallWithFeedback = async () => {
 ```
 
 ### ✅ Performance Monitoring Integration
+
 ```typescript
 // API performance tracking
 export const apiCallWithMetrics = async <T>(
@@ -276,7 +281,7 @@ export const apiCallWithMetrics = async <T>(
       operation: operationName || endpoint,
       duration,
       status: 'success',
-      correlationId
+      correlationId,
     });
 
     // Alert on slow responses
@@ -295,7 +300,7 @@ export const apiCallWithMetrics = async <T>(
       duration,
       status: 'error',
       correlationId,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
 
     throw error;
@@ -304,6 +309,7 @@ export const apiCallWithMetrics = async <T>(
 ```
 
 ### ✅ React Query Integration
+
 ```typescript
 // Standardized React Query setup for API calls
 export const useApiQuery = <T>(
@@ -326,19 +332,20 @@ export const useApiQuery = <T>(
       return failureCount < 3;
     },
     retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
-    onError: (error) => {
+    onError: error => {
       // Log error for analytics
       logError({
         error_message: error instanceof Error ? error.message : 'Query error',
         action: `query_${queryKey.join('_')}`,
-        error_type: 'api_failure'
+        error_type: 'api_failure',
       });
 
       // Show user-friendly error if needed
       if (options?.userFeedback) {
-        const message = error instanceof APIError && error.userFriendlyMessage
-          ? error.userFriendlyMessage
-          : 'Something went wrong. Please try again.';
+        const message =
+          error instanceof APIError && error.userFriendlyMessage
+            ? error.userFriendlyMessage
+            : 'Something went wrong. Please try again.';
 
         toast.error(message);
       }
@@ -351,24 +358,21 @@ export const useApiQuery = <T>(
 
 // Usage example
 export const useMessages = () => {
-  return useApiQuery(
-    ['messages'],
-    getMessages,
-    {
-      fallbackData: {
-        messages: [{ text: 'Loading inspiring messages...' }],
-        error: null
-      },
-      emotional: true,
-      userFeedback: true
-    }
-  );
+  return useApiQuery(['messages'], getMessages, {
+    fallbackData: {
+      messages: [{ text: 'Loading inspiring messages...' }],
+      error: null,
+    },
+    emotional: true,
+    userFeedback: true,
+  });
 };
 ```
 
 ## Journey-Specific API Patterns
 
 ### F3: Spark Layer - Batch Operations
+
 ```typescript
 // Efficient spark generation with progress tracking
 export const generateSparks = async (
@@ -379,14 +383,19 @@ export const generateSparks = async (
     'Analyzing business context...',
     'Generating creative sparks...',
     'Calculating trust scores...',
-    'Finalizing emotional resonance...'
+    'Finalizing emotional resonance...',
   ];
 
   try {
-    const response = await apiCallWithProgress('/sparks/generate', {
-      method: 'POST',
-      body: JSON.stringify(request),
-    }, steps, onProgress);
+    const response = await apiCallWithProgress(
+      '/sparks/generate',
+      {
+        method: 'POST',
+        body: JSON.stringify(request),
+      },
+      steps,
+      onProgress
+    );
 
     return response;
   } catch (error) {
@@ -394,7 +403,7 @@ export const generateSparks = async (
     return {
       sparks: generateFallbackSparks(request),
       error: 'Generated using offline enhancement mode',
-      confidence_score: 0.75
+      confidence_score: 0.75,
     };
   }
 };
@@ -418,6 +427,7 @@ const apiCallWithProgress = async <T>(
 ```
 
 ### F7: Purchase Flow - Payment Integration
+
 ```typescript
 // Secure payment processing with validation
 export const createStripeSession = async (
@@ -438,8 +448,8 @@ export const createStripeSession = async (
       method: 'POST',
       body: JSON.stringify(request),
       headers: {
-        'X-Idempotency-Key': generateIdempotencyKey(request)
-      }
+        'X-Idempotency-Key': generateIdempotencyKey(request),
+      },
     });
 
     // Log successful payment initiation
@@ -447,7 +457,7 @@ export const createStripeSession = async (
       user_id: request.user_id,
       product_id: request.spark.product_id,
       session_id: response.session_id,
-      amount: request.spark.price
+      amount: request.spark.price,
     });
 
     return response;
@@ -457,7 +467,7 @@ export const createStripeSession = async (
       error_message: error instanceof Error ? error.message : 'Payment error',
       action: 'stripe_session_creation',
       error_type: 'stripe_failure',
-      user_id: request.user_id
+      user_id: request.user_id,
     });
 
     throw error;
@@ -477,7 +487,7 @@ const validateStripeRequest = (request: StripeSessionRequest) => {
 
   return {
     valid: Object.keys(errors).length === 0,
-    errors
+    errors,
   };
 };
 ```
@@ -485,6 +495,7 @@ const validateStripeRequest = (request: StripeSessionRequest) => {
 ## Security Patterns
 
 ### ✅ Request Sanitization
+
 ```typescript
 // Input sanitization for API requests
 const sanitizeRequestData = <T extends Record<string, any>>(data: T): T => {
@@ -495,7 +506,7 @@ const sanitizeRequestData = <T extends Record<string, any>>(data: T): T => {
       // Remove potential XSS payloads
       sanitized[key] = DOMPurify.sanitize(value, {
         ALLOWED_TAGS: [],
-        ALLOWED_ATTR: []
+        ALLOWED_ATTR: [],
       });
     }
   }
@@ -548,6 +559,7 @@ const rateLimitedApiCall = async <T>(
 ## Testing Patterns
 
 ### ✅ API Testing
+
 ```typescript
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
@@ -613,6 +625,7 @@ describe('API Client', () => {
 ## Anti-Patterns
 
 ### ❌ Avoid These Patterns
+
 ```typescript
 // DON'T: Direct fetch without error handling
 fetch('/api/endpoint').then(response => response.json());
@@ -636,6 +649,7 @@ const apiData = { userInput: formData.userInput }; // Potential XSS
 ```
 
 ### ✅ Correct Patterns
+
 ```typescript
 // DO: Use standardized API client
 const result = await apiCall<ResponseType>('/endpoint');
@@ -662,6 +676,7 @@ const apiData = sanitizeRequestData({ userInput: formData.userInput });
 ## Integration Requirements
 
 ### Analytics & Monitoring
+
 ```typescript
 // Comprehensive API monitoring
 const trackApiCall = (endpoint: string, duration: number, status: 'success' | 'error') => {
@@ -669,7 +684,7 @@ const trackApiCall = (endpoint: string, duration: number, status: 'success' | 'e
     endpoint,
     duration,
     status,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 
@@ -679,7 +694,7 @@ const trackApiError = (error: APIError) => {
     endpoint: error.endpoint,
     statusCode: error.statusCode,
     correlationId: error.correlationId,
-    errorType: error.name
+    errorType: error.name,
   });
 };
 ```
@@ -695,6 +710,4 @@ const trackApiError = (error: APIError) => {
 
 ---
 
-**Created**: January 2025
-**Version**: 1.0.0
-**Alignment**: PRD Sections 6, 7, 8, 9
+**Created**: January 2025 **Version**: 1.0.0 **Alignment**: PRD Sections 6, 7, 8, 9

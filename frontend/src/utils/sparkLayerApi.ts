@@ -2,7 +2,8 @@
  * Spark Layer API Integration
  */
 
-import { generateCorrelationId } from './tracing';
+// Remove unused import
+// import { generateCorrelationId } from './tracing';
 
 export interface GenerateSparksRequest {
   businessType: string;

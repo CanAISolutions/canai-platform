@@ -14,7 +14,10 @@ class ChunkedTaskConverter {
   }
 
   parseTasksFromSection(content, targetSectionId) {
-    const sectionRegex = new RegExp(`## Section (${targetSectionId}): ([^\\n]+)\\n\\n\`\`\`yaml\\n([\\s\\S]*?)\\n\`\`\``, 'g');
+    const sectionRegex = new RegExp(
+      `## Section (${targetSectionId}): ([^\\n]+)\\n\\n\`\`\`yaml\\n([\\s\\S]*?)\\n\`\`\``,
+      'g'
+    );
     const match = sectionRegex.exec(content);
 
     if (!match) {
@@ -29,7 +32,7 @@ class ChunkedTaskConverter {
     return {
       sectionId,
       sectionTitle,
-      tasks
+      tasks,
     };
   }
 
@@ -45,7 +48,12 @@ class ChunkedTaskConverter {
 
       if (line.match(/^\s*- id:/)) {
         if (currentTask) tasks.push(currentTask);
-        currentTask = { dependencies: [], inputs: [], outputs: [], instructions: [] };
+        currentTask = {
+          dependencies: [],
+          inputs: [],
+          outputs: [],
+          instructions: [],
+        };
         currentField = null;
       }
 
@@ -71,7 +79,11 @@ class ChunkedTaskConverter {
         } else {
           currentTask[currentField].push(value);
         }
-      } else if (currentField === 'description' && trimmed && !trimmed.startsWith('-')) {
+      } else if (
+        currentField === 'description' &&
+        trimmed &&
+        !trimmed.startsWith('-')
+      ) {
         currentTask.description += ' ' + trimmed;
       }
     }
@@ -94,18 +106,25 @@ class ChunkedTaskConverter {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
-      const priority = (yamlTask.description &&
+      const priority =
+        yamlTask.description &&
         (yamlTask.description.toLowerCase().includes('critical') ||
-         yamlTask.description.toLowerCase().includes('urgent') ||
-         yamlTask.description.toLowerCase().includes('security'))) ? 'high' : 'medium';
+          yamlTask.description.toLowerCase().includes('urgent') ||
+          yamlTask.description.toLowerCase().includes('security'))
+          ? 'high'
+          : 'medium';
 
-      const details = yamlTask.instructions.length > 0
-        ? yamlTask.instructions.map(inst => `- ${inst}`).join('\n')
-        : 'Implementation details to be defined.';
+      const details =
+        yamlTask.instructions.length > 0
+          ? yamlTask.instructions.map(inst => `- ${inst}`).join('\n')
+          : 'Implementation details to be defined.';
 
-      const testStrategy = yamlTask.outputs.length > 0
-        ? `Verify outputs:\n${yamlTask.outputs.map(output => `- ${output}`).join('\n')}`
-        : 'Test implementation meets requirements.';
+      const testStrategy =
+        yamlTask.outputs.length > 0
+          ? `Verify outputs:\n${yamlTask.outputs
+              .map(output => `- ${output}`)
+              .join('\n')}`
+          : 'Test implementation meets requirements.';
 
       convertedTasks.push({
         id: newId,
@@ -122,8 +141,8 @@ class ChunkedTaskConverter {
           section: section.sectionTitle,
           inputs: yamlTask.inputs,
           outputs: yamlTask.outputs,
-          originalDependencies: yamlTask.dependencies // Store for later resolution
-        }
+          originalDependencies: yamlTask.dependencies, // Store for later resolution
+        },
       });
 
       console.log(`  ✅ ${yamlTask.id} -> ${newId}: ${title}`);
@@ -134,26 +153,27 @@ class ChunkedTaskConverter {
 
   initializeTasksFile() {
     const initialData = {
-      version: "1.0.0",
+      version: '1.0.0',
       project: {
-        name: "CanAI Platform Backend",
-        description: "Backend development tasks for CanAI Emotional Sovereignty Platform",
-        created: new Date().toISOString()
+        name: 'CanAI Platform Backend',
+        description:
+          'Backend development tasks for CanAI Emotional Sovereignty Platform',
+        created: new Date().toISOString(),
       },
       tags: {
         master: {
-          name: "master",
-          description: "Main development tasks converted from YAML format",
+          name: 'master',
+          description: 'Main development tasks converted from YAML format',
           created: new Date().toISOString(),
-          tasks: []
-        }
+          tasks: [],
+        },
       },
       metadata: {
         totalTasks: 0,
-        convertedFrom: "taskmaster_tasks.md",
+        convertedFrom: 'taskmaster_tasks.md',
         conversionDate: new Date().toISOString(),
-        processedSections: []
-      }
+        processedSections: [],
+      },
     };
 
     const outputDir = path.dirname(this.outputFile);
@@ -178,11 +198,13 @@ class ChunkedTaskConverter {
         sectionId: sectionInfo.sectionId,
         sectionTitle: sectionInfo.sectionTitle,
         taskCount: newTasks.length,
-        processedAt: new Date().toISOString()
+        processedAt: new Date().toISOString(),
       });
 
       fs.writeFileSync(this.outputFile, JSON.stringify(data, null, 2));
-      console.log(`💾 Added ${newTasks.length} tasks from section ${sectionInfo.sectionId}`);
+      console.log(
+        `💾 Added ${newTasks.length} tasks from section ${sectionInfo.sectionId}`
+      );
       console.log(`📊 Total tasks now: ${data.metadata.totalTasks}`);
 
       return true;
@@ -250,7 +272,11 @@ async function main() {
 
   // Define sections to process (you can adjust this list)
   const sectionsToProcess = [
-    '6.1', '6.2', '6.3', '6.4', '6.5'  // Start with first 5 sections
+    '6.1',
+    '6.2',
+    '6.3',
+    '6.4',
+    '6.5', // Start with first 5 sections
   ];
 
   console.log(`\n🎯 Processing ${sectionsToProcess.length} sections...`);
@@ -271,7 +297,9 @@ async function main() {
   }
 
   console.log(`\n🎉 Conversion completed!`);
-  console.log(`✅ Successfully processed ${successCount}/${sectionsToProcess.length} sections`);
+  console.log(
+    `✅ Successfully processed ${successCount}/${sectionsToProcess.length} sections`
+  );
   console.log('\nNext steps:');
   console.log('1. Check the generated tasks.json file');
   console.log('2. Run more sections by updating sectionsToProcess array');

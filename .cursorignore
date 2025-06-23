@@ -2,8 +2,7 @@
 # These files are excluded to prevent context overload
 
 # Large documentation files (>50KB)
-PRD.md
-.windsurfrules  
+.windsurfrules
 taskmaster_tasks.md
 TASKMASTER-AUTOMATION-GUIDE.md
 taskmaster_prep.md

@@ -19,9 +19,7 @@
         "details": "Create Express route for POST /v1/log-interaction with Joi validation for interaction_type and details fields. Store logs in Supabase session_logs table. Set up Make.com webhook handler in backend/webhooks/log_interaction.js. Log pricing_modal_viewed event with PostHog. Implement proper error handling and validation.",
         "testStrategy": "Test API with various interaction types, validate Joi schema, test Make.com webhook integration, and verify Supabase logging.",
         "priority": "high",
-        "dependencies": [
-          131
-        ],
+        "dependencies": [131],
         "status": "pending",
         "subtasks": []
       },
@@ -32,9 +30,7 @@
         "details": "Create Express route for POST /v1/generate-preview-spark that implements GPT-4o prompt for spark generation. Validate inputs (businessType, tone) with Joi. Serve sample PDFs via Supabase storage. Log preview_viewed event with PostHog. Set up backend/routes/sparks.js, backend/services/gpt4o.js, and backend/prompts/preview_spark.js.",
         "testStrategy": "Test GPT-4o integration, validate input schemas, test PDF serving from Supabase storage, and verify PostHog event logging.",
         "priority": "high",
-        "dependencies": [
-          131
-        ],
+        "dependencies": [131],
         "status": "pending",
         "subtasks": []
       },
@@ -45,9 +41,7 @@
         "details": "Create Express middleware for retry logic with 3 attempts and 500ms intervals. Implement localStorage fallback cache for trust indicators. Log errors to Supabase error_logs table. Set up backend/middleware/retry.js and backend/services/cache.js with proper error handling.",
         "testStrategy": "Test retry logic with simulated failures, verify localStorage fallback behavior, and test error logging to Supabase.",
         "priority": "medium",
-        "dependencies": [
-          131
-        ],
+        "dependencies": [131],
         "status": "pending",
         "subtasks": []
       },
@@ -69,10 +63,7 @@
         "details": "Update retry.js with exponential backoff (2^i * 500ms, max 5s). Integrate DOMPurify in validation.js for all input fields. Log retries and errors to error_logs with fields error_type, retry_count. Send critical errors to Sentry. Set up backend/middleware/validation.js and backend/services/sentry.js.",
         "testStrategy": "Write Jest tests for retry logic, exponential backoff, input sanitization with DOMPurify, and Sentry integration.",
         "priority": "high",
-        "dependencies": [
-          131,
-          134
-        ],
+        "dependencies": [131, 134],
         "status": "pending",
         "subtasks": []
       },
@@ -83,9 +74,7 @@
         "details": "Create Express route for POST /v1/validate-input with Joi validation using regex patterns. Map quiz responses using quizRules.json. Integrate GPT-4o for trust score calculation. Use Hume AI for emotional resonance with circuit breaker. Store inputs in Supabase initial_prompt_logs. Log funnel_step and hume_fallback_triggered events with PostHog.",
         "testStrategy": "Test Joi validation, quiz mapping logic, GPT-4o integration, Hume AI circuit breaker, and Supabase logging.",
         "priority": "high",
-        "dependencies": [
-          131
-        ],
+        "dependencies": [131],
         "status": "pending",
         "subtasks": []
       },
@@ -96,9 +85,7 @@
         "details": "Create Express route for POST /v1/generate-tooltip that generates tooltips with GPT-4o. Cache responses with node-cache (1-hour TTL). Validate field input with Joi. Log tooltip_viewed event with PostHog. Set up backend/routes/tooltip.js and backend/services/gpt4o.js.",
         "testStrategy": "Test GPT-4o tooltip generation, caching behavior, input validation, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          137
-        ],
+        "dependencies": [137],
         "status": "pending",
         "subtasks": []
       },
@@ -109,9 +96,7 @@
         "details": "Create Express route for POST /v1/detect-contradiction that implements contradiction logic with GPT-4o. Log contradiction_flagged event with PostHog. Validate inputs with Joi. Set up backend/routes/contradiction.js and backend/services/contradiction.js.",
         "testStrategy": "Test contradiction detection logic, GPT-4o integration, input validation, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          137
-        ],
+        "dependencies": [137],
         "status": "pending",
         "subtasks": []
       },
@@ -122,10 +107,7 @@
         "details": "Update retry middleware for funnel APIs with 3 attempts and 500ms intervals. Implement localStorage fallback cache for funnel inputs. Log errors to Supabase error_logs with PostHog integration. Enhance backend/middleware/retry.js and backend/services/cache.js.",
         "testStrategy": "Test retry logic for funnel APIs, localStorage fallback behavior, and error logging integration.",
         "priority": "medium",
-        "dependencies": [
-          137,
-          134
-        ],
+        "dependencies": [137, 134],
         "status": "pending",
         "subtasks": []
       },
@@ -136,10 +118,7 @@
         "details": "Integrate DOMPurify in validation.js for all funnel inputs. Set 5-minute TTL in cache.js for trust scores. Optimize Joi validation to minimize regex complexity. Log validation latency to PostHog (funnel_validation). Ensure validation latency under 500ms.",
         "testStrategy": "Write Jest tests for sanitization, caching behavior, validation performance, and latency measurement.",
         "priority": "medium",
-        "dependencies": [
-          137,
-          136
-        ],
+        "dependencies": [137, 136],
         "status": "pending",
         "subtasks": []
       },
@@ -150,9 +129,7 @@
         "details": "Create Express route for POST /v1/generate-sparks that implements GPT-4o prompt for generating three sparks. Store genericPreview in spark_logs table. Cache sparks with node-cache. Log funnel_step and spark_selected events with PostHog. Set up backend/routes/sparks.js and backend/services/gpt4o.js.",
         "testStrategy": "Test GPT-4o spark generation, Supabase logging, caching behavior, and PostHog event tracking.",
         "priority": "high",
-        "dependencies": [
-          137
-        ],
+        "dependencies": [137],
         "status": "pending",
         "subtasks": []
       },
@@ -163,9 +140,7 @@
         "details": "Update Express route for POST /v1/regenerate-sparks with rate limiting middleware (3 or 4 attempts). Log sparks_regenerated event with PostHog. Validate inputs with Joi. Set up backend/middleware/rateLimit.js for attempt tracking.",
         "testStrategy": "Test rate limiting logic, spark regeneration, input validation, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          142
-        ],
+        "dependencies": [142],
         "status": "pending",
         "subtasks": []
       },
@@ -176,10 +151,7 @@
         "details": "Update retry middleware for spark APIs with 3 attempts and 500ms intervals. Implement localStorage fallback cache for sparks. Log errors to Supabase error_logs with PostHog integration. Enhance backend/middleware/retry.js for spark-specific handling.",
         "testStrategy": "Test retry logic for spark APIs, localStorage fallback behavior, and error logging integration.",
         "priority": "medium",
-        "dependencies": [
-          142,
-          134
-        ],
+        "dependencies": [142, 134],
         "status": "pending",
         "subtasks": []
       },
@@ -190,9 +162,7 @@
         "details": "Optimize GPT-4o prompts for efficiency in sparks.js. Implement cached fallback for empty responses in cache.js. Add composite index idx_spark_logs_user_id_created_at. Test scalability with Locust for 10,000 users. Ensure latency under 1.5s. Log spark_generation_latency to PostHog.",
         "testStrategy": "Write Jest tests for edge cases, test scalability with Locust, verify composite index performance, and measure latency.",
         "priority": "high",
-        "dependencies": [
-          142
-        ],
+        "dependencies": [142],
         "status": "pending",
         "subtasks": []
       },
@@ -203,9 +173,7 @@
         "details": "Create Express route for POST /v1/stripe-session that integrates Stripe SDK. Validate inputs with Joi and authenticate with Memberstack. Store session in Supabase payment_logs. Send confirmation email via backend/templates/email/confirmation.html. Log funnel_step and price_viewed events with PostHog.",
         "testStrategy": "Test Stripe integration, Memberstack authentication, Supabase logging, email sending, and PostHog events.",
         "priority": "high",
-        "dependencies": [
-          142
-        ],
+        "dependencies": [142],
         "status": "pending",
         "subtasks": []
       },
@@ -216,9 +184,7 @@
         "details": "Create Express route for POST /v1/refund that implements Stripe refund logic. Authenticate with Memberstack and update payment_logs with refunded status. Log refund event with PostHog. Set up backend/routes/stripe.js and backend/services/stripe.js.",
         "testStrategy": "Test Stripe refund logic, Memberstack authentication, Supabase updates, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          146
-        ],
+        "dependencies": [146],
         "status": "pending",
         "subtasks": []
       },
@@ -229,9 +195,7 @@
         "details": "Create Express route for POST /v1/switch-product that implements Stripe refund and new session logic. Authenticate with Memberstack and update payment_logs. Trigger add_project webhook. Log product_switched event with PostHog. Set up backend/webhooks/add_project.js.",
         "testStrategy": "Test product switching logic, webhook triggering, Supabase updates, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          146
-        ],
+        "dependencies": [146],
         "status": "pending",
         "subtasks": []
       },
@@ -242,10 +206,7 @@
         "details": "Update retry middleware for Stripe APIs with 3 attempts and exponential backoff. Log errors to Supabase error_logs with PostHog integration. Handle authentication failures specifically for purchase flows.",
         "testStrategy": "Test retry logic for Stripe APIs, authentication failure handling, and error logging integration.",
         "priority": "medium",
-        "dependencies": [
-          146,
-          134
-        ],
+        "dependencies": [146, 134],
         "status": "pending",
         "subtasks": []
       },
@@ -256,9 +217,7 @@
         "details": "Implement JWT refresh in auth.js with 1-hour expiry. Add request_id to add_project.js for idempotency. Send webhook failure alerts to Sentry after 3 retries. Log webhook_idempotency to PostHog. Set up backend/middleware/auth.js and backend/webhooks/add_project.js.",
         "testStrategy": "Write Jest tests for JWT refresh, webhook idempotency, Sentry alerts, and PostHog logging.",
         "priority": "high",
-        "dependencies": [
-          146
-        ],
+        "dependencies": [146],
         "status": "pending",
         "subtasks": []
       },
@@ -269,9 +228,7 @@
         "details": "Create Express route for POST /v1/save-progress with Joi validation for 12-field inputs. Authenticate with Memberstack and generate industry-specific guidance with GPT-4o. Store inputs in Supabase prompt_logs. Log funnel_step and input_saved events with PostHog. Set up backend/routes/inputs.js and backend/prompts/inputs.js.",
         "testStrategy": "Test input validation, Memberstack authentication, GPT-4o guidance generation, Supabase logging, and PostHog events.",
         "priority": "high",
-        "dependencies": [
-          146
-        ],
+        "dependencies": [146],
         "status": "pending",
         "subtasks": []
       },
@@ -282,10 +239,7 @@
         "details": "Extend /v1/generate-tooltip route for businessType-specific tooltips. Generate tooltips with GPT-4o and cache responses with node-cache (1-hour TTL). Log tooltip_viewed event with PostHog. Update backend/routes/tooltip.js.",
         "testStrategy": "Test businessType-specific tooltip generation, caching behavior, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          151,
-          138
-        ],
+        "dependencies": [151, 138],
         "status": "pending",
         "subtasks": []
       },
@@ -296,10 +250,7 @@
         "details": "Update retry middleware for input APIs with 3 attempts and 500ms intervals. Implement localStorage fallback cache for input progress. Log errors to Supabase error_logs with PostHog integration.",
         "testStrategy": "Test retry logic for input APIs, localStorage fallback behavior, and error logging integration.",
         "priority": "medium",
-        "dependencies": [
-          151,
-          134
-        ],
+        "dependencies": [151, 134],
         "status": "pending",
         "subtasks": []
       },
@@ -310,9 +261,7 @@
         "details": "Create Express route for GET /v1/resume that authenticates with Memberstack and fetches inputs from Supabase prompt_logs. Log input_saved event with PostHog. Set up backend/routes/inputs.js for data retrieval.",
         "testStrategy": "Test Memberstack authentication, Supabase data retrieval, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          151
-        ],
+        "dependencies": [151],
         "status": "pending",
         "subtasks": []
       },
@@ -323,9 +272,7 @@
         "details": "Add ARIA labels to input fields in inputs.html. Ensure ≥48px tap targets for mobile inputs. Test keyboard navigation and VoiceOver with axe-core. Log accessibility_error to PostHog. Set up frontend/public/inputs.html and backend/tests/accessibility.test.js.",
         "testStrategy": "Write accessibility tests with axe-core, test keyboard navigation and screen readers, and verify WCAG compliance.",
         "priority": "medium",
-        "dependencies": [
-          151
-        ],
+        "dependencies": [151],
         "status": "pending",
         "subtasks": []
       },
@@ -336,9 +283,7 @@
         "details": "Create Express route for POST /v1/intent-mirror with Joi validation. Authenticate with Memberstack and generate summary and score with GPT-4o. Log questions in prompt_logs and cache response with node-cache. Log funnel_step and field_edited events with PostHog. Set up backend/routes/intent.js and backend/prompts/intent.js.",
         "testStrategy": "Test intent summary generation, confidence scoring, question logging, caching, and PostHog events.",
         "priority": "high",
-        "dependencies": [
-          151
-        ],
+        "dependencies": [151],
         "status": "pending",
         "subtasks": []
       },
@@ -349,9 +294,7 @@
         "details": "Create Make.com webhook handler for support requests. Create support_requests table with RLS. Log support requests to Supabase and log support_requested event with PostHog. Set up backend/webhooks/support_request.js.",
         "testStrategy": "Test Make.com webhook integration, Supabase logging with RLS, and PostHog event tracking.",
         "priority": "medium",
-        "dependencies": [
-          156
-        ],
+        "dependencies": [156],
         "status": "pending",
         "subtasks": []
       },
@@ -362,10 +305,7 @@
         "details": "Update retry middleware for intent APIs with 3 attempts and 500ms intervals. Implement localStorage fallback cache. Trigger support link after 2 low-confidence tries. Log errors to Supabase error_logs with PostHog.",
         "testStrategy": "Test retry logic, localStorage fallback, support link triggering, and error logging.",
         "priority": "medium",
-        "dependencies": [
-          156,
-          134
-        ],
+        "dependencies": [156, 134],
         "status": "pending",
         "subtasks": []
       },
@@ -376,9 +316,7 @@
         "details": "Create driverRules.json mapping 12 fields to drivers (e.g., community, trust). Update intent.js prompts to use driverRules.json. Validate mappings with user feedback from feedback_logs. Log driver_inference_accuracy to PostHog. Set up backend/config/driverRules.json.",
         "testStrategy": "Write Jest tests for driver inference, validate mappings with >90% accuracy, and test feedback integration.",
         "priority": "medium",
-        "dependencies": [
-          156
-        ],
+        "dependencies": [156],
         "status": "pending",
         "subtasks": []
       },
@@ -389,9 +327,7 @@
         "details": "Create Express route for POST /v1/deliverable with Joi validation. Authenticate with Memberstack and generate outputs with GPT-4o. Validate resonance with Hume AI and store in Supabase comparisons. Log funnel_step and deliverable_generated events with PostHog. Set up backend/routes/deliverables.js.",
         "testStrategy": "Test deliverable generation, Hume AI validation, Supabase storage, and PostHog event logging.",
         "priority": "high",
-        "dependencies": [
-          156
-        ],
+        "dependencies": [156],
         "status": "pending",
         "subtasks": []
       },
@@ -402,9 +338,7 @@
         "details": "Create Express route for GET /v1/generation-status that authenticates with Memberstack and queries Supabase comparisons for status. Log status check event with PostHog. Set up backend/routes/deliverables.js for status checking.",
         "testStrategy": "Test Memberstack authentication, Supabase status queries, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          160
-        ],
+        "dependencies": [160],
         "status": "pending",
         "subtasks": []
       },
@@ -415,9 +349,7 @@
         "details": "Create Express routes for revision and regeneration with rate limiting (2 attempts). Authenticate with Memberstack and generate revised outputs with GPT-4o. Log revision_requested event with PostHog. Set up backend/middleware/rateLimit.js for revision limits.",
         "testStrategy": "Test revision logic, rate limiting, GPT-4o integration, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          160
-        ],
+        "dependencies": [160],
         "status": "pending",
         "subtasks": []
       },
@@ -428,10 +360,7 @@
         "details": "Update retry middleware for deliverable APIs with 3 attempts and 500ms intervals. Implement localStorage fallback for partial outputs. Handle 15s timeout with partial output. Log errors to Supabase error_logs with PostHog.",
         "testStrategy": "Test retry logic, localStorage fallback, timeout handling, and error logging.",
         "priority": "medium",
-        "dependencies": [
-          160,
-          134
-        ],
+        "dependencies": [160, 134],
         "status": "pending",
         "subtasks": []
       },
@@ -442,9 +371,7 @@
         "details": "Implement fallback to cached outputs in cache.js for empty GPT-4o responses. Retry Hume AI calls (max 2 attempts) on failure. Log edge cases (e.g., empty_response, hume_failure) to error_logs. Log edge_case_handled to PostHog.",
         "testStrategy": "Write Jest tests for edge cases, test cached fallbacks, and verify error logging.",
         "priority": "high",
-        "dependencies": [
-          160
-        ],
+        "dependencies": [160],
         "status": "pending",
         "subtasks": []
       },
@@ -455,9 +382,7 @@
         "details": "Create Express route for POST /v1/spark-split with Joi validation. Authenticate with Memberstack and generate generic output with GPT-4o. Compute differences using diff package and validate resonance with Hume AI. Compute TrustDelta and store in Supabase with encryption. Log funnel_step, plan_compared, trustdelta_viewed events with PostHog.",
         "testStrategy": "Test comparison logic, TrustDelta calculation, Hume AI integration, Supabase encryption, and PostHog events.",
         "priority": "high",
-        "dependencies": [
-          160
-        ],
+        "dependencies": [160],
         "status": "pending",
         "subtasks": []
       },
@@ -468,9 +393,7 @@
         "details": "Create Make.com webhook handler for SparkSplit feedback. Update Supabase comparisons with feedback data. Log generic_preferred event with PostHog. Set up backend/webhooks/save_comparison.js.",
         "testStrategy": "Test Make.com webhook integration, Supabase updates, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          165
-        ],
+        "dependencies": [165],
         "status": "pending",
         "subtasks": []
       },
@@ -481,10 +404,7 @@
         "details": "Update retry middleware for SparkSplit APIs with 3 attempts. Implement localStorage fallback cache. Enable Supabase vault encryption for sensitive fields. Log errors to Supabase error_logs with PostHog.",
         "testStrategy": "Test retry logic, localStorage fallback, Supabase encryption, and error logging.",
         "priority": "medium",
-        "dependencies": [
-          165,
-          134
-        ],
+        "dependencies": [165, 134],
         "status": "pending",
         "subtasks": []
       },
@@ -495,9 +415,7 @@
         "details": "Add request_id to save_comparison.js for idempotency. Send Sentry alerts for webhook failures after 3 retries. Log failures to error_logs with webhook_failure_reason. Log webhook_idempotency to PostHog.",
         "testStrategy": "Write Jest tests for webhook reliability, test idempotency, and verify Sentry alerts.",
         "priority": "high",
-        "dependencies": [
-          165
-        ],
+        "dependencies": [165],
         "status": "pending",
         "subtasks": []
       },
@@ -508,9 +426,7 @@
         "details": "Create Express route for POST /v1/feedback with Joi validation. Analyze sentiment with GPT-4o and store feedback in Supabase feedback_logs. Trigger Make.com webhook. Log funnel_step and feedback_submitted events with PostHog. Set up backend/routes/feedback.js and backend/prompts/feedback.js.",
         "testStrategy": "Test feedback submission, sentiment analysis, Supabase storage, webhook triggering, and PostHog events.",
         "priority": "high",
-        "dependencies": [
-          165
-        ],
+        "dependencies": [165],
         "status": "pending",
         "subtasks": []
       },
@@ -521,9 +437,7 @@
         "details": "Create Express route for POST /v1/refer with Joi validation. Authenticate with Memberstack and generate unique referral link. Store referral in Supabase session_logs. Log referral_shared event with PostHog. Set up backend/routes/refer.js and backend/webhooks/save_referral.js.",
         "testStrategy": "Test referral link generation, Memberstack authentication, Supabase storage, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          169
-        ],
+        "dependencies": [169],
         "status": "pending",
         "subtasks": []
       },
@@ -534,9 +448,7 @@
         "details": "Create Make.com webhook handler for follow-up emails. Log poor ratings (<3/5) to Supabase error_logs. Send purge confirmation email using backend/templates/email/purge.html. Log poor_rating_followup and followup_viewed events with PostHog. Set up backend/webhooks/send_followup.js.",
         "testStrategy": "Test webhook integration, poor rating detection, email sending, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          169
-        ],
+        "dependencies": [169],
         "status": "pending",
         "subtasks": []
       },
@@ -547,9 +459,7 @@
         "details": "Create Express route for POST /v1/purge-data that authenticates with Memberstack. Implement RLS-based data purge and trigger Make.com webhook. Cache purge status and log purge event with PostHog. Set up backend/routes/purge.js and backend/webhooks/purge_data.js.",
         "testStrategy": "Test data purge logic, RLS implementation, webhook triggering, and PostHog event logging.",
         "priority": "high",
-        "dependencies": [
-          169
-        ],
+        "dependencies": [169],
         "status": "pending",
         "subtasks": []
       },
@@ -560,9 +470,7 @@
         "details": "Update api.yaml with feedback and refer endpoints. Add CI/CD step to validate spec with swagger-cli. Test schema accuracy with Jest. Log api_docs_updated to PostHog. Set up backend/docs/api.yaml and backend/tests/api.test.js.",
         "testStrategy": "Write Jest tests for API documentation accuracy, test CI/CD validation, and verify OpenAPI spec.",
         "priority": "medium",
-        "dependencies": [
-          169
-        ],
+        "dependencies": [169],
         "status": "pending",
         "subtasks": []
       },
@@ -606,9 +514,7 @@
         "details": "Configure Render auto-scaling and implement cache-first strategy. Create spark_cache table and add health check endpoint. Log user_load events with PostHog. Set up docker-compose.yml and backend/health.js.",
         "testStrategy": "Test auto-scaling behavior, cache performance, health check endpoint, and load handling.",
         "priority": "high",
-        "dependencies": [
-          174
-        ],
+        "dependencies": [174],
         "status": "pending",
         "subtasks": []
       },
@@ -641,9 +547,7 @@
         "details": "Add composite indexes (e.g., idx_prompt_logs_user_id_created_at) and analyze query plans with EXPLAIN ANALYZE. Test queries with Locust for 10,000 users. Log query_latency to PostHog. Ensure <100ms execution time.",
         "testStrategy": "Write Supatest tests for queries, test with Locust, analyze query plans, and measure latency.",
         "priority": "high",
-        "dependencies": [
-          177
-        ],
+        "dependencies": [177],
         "status": "pending",
         "subtasks": []
       },
@@ -665,9 +569,7 @@
         "details": "Add pa11y-ci to CI/CD for frontend/public/. Test keyboard navigation and NVDA/JAWS compatibility. Generate accessibility report in accessibility-report.md. Log accessibility_error to PostHog.",
         "testStrategy": "Write accessibility tests, test CI/CD integration, and verify screen reader compatibility.",
         "priority": "medium",
-        "dependencies": [
-          178
-        ],
+        "dependencies": [178],
         "status": "pending",
         "subtasks": []
       },
@@ -700,10 +602,7 @@
         "details": "Create webhook handler for project creation. Validate Stripe event and insert project data into Supabase. Trigger email webhook and log webhook_triggered event with PostHog. Set up backend/webhooks/add_project.js and backend/webhooks/make_scenarios/add_project.json.",
         "testStrategy": "Test webhook integration, Stripe event validation, Supabase insertion, and email triggering.",
         "priority": "high",
-        "dependencies": [
-          146,
-          184
-        ],
+        "dependencies": [146, 184],
         "status": "pending",
         "subtasks": []
       },
@@ -714,10 +613,7 @@
         "details": "Implement webhook handlers for admin_add_project, log_payment, log_interaction, save_funnel, save_inputs, send_email, and support. Update scenarios for Supabase integration. Log webhook_triggered events with PostHog.",
         "testStrategy": "Test all webhook handlers, Supabase integration, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          185,
-          184
-        ],
+        "dependencies": [185, 184],
         "status": "pending",
         "subtasks": []
       },
@@ -728,10 +624,7 @@
         "details": "Validate scenarios and update JSON configs. Test with Supatest and log validation_complete event with PostHog. Set up backend/webhooks/make_scenarios/ directory.",
         "testStrategy": "Test scenario validation, JSON config updates, and Supatest integration.",
         "priority": "medium",
-        "dependencies": [
-          185,
-          186
-        ],
+        "dependencies": [185, 186],
         "status": "pending",
         "subtasks": []
       },
@@ -742,9 +635,7 @@
         "details": "Implement GPT-4o client and configure Hume AI for resonance. Add circuit breaker and infer emotional drivers. Log hume_fallback_triggered event with PostHog. Set up backend/services/gpt4o.js, backend/services/hume.js, and backend/middleware/hume.js.",
         "testStrategy": "Test GPT-4o integration, Hume AI resonance, circuit breaker logic, and emotional driver inference.",
         "priority": "high",
-        "dependencies": [
-          184
-        ],
+        "dependencies": [184],
         "status": "pending",
         "subtasks": []
       },
@@ -755,9 +646,7 @@
         "details": "Initialize Sentry client and configure PostHog for events. Log errors to Supabase and write Jest tests. Set up backend/services/sentry.js and backend/services/posthog.js.",
         "testStrategy": "Test Sentry error tracking, PostHog event logging, and Supabase error storage.",
         "priority": "high",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -768,9 +657,7 @@
         "details": "Validate outputs (650–850 words) and score quality. Retry if TrustDelta <4.2. Log output_quality event with PostHog. Set up validation logic in backend/routes/deliverables.js.",
         "testStrategy": "Test output validation, quality scoring, retry logic, and PostHog event logging.",
         "priority": "high",
-        "dependencies": [
-          188
-        ],
+        "dependencies": [188],
         "status": "pending",
         "subtasks": []
       },
@@ -781,9 +668,7 @@
         "details": "Queue critical errors and analyze feedback sentiment with GPT-4o. Send support emails and log support_request event with PostHog. Set up backend/webhooks/support.js and backend/templates/email/support.html.",
         "testStrategy": "Test support queueing, sentiment analysis, email sending, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          186
-        ],
+        "dependencies": [186],
         "status": "pending",
         "subtasks": []
       },
@@ -794,9 +679,7 @@
         "details": "Update prompts for emotional drivers and emphasize local context. Log driver_inference event with PostHog. Set up backend/prompts/business_plan.js, backend/prompts/social_media.js, and backend/prompts/website_audit.js.",
         "testStrategy": "Test prompt effectiveness, emotional driver inference, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          188
-        ],
+        "dependencies": [188],
         "status": "pending",
         "subtasks": []
       },
@@ -807,9 +690,7 @@
         "details": "Add milestone timeline and enable snippet sharing. Write Jest tests for interactive features. Set up frontend/public/deliverables.html and frontend/src/cms/summary.js.",
         "testStrategy": "Test milestone timeline, snippet sharing functionality, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          184
-        ],
+        "dependencies": [184],
         "status": "pending",
         "subtasks": []
       },
@@ -820,9 +701,7 @@
         "details": "Enhance prompts for resonance and use 12 fields for personalization. Log output_quality event with PostHog. Update backend/prompts/social_media.js and backend/prompts/website_audit.js.",
         "testStrategy": "Test prompt effectiveness, personalization features, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          188
-        ],
+        "dependencies": [188],
         "status": "pending",
         "subtasks": []
       },
@@ -833,9 +712,7 @@
         "details": "Create OpenAPI spec and generate Swagger UI at /docs. Validate with Swagger tools and write Jest tests. Set up backend/docs/api.yaml.",
         "testStrategy": "Test OpenAPI spec accuracy, Swagger UI functionality, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -846,9 +723,7 @@
         "details": "Collect feedback for fine-tuning and create test cases. Fine-tune GPT-4o for >95% accuracy. Log finetuning_complete event with PostHog. Set up backend/tests/filter.test.js.",
         "testStrategy": "Test fine-tuning accuracy, content filtering, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          188
-        ],
+        "dependencies": [188],
         "status": "pending",
         "subtasks": []
       },
@@ -859,9 +734,7 @@
         "details": "Create plugin system and define integration interfaces. Write Jest tests for modular architecture. Set up backend/services/ directory structure.",
         "testStrategy": "Test plugin system functionality, integration interfaces, and Jest test coverage.",
         "priority": "low",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -872,9 +745,7 @@
         "details": "Use dependency-cruiser to detect circular dependencies. Add CI/CD step to validate TaskMaster tasks. Log circular dependencies to error_logs. Log task_validation_success to PostHog.",
         "testStrategy": "Write Jest tests for dependency validation, test CI/CD integration, and verify error logging.",
         "priority": "medium",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -885,9 +756,7 @@
         "details": "Collect ≥10,000 samples from feedback_logs and implement 5-fold cross-validation. Test contradiction/NSFW detection with Jest. Log finetuning_dataset_validated to PostHog.",
         "testStrategy": "Write Jest tests for dataset quality, test cross-validation, and verify fine-tuning accuracy.",
         "priority": "medium",
-        "dependencies": [
-          196
-        ],
+        "dependencies": [196],
         "status": "pending",
         "subtasks": []
       },
@@ -898,9 +767,7 @@
         "details": "Create retry middleware with backoff and implement empathetic error messages. Log errors to Sentry and write Jest tests. Set up backend/middleware/retry.js and backend/middleware/error.js.",
         "testStrategy": "Test retry logic, error message quality, Sentry integration, and Jest test coverage.",
         "priority": "high",
-        "dependencies": [
-          189
-        ],
+        "dependencies": [189],
         "status": "pending",
         "subtasks": []
       },
@@ -911,9 +778,7 @@
         "details": "Create Express routes for /v1/filter-input and /v1/detect-contradiction. Implement GPT-4o validation with >95% accuracy. Log input_filtered event with PostHog. Set up backend/routes/filter.js and backend/routes/contradiction.js.",
         "testStrategy": "Test filtering accuracy, contradiction detection, GPT-4o integration, and PostHog event logging.",
         "priority": "high",
-        "dependencies": [
-          188
-        ],
+        "dependencies": [188],
         "status": "pending",
         "subtasks": []
       },
@@ -924,9 +789,7 @@
         "details": "Add error_type and retry_count fields to error_logs. Create indexes and define RLS policy. Write Supatest tests for schema validation.",
         "testStrategy": "Write Supatest tests for schema, test RLS policies, and verify index performance.",
         "priority": "medium",
-        "dependencies": [
-          184
-        ],
+        "dependencies": [184],
         "status": "pending",
         "subtasks": []
       },
@@ -937,9 +800,7 @@
         "details": "Create DLQ handler with 3 retries and 1hr intervals. Log webhook_failure events and write Jest tests. Set up backend/webhooks/dlq.js.",
         "testStrategy": "Test DLQ logic, retry intervals, webhook failure logging, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          186
-        ],
+        "dependencies": [186],
         "status": "pending",
         "subtasks": []
       },
@@ -950,9 +811,7 @@
         "details": "Create support webhook and send personalized emails. Log support_request event with PostHog. Set up backend/webhooks/support.js and backend/templates/email/support.html.",
         "testStrategy": "Test support webhook, email personalization, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          186
-        ],
+        "dependencies": [186],
         "status": "pending",
         "subtasks": []
       },
@@ -963,9 +822,7 @@
         "details": "Create /v1/resume for partial outputs and send resume link via email. Log timeout_recovery event with PostHog. Set up backend/routes/deliverables.js for resume functionality.",
         "testStrategy": "Test resume functionality, email sending, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          184
-        ],
+        "dependencies": [184],
         "status": "pending",
         "subtasks": []
       },
@@ -976,10 +833,7 @@
         "details": "Centralize error handling in error.js with user-friendly messages. Log all errors to error_logs with endpoint, status, error_type. Create Supabase view for error trends. Log error_trend_analyzed to PostHog.",
         "testStrategy": "Write Jest tests for error handling, test error aggregation views, and verify PostHog logging.",
         "priority": "high",
-        "dependencies": [
-          200,
-          202
-        ],
+        "dependencies": [200, 202],
         "status": "pending",
         "subtasks": []
       },
@@ -990,10 +844,7 @@
         "details": "Update /v1/request-revision for deliverables and validate output quality (TrustDelta ≥4.2). Store outputs in Supabase and log deliverable_generated event with PostHog.",
         "testStrategy": "Test deliverable generation, quality validation, Supabase storage, and PostHog event logging.",
         "priority": "high",
-        "dependencies": [
-          188,
-          184
-        ],
+        "dependencies": [188, 184],
         "status": "pending",
         "subtasks": []
       },
@@ -1004,9 +855,7 @@
         "details": "Update sparkSplit.js for TrustDelta ≥4.2 and store results in comparisons. Log plan_compared event with PostHog. Write Jest tests for comparison logic.",
         "testStrategy": "Test scenario comparisons, TrustDelta calculation, Supabase storage, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          207
-        ],
+        "dependencies": [207],
         "status": "pending",
         "subtasks": []
       },
@@ -1017,9 +866,7 @@
         "details": "Implement feedback and referral APIs. Store in Supabase feedback_logs and share_logs. Trigger Make.com webhooks. Log feedback_submitted and referral_shared events with PostHog.",
         "testStrategy": "Test feedback submission, referral generation, webhook triggering, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          184
-        ],
+        "dependencies": [184],
         "status": "pending",
         "subtasks": []
       },
@@ -1030,10 +877,7 @@
         "details": "Update /v1/resume for timeouts and log scenario-specific errors. Send resume link emails and log timeout_recovery event with PostHog.",
         "testStrategy": "Test timeout handling, resume functionality, email sending, and PostHog event logging.",
         "priority": "medium",
-        "dependencies": [
-          200,
-          202
-        ],
+        "dependencies": [200, 202],
         "status": "pending",
         "subtasks": []
       },
@@ -1044,9 +888,7 @@
         "details": "Write Jest tests for edge cases (e.g., invalid JWT, 429 responses). Use nock to mock GPT-4o and Hume AI APIs. Achieve >90% coverage with coverage report. Log test_coverage_achieved to PostHog.",
         "testStrategy": "Write comprehensive Jest tests, mock external APIs, measure test coverage, and verify edge case handling.",
         "priority": "medium",
-        "dependencies": [
-          207
-        ],
+        "dependencies": [207],
         "status": "pending",
         "subtasks": []
       },
@@ -1057,9 +899,7 @@
         "details": "Configure Express for approved services and add ESLint rules. Validate package.json and log server_start with PostHog. Write Jest tests for tech stack compliance.",
         "testStrategy": "Test ESLint rules, package.json validation, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1070,9 +910,7 @@
         "details": "Update webhooks for existing scenarios and block new scenario creation. Log webhook_triggered with PostHog. Write Jest tests for scenario enforcement.",
         "testStrategy": "Test scenario reuse enforcement, webhook updates, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          186
-        ],
+        "dependencies": [186],
         "status": "pending",
         "subtasks": []
       },
@@ -1083,9 +921,7 @@
         "details": "Optimize /v1/validate-input for <500ms response time. Minimize Joi schema fields and cache trust scores. Log funnel_step with PostHog. Write Jest tests for performance.",
         "testStrategy": "Test API performance, caching behavior, and Jest test coverage for funnel optimization.",
         "priority": "high",
-        "dependencies": [
-          137
-        ],
+        "dependencies": [137],
         "status": "pending",
         "subtasks": []
       },
@@ -1096,9 +932,7 @@
         "details": "Update prompts for brandVoice and infer emotional drivers. Validate resonance >0.7 and log output_quality with PostHog. Write Jest tests for brand alignment.",
         "testStrategy": "Test brand voice alignment, emotional driver inference, resonance validation, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          192
-        ],
+        "dependencies": [192],
         "status": "pending",
         "subtasks": []
       },
@@ -1109,9 +943,7 @@
         "details": "Add RLS to tables and create pg_cron for purge. Implement POST /v1/consent and log consent_granted with PostHog. Write Supatest tests for RLS and purge functionality.",
         "testStrategy": "Write Supatest tests for RLS, test pg_cron jobs, and verify consent functionality.",
         "priority": "high",
-        "dependencies": [
-          184
-        ],
+        "dependencies": [184],
         "status": "pending",
         "subtasks": []
       },
@@ -1122,9 +954,7 @@
         "details": "Update rateLimit.js and add CSP headers. Run axe-core tests and log security_violation with PostHog. Write Jest tests for security and accessibility.",
         "testStrategy": "Test rate limiting, CSP headers, accessibility compliance, and Jest test coverage.",
         "priority": "high",
-        "dependencies": [
-          175
-        ],
+        "dependencies": [175],
         "status": "pending",
         "subtasks": []
       },
@@ -1146,9 +976,7 @@
         "details": "Configure PostHog client and add event captures to routes. Validate event schemas and write Jest tests for metric tracking.",
         "testStrategy": "Test PostHog integration, event schema validation, and Jest test coverage.",
         "priority": "high",
-        "dependencies": [
-          189
-        ],
+        "dependencies": [189],
         "status": "pending",
         "subtasks": []
       },
@@ -1159,9 +987,7 @@
         "details": "Configure Sentry for uptime tracking and log errors to error_logs. Write Jest tests for Sentry integration and uptime monitoring.",
         "testStrategy": "Test Sentry uptime tracking, error logging, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          189
-        ],
+        "dependencies": [189],
         "status": "pending",
         "subtasks": []
       },
@@ -1172,9 +998,7 @@
         "details": "Update schemas for session_logs, feedback_logs, and share_logs. Add RLS policies and log metrics. Write Supatest tests for metric storage.",
         "testStrategy": "Write Supatest tests for metric tables, test RLS policies, and verify metric logging.",
         "priority": "medium",
-        "dependencies": [
-          184
-        ],
+        "dependencies": [184],
         "status": "pending",
         "subtasks": []
       },
@@ -1185,9 +1009,7 @@
         "details": "Write Jest tests for routes and services with >80% coverage. Configure coverage reporting and run tests in CI/CD. Log test_completion with PostHog.",
         "testStrategy": "Achieve >80% test coverage, configure CI/CD testing, and verify Jest test quality.",
         "priority": "high",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1198,9 +1020,7 @@
         "details": "Write Supatest tests for API endpoints and test Make.com flows. Use seed data and log test_completion with PostHog.",
         "testStrategy": "Test API integration, Make.com flows, and Supatest functionality.",
         "priority": "medium",
-        "dependencies": [
-          186
-        ],
+        "dependencies": [186],
         "status": "pending",
         "subtasks": []
       },
@@ -1211,9 +1031,7 @@
         "details": "Run axe-core and pa11y-ci tests. Validate contrast and VoiceOver compatibility. Generate accessibility report and log test_completion with PostHog.",
         "testStrategy": "Test WCAG compliance, contrast ratios, screen reader compatibility, and accessibility reporting.",
         "priority": "medium",
-        "dependencies": [
-          217
-        ],
+        "dependencies": [217],
         "status": "pending",
         "subtasks": []
       },
@@ -1224,9 +1042,7 @@
         "details": "Write tests for /v1/request-revision with resonance validation (arousal >0.5, valence >0.6). Store results in comparisons and log test_completion with PostHog.",
         "testStrategy": "Test Hume AI integration, resonance validation, and result storage.",
         "priority": "medium",
-        "dependencies": [
-          188
-        ],
+        "dependencies": [188],
         "status": "pending",
         "subtasks": []
       },
@@ -1237,9 +1053,7 @@
         "details": "Script Locust tests for 10,000 users and validate response times. Generate load testing report and log test_completion with PostHog.",
         "testStrategy": "Test system scalability, response times under load, and load testing reporting.",
         "priority": "medium",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1250,9 +1064,7 @@
         "details": "Write Supatest for scenarios with 95% pass rate. Validate product switch functionality and use seed data. Log test_completion with PostHog.",
         "testStrategy": "Test scenario validation, product switching, and Supatest functionality.",
         "priority": "medium",
-        "dependencies": [
-          207
-        ],
+        "dependencies": [207],
         "status": "pending",
         "subtasks": []
       },
@@ -1263,9 +1075,7 @@
         "details": "Update Jest tests for new endpoints and services. Add regression tests for existing APIs. Add CI/CD step to validate test coverage. Log test_maintenance_complete to PostHog.",
         "testStrategy": "Test new features, regression testing, CI/CD integration, and test maintenance.",
         "priority": "medium",
-        "dependencies": [
-          222
-        ],
+        "dependencies": [222],
         "status": "pending",
         "subtasks": []
       },
@@ -1276,9 +1086,7 @@
         "details": "Configure OWASP ZAP and Semgrep in CI/CD. Scan APIs and dependencies. Generate vulnerability report and log security_scan with PostHog.",
         "testStrategy": "Test security scanning, vulnerability detection, and CI/CD integration.",
         "priority": "high",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1289,9 +1097,7 @@
         "details": "Add RLS to tables and configure vault encryption. Test RLS with Supatest and log security_config with PostHog.",
         "testStrategy": "Write Supatest tests for RLS, test vault encryption, and verify security configuration.",
         "priority": "high",
-        "dependencies": [
-          184
-        ],
+        "dependencies": [184],
         "status": "pending",
         "subtasks": []
       },
@@ -1302,9 +1108,7 @@
         "details": "Update rateLimit.js for 100 req/min/IP and apply to endpoints. Test with Locust and log rate_limit_triggered with PostHog.",
         "testStrategy": "Test rate limiting effectiveness, load testing, and PostHog event logging.",
         "priority": "high",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1315,9 +1119,7 @@
         "details": "Add DOMPurify to validation middleware and validate inputs. Test sanitization effectiveness and log sanitization_error with PostHog.",
         "testStrategy": "Test input sanitization, DOMPurify integration, and error logging.",
         "priority": "high",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1328,9 +1130,7 @@
         "details": "Add CSP headers to server responses and test header effectiveness. Log csp_violation with PostHog.",
         "testStrategy": "Test CSP headers, security effectiveness, and violation logging.",
         "priority": "medium",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1341,9 +1141,7 @@
         "details": "Create consent modal and /v1/consent API. Configure pg_cron for 24-month data purge. Log consent_granted with PostHog.",
         "testStrategy": "Test consent functionality, data purge automation, and compliance features.",
         "priority": "high",
-        "dependencies": [
-          216
-        ],
+        "dependencies": [216],
         "status": "pending",
         "subtasks": []
       },
@@ -1354,10 +1152,7 @@
         "details": "Configure Supabase Vault for prompt_logs and comparisons. Add RLS policies for encrypted fields. Test encryption with Supatest and log encryption_enabled to PostHog.",
         "testStrategy": "Write Supatest tests for encryption, test RLS policies, and verify data protection.",
         "priority": "high",
-        "dependencies": [
-          184,
-          230
-        ],
+        "dependencies": [184, 230],
         "status": "pending",
         "subtasks": []
       },
@@ -1368,9 +1163,7 @@
         "details": "Configure Vite for Render deployment and integrate Webflow CMS. Run Lighthouse tests and log deploy_success with PostHog.",
         "testStrategy": "Test frontend deployment, Webflow integration, and Lighthouse performance scores.",
         "priority": "high",
-        "dependencies": [
-          217
-        ],
+        "dependencies": [217],
         "status": "pending",
         "subtasks": []
       },
@@ -1381,9 +1174,7 @@
         "details": "Configure serverless Node.js deployment and set up Heroku fallback. Implement health checks and log deploy_success with PostHog.",
         "testStrategy": "Test backend deployment, health check functionality, and fallback mechanisms.",
         "priority": "high",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1394,9 +1185,7 @@
         "details": "Deploy admin dashboard and secure with MemberStack. Test metrics endpoint and log deploy_success with PostHog.",
         "testStrategy": "Test admin dashboard deployment, security features, and metrics functionality.",
         "priority": "medium",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1407,9 +1196,7 @@
         "details": "Configure rollback in CI/CD and create tagged releases. Test rollback functionality and log rollback_triggered with PostHog.",
         "testStrategy": "Test rollback mechanism, tagged releases, and CI/CD integration.",
         "priority": "medium",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1420,9 +1207,7 @@
         "details": "Configure Sentry and PostHog for production. Log errors and validate dashboards. Log monitoring_enabled with PostHog.",
         "testStrategy": "Test production monitoring, error tracking, and dashboard functionality.",
         "priority": "high",
-        "dependencies": [
-          189
-        ],
+        "dependencies": [189],
         "status": "pending",
         "subtasks": []
       },
@@ -1433,9 +1218,7 @@
         "details": "Add retry logic (3 attempts, 500ms) and cache API responses (5min TTL). Log downtime to Sentry and log retry_success with PostHog.",
         "testStrategy": "Test retry logic, caching effectiveness, and downtime handling.",
         "priority": "high",
-        "dependencies": [
-          189
-        ],
+        "dependencies": [189],
         "status": "pending",
         "subtasks": []
       },
@@ -1446,9 +1229,7 @@
         "details": "Update RLS policies and configure vault encryption. Deploy consent modal and run OWASP ZAP scans. Log security_config with PostHog.",
         "testStrategy": "Test RLS policies, encryption effectiveness, and security scanning.",
         "priority": "high",
-        "dependencies": [
-          230
-        ],
+        "dependencies": [230],
         "status": "pending",
         "subtasks": []
       },
@@ -1459,9 +1240,7 @@
         "details": "Configure task validation in CI/CD and log errors. Test dependencies and log task_validation with PostHog.",
         "testStrategy": "Test task validation, dependency checking, and CI/CD integration.",
         "priority": "medium",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1472,9 +1251,7 @@
         "details": "Script Locust tests for 10,000 users and optimize Supabase indexes. Generate scalability report and log scalability_test with PostHog.",
         "testStrategy": "Test system scalability, database performance, and load handling.",
         "priority": "high",
-        "dependencies": [
-          226
-        ],
+        "dependencies": [226],
         "status": "pending",
         "subtasks": []
       },
@@ -1485,9 +1262,7 @@
         "details": "Validate outputs with Hume AI for resonance >0.7. Log resonance data and update prompts. Log output_quality with PostHog.",
         "testStrategy": "Test resonance validation, prompt effectiveness, and quality logging.",
         "priority": "medium",
-        "dependencies": [
-          225
-        ],
+        "dependencies": [225],
         "status": "pending",
         "subtasks": []
       },
@@ -1498,9 +1273,7 @@
         "details": "Fine-tune contradiction prompts and test filtering accuracy. Log inaccuracies and log input_filtered with PostHog. Achieve 95% filtering accuracy.",
         "testStrategy": "Test filtering accuracy, fine-tuning effectiveness, and error logging.",
         "priority": "medium",
-        "dependencies": [
-          196
-        ],
+        "dependencies": [196],
         "status": "pending",
         "subtasks": []
       },
@@ -1511,9 +1284,7 @@
         "details": "Implement MapReduce chunking for >128K tokens. Log overflows and test with Jest. Log token_limit_handled with PostHog.",
         "testStrategy": "Test token overflow handling, MapReduce implementation, and Jest test coverage.",
         "priority": "medium",
-        "dependencies": [
-          188
-        ],
+        "dependencies": [188],
         "status": "pending",
         "subtasks": []
       },
@@ -1524,9 +1295,7 @@
         "details": "Add backoff to stripe.js and queue support for failures. Log retries and log retry_success with PostHog.",
         "testStrategy": "Test Stripe rate limiting, backoff logic, and support queueing.",
         "priority": "medium",
-        "dependencies": [
-          231
-        ],
+        "dependencies": [231],
         "status": "pending",
         "subtasks": []
       },
@@ -1537,9 +1306,7 @@
         "details": "Cache CMS in Supabase and implement static fallback. Log downtime to Sentry and log cache_hit with PostHog.",
         "testStrategy": "Test CMS caching, static fallback, and downtime handling.",
         "priority": "medium",
-        "dependencies": [
-          236
-        ],
+        "dependencies": [236],
         "status": "pending",
         "subtasks": []
       },
@@ -1550,9 +1317,7 @@
         "details": "Implement circuit breaker for Hume AI and fallback to GPT-4o. Log fallbacks and log hume_fallback_triggered with PostHog.",
         "testStrategy": "Test circuit breaker logic, GPT-4o fallback, and fallback logging.",
         "priority": "medium",
-        "dependencies": [
-          188
-        ],
+        "dependencies": [188],
         "status": "pending",
         "subtasks": []
       },
@@ -1563,10 +1328,7 @@
         "details": "Add exponential backoff (2^i * 1000ms) to webhook retries. Log rate limit failures to error_logs. Test rate limit handling with Jest. Log webhook_rate_limit_handled to PostHog.",
         "testStrategy": "Write Jest tests for webhook rate limiting, test backoff logic, and verify error logging.",
         "priority": "medium",
-        "dependencies": [
-          203,
-          231
-        ],
+        "dependencies": [203, 231],
         "status": "pending",
         "subtasks": []
       },
@@ -1577,9 +1339,7 @@
         "details": "Add Web Speech API and configure WebSocket for real-time updates. Test voice accuracy and log voice_input with PostHog.",
         "testStrategy": "Test voice input accuracy, WebSocket functionality, and real-time updates.",
         "priority": "low",
-        "dependencies": [
-          236
-        ],
+        "dependencies": [236],
         "status": "pending",
         "subtasks": []
       },
@@ -1590,9 +1350,7 @@
         "details": "Configure i18next for ≥2 languages and store translations in Supabase. Test translations and log i18n_enabled with PostHog.",
         "testStrategy": "Test i18n functionality, translation accuracy, and Supabase storage.",
         "priority": "low",
-        "dependencies": [
-          236
-        ],
+        "dependencies": [236],
         "status": "pending",
         "subtasks": []
       },
@@ -1603,9 +1361,7 @@
         "details": "Anonymize feedback data and fine-tune GPT-4o prompts. Test TrustDelta improvement and log feedback_trained with PostHog.",
         "testStrategy": "Test feedback anonymization, prompt fine-tuning, and TrustDelta improvement.",
         "priority": "medium",
-        "dependencies": [
-          209
-        ],
+        "dependencies": [209],
         "status": "pending",
         "subtasks": []
       },
@@ -1616,9 +1372,7 @@
         "details": "Update Hume AI for cultural context and revise prompts for cultural drivers. Test resonance improvement and log cultural_intelligence with PostHog.",
         "testStrategy": "Test cultural context awareness, prompt effectiveness, and resonance improvement.",
         "priority": "medium",
-        "dependencies": [
-          225
-        ],
+        "dependencies": [225],
         "status": "pending",
         "subtasks": []
       },
@@ -1629,9 +1383,7 @@
         "details": "Configure OAuth2 for APIs and implement data processing. Test integration performance and log integration_enabled with PostHog.",
         "testStrategy": "Test OAuth2 integration, data processing, and API performance.",
         "priority": "low",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1642,9 +1394,7 @@
         "details": "Write export guide and implement POST /v1/export. Store exports in Supabase and log export_success with PostHog.",
         "testStrategy": "Test export functionality, documentation accuracy, and Supabase storage.",
         "priority": "low",
-        "dependencies": [
-          207
-        ],
+        "dependencies": [207],
         "status": "pending",
         "subtasks": []
       },
@@ -1655,9 +1405,7 @@
         "details": "Write glossary in docs/glossary.md and map terms to project files. Test documentation with Jest and log glossary_updated with PostHog.",
         "testStrategy": "Test glossary accuracy, term mapping, and Jest test coverage.",
         "priority": "low",
-        "dependencies": [
-          183
-        ],
+        "dependencies": [183],
         "status": "pending",
         "subtasks": []
       },
@@ -1668,9 +1416,7 @@
         "details": "Implement advanced retry strategies with circuit breakers. Add graceful degradation for service failures. Log recovery metrics and test failure scenarios.",
         "testStrategy": "Test circuit breaker functionality, graceful degradation, and recovery metrics.",
         "priority": "medium",
-        "dependencies": [
-          206
-        ],
+        "dependencies": [206],
         "status": "pending",
         "subtasks": []
       },
@@ -1681,9 +1427,7 @@
         "details": "Analyze slow queries and optimize indexing strategy. Implement query result caching and connection pooling. Monitor query performance and log optimization metrics.",
         "testStrategy": "Test query performance improvements, caching effectiveness, and connection pooling.",
         "priority": "high",
-        "dependencies": [
-          180
-        ],
+        "dependencies": [180],
         "status": "pending",
         "subtasks": []
       }

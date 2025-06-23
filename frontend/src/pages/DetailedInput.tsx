@@ -3,9 +3,9 @@ import StepOneForm from '@/components/DetailedInput/StepOneForm';
 import StepTwoForm from '@/components/DetailedInput/StepTwoForm';
 import StandardBackground from '@/components/StandardBackground';
 import {
-    BodyText,
-    PageTitle,
-    SectionTitle,
+  BodyText,
+  PageTitle,
+  SectionTitle,
 } from '@/components/StandardTypography';
 import { Card, CardContent } from '@/components/ui/card';
 import { StandardButton } from '@/components/ui/standard-button';
@@ -17,9 +17,7 @@ import { useNavigate } from 'react-router-dom';
 // API and analytics imports
 import { trackFormStep, trackPageView } from '@/utils/analytics';
 import { logInteraction } from '@/utils/api';
-import {
-    saveDetailedInput
-} from '@/utils/detailedInputIntegration';
+import { saveDetailedInput } from '@/utils/detailedInputIntegration';
 
 const DetailedInput: React.FC = () => {
   const navigate = useNavigate();
@@ -50,7 +48,7 @@ const DetailedInput: React.FC = () => {
     revenueModel: '',
   });
 
-  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [errors] = useState<Partial<FormData>>({});
 
   useEffect(() => {
     trackPageView('detailed_input');

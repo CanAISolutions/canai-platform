@@ -3,11 +3,11 @@ import SampleMetricBadge from '@/components/Samples/SampleMetricBadge';
 import StandardBackground from '@/components/StandardBackground';
 import StandardCard from '@/components/StandardCard';
 import {
-    AccentText,
-    BodyText,
-    CardTitle,
-    PageTitle,
-    SectionTitle,
+  AccentText,
+  BodyText,
+  CardTitle,
+  PageTitle,
+  SectionTitle,
 } from '@/components/StandardTypography';
 import { Button } from '@/components/ui/button';
 import { OptimizedImage } from '@/components/ui/optimized-image';

@@ -114,7 +114,7 @@ const EmotionalCompass: React.FC<EmotionalCompassProps> = ({
       .attr('stroke-width', 2);
 
     // Draw data points
-    pathData.forEach((point, i) => {
+    pathData.forEach((point, _i) => {
       svg
         .append('circle')
         .attr('cx', point[0])

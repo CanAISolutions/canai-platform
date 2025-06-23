@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: .github/workflows/*.yml, backend/docker-compose.yml, render.yaml
+alwaysApply: false
 ---
 ---
 description: Guides efficient deployment pipelines

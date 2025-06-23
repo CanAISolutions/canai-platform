@@ -184,7 +184,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
           Quick Edit Specific Fields
         </h4>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {Object.entries(originalData).map(([key, value]) => (
+          {Object.entries(originalData).map(([key, _value]) => (
             <Button
               key={key}
               id={`edit-field-${key}`}

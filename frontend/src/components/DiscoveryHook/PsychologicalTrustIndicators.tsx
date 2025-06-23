@@ -1,10 +1,10 @@
 import {
-    Award,
-    CheckCircle,
-    Clock,
-    Shield,
-    TrendingUp,
-    Users,
+  Award,
+  CheckCircle,
+  Clock,
+  Shield,
+  TrendingUp,
+  Users,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
@@ -63,10 +63,13 @@ const PsychologicalTrustIndicators = () => {
                          shadow-[0_0_30px_rgba(54,209,254,0.2)] hover:shadow-[0_0_40px_rgba(54,209,254,0.3)]
                          transition-all duration-300"
           >
-            {React.createElement(trustMetrics[currentMetric]?.icon || TrendingUp, {
-              size: 28,
-              className: 'text-[#36d1fe] animate-pulse',
-            })}
+            {React.createElement(
+              trustMetrics[currentMetric]?.icon || TrendingUp,
+              {
+                size: 28,
+                className: 'text-[#36d1fe] animate-pulse',
+              }
+            )}
             <div className="text-left">
               <div className="text-2xl font-bold text-white font-playfair">
                 {trustMetrics[currentMetric]?.value || '0'}
@@ -145,9 +148,9 @@ const PsychologicalTrustIndicators = () => {
               </div>
               <div className="flex-1 text-left">
                 <p className="text-[#E6F6FF] italic mb-3 font-manrope leading-relaxed">
-                  &quot;CanAI&apos;s business plan helped us raise $2.5M in Series A. The
-                  emotional intelligence in their writing was exactly what
-                  investors wanted to see.&quot;
+                  &quot;CanAI&apos;s business plan helped us raise $2.5M in
+                  Series A. The emotional intelligence in their writing was
+                  exactly what investors wanted to see.&quot;
                 </p>
                 <div className="flex items-center justify-between">
                   <div>

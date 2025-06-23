@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/services/*.js, frontend/src/lib/utils.ts, .github/workflows/
+alwaysApply: false
 ---
 ---
 description: Guides feature rollout strategies

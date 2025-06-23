@@ -47,13 +47,15 @@ interface MemberstackEventHandler {
   (event: MemberstackEvent): void;
 }
 
-interface MemberstackEventListener {
-  (handler: MemberstackEventHandler): void;
-}
+// Remove unused interface
+// interface MemberstackEventListener {
+//   (handler: MemberstackEventHandler): void;
+// }
 
-interface MemberstackConfig {
-  publicKey: string;
-}
+// Remove unused interface
+// interface MemberstackConfig {
+//   publicKey: string;
+// }
 
 interface MemberstackClient {
   getCurrentMember: () => Promise<{ data: MemberstackUser | null }>;
@@ -61,16 +63,19 @@ interface MemberstackClient {
   off: (event: string, handler: MemberstackEventHandler) => void;
 }
 
-interface MemberstackConstructor {
-  new (options: { config: MemberstackConfig }): MemberstackClient;
-}
+// Remove unused interface
+// interface MemberstackConstructor {
+//   new (options: { config: MemberstackConfig }): MemberstackClient;
+// }
 
-declare const Memberstack: MemberstackConstructor;
+// Remove unused declarations
+// declare const Memberstack: MemberstackConstructor;
 
 // Memberstack configuration
-const MEMBERSTACK_PUBLIC_KEY = import.meta.env['VITE_MEMBERSTACK_PUBLIC_KEY'] || '';
+// const MEMBERSTACK_PUBLIC_KEY = import.meta.env['VITE_MEMBERSTACK_PUBLIC_KEY'] || '';
 
-export interface AccessDetails extends Record<string, string | number | boolean | undefined> {
+export interface AccessDetails
+  extends Record<string, string | number | boolean | undefined> {
   action: string;
   user_email?: string;
   correlation_id: string;
@@ -81,16 +86,17 @@ const TOKEN_KEY = 'canai_auth_token';
 const TOKEN_EXPIRY_KEY = 'canai_auth_expiry';
 
 // Token management
-const setAuthToken = (token: string, expiresIn: number) => {
-  const expiryTime = Date.now() + expiresIn * 1000;
-  try {
-    // Use sessionStorage for better security
-    sessionStorage.setItem(TOKEN_KEY, token);
-    sessionStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString());
-  } catch (error) {
-    console.error('[Memberstack] Failed to store auth token:', error);
-  }
-};
+// Remove unused setAuthToken function
+// const setAuthToken = (token: string, expiresIn: number) => {
+//   const expiryTime = Date.now() + expiresIn * 1000;
+//   try {
+//     // Use sessionStorage for better security
+//     sessionStorage.setItem(TOKEN_KEY, token);
+//     sessionStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString());
+//   } catch (error) {
+//     console.error('[Memberstack] Failed to store auth token:', error);
+//   }
+// };
 
 const getAuthToken = (): string | null => {
   try {
@@ -125,7 +131,7 @@ const clearAuthToken = () => {
 
 class MemberstackAuthClient {
   private initialized = false;
-  private memberstackInstance: any = null;
+  private memberstackInstance: MemberstackClient | null = null;
 
   constructor() {
     this.initializeMemberstack();
@@ -240,7 +246,7 @@ class MemberstackAuthClient {
 
     // Check if user has active plan connection for the product
     return user.planConnections.some(
-      (connection) =>
+      connection =>
         connection.planId === productType && connection.status === 'ACTIVE'
     );
   }
@@ -249,7 +255,9 @@ class MemberstackAuthClient {
     const hasAccess = await this.checkDeliverableAccess(productType);
 
     if (!hasAccess) {
-      console.warn(`[Memberstack] Deliverable access denied for ${productType}`);
+      console.warn(
+        `[Memberstack] Deliverable access denied for ${productType}`
+      );
 
       // Log access attempt
       await insertSessionLog({
@@ -266,7 +274,10 @@ class MemberstackAuthClient {
     return hasAccess;
   }
 
-  async trackUserAccess(action: string, details?: Record<string, string | number | boolean | undefined>) {
+  async trackUserAccess(
+    action: string,
+    details?: Record<string, string | number | boolean | undefined>
+  ) {
     const user = await this.getCurrentUser();
 
     await insertSessionLog({
@@ -318,25 +329,3 @@ export const trackUserAccess = async (
 
 5. Set up password reset flow and member portal
 */
-
-const handleAuthResponse = (user: MemberstackUser | null): void => {
-  // ... existing code ...
-};
-
-const handleAuthError = (error: MemberstackError): void => {
-  // ... existing code ...
-};
-
-const handleAuthEvent: MemberstackEventHandler = (event) => {
-  // ... existing code ...
-};
-
-const setupAuthListener: MemberstackEventListener = (handler) => {
-  // ... existing code ...
-};
-
-const client: MemberstackClient = new (Memberstack as MemberstackConstructor)({
-  config: {
-    publicKey: MEMBERSTACK_PUBLIC_KEY
-  }
-});

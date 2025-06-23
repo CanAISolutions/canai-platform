@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/services/posthog.js, frontend/src/utils/analytics.ts
+alwaysApply: false
 ---
 ---
 description: Enforces privacy-compliant event tracking

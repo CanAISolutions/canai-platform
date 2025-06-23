@@ -3,7 +3,6 @@
  * Handles Webflow → Make.com → Supabase data flow
  */
 
-
 export interface MakecomWebhookPayload {
   correlation_id: string;
   timestamp: string;
@@ -47,7 +46,9 @@ const rateLimiter = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT = 100; // requests per minute
 const RATE_WINDOW = 60 * 1000; // 1 minute in milliseconds
 
-const checkRateLimit = (webhookType: keyof typeof MAKECOM_WEBHOOKS): boolean => {
+const checkRateLimit = (
+  webhookType: keyof typeof MAKECOM_WEBHOOKS
+): boolean => {
   const now = Date.now();
   const key = webhookType;
   const limit = rateLimiter.get(key);
@@ -143,11 +144,15 @@ const sendToMakeWebhook = async (
   }
 };
 
-export const logSessionToMakecom = async (data: Record<string, unknown>): Promise<void> => {
+export const logSessionToMakecom = async (
+  data: Record<string, unknown>
+): Promise<void> => {
   return sendToMakeWebhook('SESSION_LOG', data);
 };
 
-export const logErrorToMakecom = async (data: Record<string, unknown>): Promise<void> => {
+export const logErrorToMakecom = async (
+  data: Record<string, unknown>
+): Promise<void> => {
   return sendToMakeWebhook('ERROR_LOG', data);
 };
 

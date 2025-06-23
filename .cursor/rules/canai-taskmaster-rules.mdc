@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/Taskmaster-Tasks.md, .github/workflows/
+alwaysApply: false
 ---
 ---
 description: Guides TaskMaster task integration

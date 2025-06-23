@@ -113,7 +113,7 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose }) => {
         {/* Carousel */}
         <Carousel className="w-full max-w-xl py-2 select-none">
           <CarouselContent>
-            {PRICING_DATA.map((item, idx) => (
+            {PRICING_DATA.map((item, _idx) => (
               <CarouselItem key={item.product} className="px-2 py-4">
                 <PricingCard {...item} />
               </CarouselItem>

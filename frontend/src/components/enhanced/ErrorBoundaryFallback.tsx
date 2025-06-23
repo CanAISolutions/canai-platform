@@ -13,13 +13,16 @@ const sanitizeErrorMessage = (error: Error): string => {
   // Remove potential stack traces
   const message = error.message || 'An unknown error occurred';
   // Remove potential file paths
-  return message.replace(/([A-Za-z]:\\|\/)[^\s]+/g, '[PATH]')
-    // Remove potential URLs
-    .replace(/(https?:\/\/[^\s]+)/g, '[URL]')
-    // Remove potential API keys or tokens
-    .replace(/([A-Za-z0-9+/=]){40,}/g, '[REDACTED]')
-    // Remove potential email addresses
-    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL]');
+  return (
+    message
+      .replace(/([A-Za-z]:\\|\/)[^\s]+/g, '[PATH]')
+      // Remove potential URLs
+      .replace(/(https?:\/\/[^\s]+)/g, '[URL]')
+      // Remove potential API keys or tokens
+      .replace(/([A-Za-z0-9+/=]){40,}/g, '[REDACTED]')
+      // Remove potential email addresses
+      .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL]')
+  );
 };
 
 const ErrorBoundaryFallback: React.FC<ErrorBoundaryFallbackProps> = ({

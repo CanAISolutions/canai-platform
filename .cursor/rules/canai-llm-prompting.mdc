@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/prompts/*.js
+alwaysApply: false
 ---
 ---
 description: Enforces effective AI prompt design

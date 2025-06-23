@@ -12,7 +12,8 @@ try {
 
   // Test 2: Find first section
   console.log('🔍 Looking for Section 6.1...');
-  const sectionRegex = /## Section (6\.1): ([^\n]+)\n\n```yaml\n([\s\S]*?)\n```/g;
+  const sectionRegex =
+    /## Section (6\.1): ([^\n]+)\n\n```yaml\n([\s\S]*?)\n```/g;
   const match = sectionRegex.exec(content);
 
   if (match) {
@@ -47,11 +48,9 @@ try {
     }
 
     console.log('🎉 All tests passed! Ready to convert.');
-
   } else {
     console.log('❌ Section 6.1 not found');
   }
-
 } catch (error) {
   console.error('❌ Test failed:', error.message);
   console.error(error.stack);

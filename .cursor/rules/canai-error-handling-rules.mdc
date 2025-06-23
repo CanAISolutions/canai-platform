@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/middleware/{error,retry}.js, backend/routes/*.js, frontend/src/components/*/ErrorBoundary.tsx
+alwaysApply: false
 ---
 ---
 description: Guides robust error handling practices

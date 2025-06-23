@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Product } from '@/pages/PurchaseFlow';
 import { Clock, CreditCard, Shield } from 'lucide-react';
@@ -100,8 +100,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
 
             <p className="text-xs text-canai-light-blue text-center mt-4 opacity-80">
-              By clicking &quot;Pay&quot;, you agree to our Terms of Service and Privacy
-              Policy
+              By clicking &quot;Pay&quot;, you agree to our Terms of Service and
+              Privacy Policy
             </p>
           </CardContent>
         </Card>

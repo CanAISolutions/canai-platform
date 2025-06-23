@@ -1,10 +1,4 @@
-import {
-    Clock,
-    DollarSign,
-    Eye,
-    Sparkles,
-    Star
-} from 'lucide-react';
+import { Clock, DollarSign, Eye, Sparkles, Star } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 

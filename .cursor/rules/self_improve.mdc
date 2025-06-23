@@ -1,7 +1,7 @@
 ---
-description: Guidelines for continuously improving Cursor rules based on emerging code patterns and best practices.
-globs: **/*
-alwaysApply: true
+description:
+globs: *.mdc
+alwaysApply: false
 ---
 
 - **Rule Improvement Triggers:**
@@ -38,7 +38,7 @@ alwaysApply: true
     select: { id: true, email: true },
     where: { status: 'ACTIVE' }
   });
-  
+
   // Consider adding to [prisma.mdc](mdc:.cursor/rules/prisma.mdc):
   // - Standard select fields
   // - Common where conditions

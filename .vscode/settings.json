@@ -1,107 +1,30 @@
-{
-  "search.useIgnoreFiles": false,
-  "typescript.preferences.quoteStyle": "single",
-  "typescript.preferences.includePackageJsonAutoImports": "auto",
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.suggest.autoImports": true,
-  "typescript.suggest.completeFunctionCalls": true,
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.preferences.strictness": "strict",
-
-  "eslint.enable": true,
-  "eslint.format.enable": true,
-  "eslint.lintTask.enable": true,
-  "eslint.run": "onSave",
-  "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
-  "eslint.codeActionsOnSave.mode": "all",
-
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit",
-    "source.removeUnusedImports": "explicit"
+﻿{
+  "terminal.integrated.profiles.windows": {
+    "PowerShell 7": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell",
+      "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "args": ["-NoLogo", "-ExecutionPolicy", "Bypass"]
+    },
+    "Command Prompt": {
+      "path": "C:\\Windows\\System32\\cmd.exe",
+      "icon": "terminal-cmd"
+    },
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": ["--login"],
+      "icon": "terminal-bash"
+    }
   },
-
-  "files.associations": {
-    "*.mdc": "markdown",
-    ".cursor.config.json": "jsonc"
+  "terminal.integrated.defaultProfile.windows": "PowerShell 7",
+  "terminal.integrated.automationProfile.windows": {
+    "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "args": ["-NoLogo", "-ExecutionPolicy", "Bypass"]
   },
-
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.rulers": [80],
-    "editor.tabSize": 2
-  },
-
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.rulers": [80],
-    "editor.tabSize": 2
-  },
-
-  "cursor.ai.enableCodeSuggestions": true,
-  "cursor.ai.enableInlineCompletion": true,
-  "cursor.rules.enforce": true,
-  "cursor.rules.blockViolatingCompletions": false,
-  "cursor.rules.showRuleViolations": true,
-  "cursor.rules.validateOnSave": true,
-  "cursor.rules.showViolations": true,
-
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/dist": true,
-    "**/build": true,
-    "**/.git": true
-  },
-
-  "typescript.validate.enable": true,
-  "typescript.check.npmIsInstalled": true,
-
-  "cursor.rules.priority": [
-    "canai-typescript-rules",
-    "canai-structure-rules",
-    "canai-cortex-rules",
-    "canai-security-rules",
-    "canai-performance-rules"
-  ],
-
-  "workbench.colorCustomizations": {
-    "statusBar.background": "#1e3a8a",
-    "statusBar.foreground": "#ffffff",
-    "statusBar.noFolderBackground": "#1e3a8a"
-  },
-
-  "editor.rulers": [80, 120],
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-
-  "emmet.includeLanguages": {
-    "typescript": "html",
-    "typescriptreact": "html"
-  },
-
-  "javascript.preferences.quoteStyle": "single",
-
-  "editor.quickSuggestions": {
-    "other": true,
-    "comments": false,
-    "strings": true
-  },
-
-  "editor.suggest.insertMode": "replace",
-  "editor.acceptSuggestionOnCommitCharacter": false,
-
-  "git.enableSmartCommit": true,
-  "git.confirmSync": false,
-
-  "terminal.integrated.defaultProfile.osx": "zsh",
-  "terminal.integrated.defaultProfile.linux": "bash",
-
-  "extensions.ignoreRecommendations": false
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.rightClickBehavior": "copyPaste"
 }

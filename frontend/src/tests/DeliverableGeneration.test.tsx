@@ -42,49 +42,47 @@ interface MockDeliverableResponse {
   };
 }
 
-interface MockResponse {
-  status: number;
-  json: () => Promise<unknown>;
-}
+// Remove unused interfaces
+// interface MockResponse {
+//   status: number;
+//   json: () => Promise<unknown>;
+// }
 
-interface MockFetchOptions {
-  method?: string;
-  headers?: Record<string, string>;
-  body?: string;
-}
+// interface MockFetchOptions {
+//   method?: string;
+//   headers?: Record<string, string>;
+//   body?: string;
+// }
 
-interface MockFetchResult {
-  status: number;
-  json: () => Promise<unknown>;
-}
+// interface MockFetchResult {
+//   status: number;
+//   json: () => Promise<unknown>;
+// }
 
-interface MockFetchFunction {
-  (url: string, options?: MockFetchOptions): Promise<MockFetchResult>;
-}
+// Remove unused types and variables
+// type GlobalWithFetch = typeof globalThis & {
+//   fetch: typeof fetch;
+// };
 
-type GlobalWithFetch = typeof globalThis & {
-  fetch: typeof fetch;
-};
-
-const mockFetch = (response: MockResponse): jest.Mock<Promise<MockFetchResult>, [string, MockFetchOptions?]> => {
-  return jest.fn().mockImplementation(() => Promise.resolve(response));
-};
+// const mockFetch = (response: MockResponse): jest.Mock<Promise<MockFetchResult>, [string, MockFetchOptions?]> => {
+//   return jest.fn().mockImplementation(() => Promise.resolve(response));
+// };
 
 // Mock the Memberstack client
-const mockMemberstackClient = {
-  getCurrentMember: jest.fn().mockResolvedValue({
-    data: {
-      id: 'test-user-id',
-      email: 'test@example.com',
-      metadata: {},
-      auth: {
-        uid: 'test-uid',
-        accessToken: 'test-token',
-        refreshToken: 'test-refresh-token'
-      }
-    }
-  })
-} as const;
+// const mockMemberstackClient = {
+//   getCurrentMember: jest.fn().mockResolvedValue({
+//     data: {
+//       id: 'test-user-id',
+//       email: 'test@example.com',
+//       metadata: {},
+//       auth: {
+//         uid: 'test-uid',
+//         accessToken: 'test-token',
+//         refreshToken: 'test-refresh-token'
+//       }
+//     }
+//   })
+// } as const;
 
 describe('F7-tests: Enhanced Deliverable Generation Tests', () => {
   beforeEach(() => {
@@ -92,17 +90,18 @@ describe('F7-tests: Enhanced Deliverable Generation Tests', () => {
     // Mock successful API responses
     (global.fetch as Mock).mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve<MockDeliverableResponse>({
-        id: 'test-id',
-        content: 'Test content',
-        canaiOutput: 'Enhanced content',
-        genericOutput: 'Generic content',
-        pdfUrl: 'https://example.com/test.pdf',
-        emotionalResonance: {
-          canaiScore: 0.85,
-          genericScore: 0.65,
-        },
-      }),
+      json: () =>
+        Promise.resolve<MockDeliverableResponse>({
+          id: 'test-id',
+          content: 'Test content',
+          canaiOutput: 'Enhanced content',
+          genericOutput: 'Generic content',
+          pdfUrl: 'https://example.com/test.pdf',
+          emotionalResonance: {
+            canaiScore: 0.85,
+            genericScore: 0.65,
+          },
+        }),
     });
   });
 
@@ -416,16 +415,18 @@ describe('F7-tests: Enhanced Deliverable Generation Tests', () => {
   it('should validate multi-step loading with retry mechanism', async () => {
     // Mock fetch to fail initially then succeed
     let callCount = 0;
-    (global.fetch as any).mockImplementation(() => {
-      callCount++;
-      if (callCount < 2) {
-        return Promise.reject(new Error('Network error'));
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(
+      (): Promise<Response> => {
+        callCount++;
+        if (callCount < 2) {
+          return Promise.reject(new Error('Network error'));
+        }
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ content: 'Success after retry' }),
+        });
       }
-      return Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ content: 'Success after retry' }),
-      });
-    });
+    );
 
     renderWithProviders(<DeliverableGeneration />);
 

@@ -46,7 +46,7 @@ const StandardFormGroup = React.forwardRef<
     {
       className,
       children,
-      required,
+      required: _required, // Renamed to indicate it's unused
       error,
       success,
       validationState = 'idle',
@@ -107,27 +107,24 @@ interface StandardFormLabelProps
   required?: boolean;
 }
 
-const StandardFormLabel = React.forwardRef<
-  React.ElementRef<typeof Label>,
-  StandardFormLabelProps
->(({ className, required, children, ...props }, ref) => (
-  <Label
-    ref={ref}
-    className={cn(
-      'text-white font-medium font-manrope tracking-tight',
-      className
-    )}
-    {...props}
-  >
-    {children}
-    {required && (
-      <span className="text-[#36d1fe] ml-1" aria-label="required">
-        *
-      </span>
-    )}
-  </Label>
-));
-StandardFormLabel.displayName = 'StandardFormLabel';
+const StandardFormLabel: React.FC<StandardFormLabelProps> = ({
+  children,
+  required: _required,
+  className = '',
+  ...props
+}) => {
+  return (
+    <label
+      className={cn(
+        'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </label>
+  );
+};
 
 // Enhanced Form Input with validation states
 interface StandardFormInputProps
@@ -147,10 +144,10 @@ const StandardFormInput = React.forwardRef<
   (
     {
       className,
-      error,
-      success,
+      error: _error,
+      success: _success,
       validationState = 'idle',
-      onValidationChange,
+      onValidationChange: _onValidationChange,
       ...props
     },
     ref
@@ -196,34 +193,45 @@ interface StandardFormTextareaProps
 const StandardFormTextarea = React.forwardRef<
   React.ElementRef<typeof Textarea>,
   StandardFormTextareaProps
->(({ className, error, success, validationState = 'idle', ...props }, ref) => {
-  const getValidationClasses = () => {
-    switch (validationState) {
-      case 'success':
-        return 'border-[#10b981] focus-visible:border-[#10b981] focus-visible:ring-[#10b981]/20';
-      case 'error':
-        return 'border-[#ef4444] focus-visible:border-[#ef4444] focus-visible:ring-[#ef4444]/20';
-      case 'validating':
-        return 'border-[#36d1fe] focus-visible:border-[#36d1fe] focus-visible:ring-[#36d1fe]/20';
-      default:
-        return 'border-[rgba(54,209,254,0.3)] focus-visible:border-[#36d1fe] focus-visible:ring-[#36d1fe]/20';
-    }
-  };
+>(
+  (
+    {
+      className,
+      error: _error,
+      success: _success,
+      validationState = 'idle',
+      ...props
+    },
+    ref
+  ) => {
+    const getValidationClasses = () => {
+      switch (validationState) {
+        case 'success':
+          return 'border-[#10b981] focus-visible:border-[#10b981] focus-visible:ring-[#10b981]/20';
+        case 'error':
+          return 'border-[#ef4444] focus-visible:border-[#ef4444] focus-visible:ring-[#ef4444]/20';
+        case 'validating':
+          return 'border-[#36d1fe] focus-visible:border-[#36d1fe] focus-visible:ring-[#36d1fe]/20';
+        default:
+          return 'border-[rgba(54,209,254,0.3)] focus-visible:border-[#36d1fe] focus-visible:ring-[#36d1fe]/20';
+      }
+    };
 
-  return (
-    <Textarea
-      ref={ref}
-      className={cn(
-        'bg-[rgba(255,255,255,0.05)] border-2 text-white placeholder:text-[rgba(255,255,255,0.5)]',
-        'transition-all duration-200 font-manrope min-h-[120px] resize-none',
-        'hover:border-[rgba(54,209,254,0.5)]',
-        getValidationClasses(),
-        className
-      )}
-      {...props}
-    />
-  );
-});
+    return (
+      <Textarea
+        ref={ref}
+        className={cn(
+          'bg-[rgba(255,255,255,0.05)] border-2 text-white placeholder:text-[rgba(255,255,255,0.5)]',
+          'transition-all duration-200 font-manrope min-h-[120px] resize-none',
+          'hover:border-[rgba(54,209,254,0.5)]',
+          getValidationClasses(),
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
 StandardFormTextarea.displayName = 'StandardFormTextarea';
 
 // Form Helper Text
