@@ -1,16 +1,16 @@
 import StandardBackground from '@/components/StandardBackground';
 import {
-    BodyText,
-    PageTitle,
-    SectionTitle,
+  BodyText,
+  PageTitle,
+  SectionTitle,
 } from '@/components/StandardTypography';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StandardButton } from '@/components/ui/standard-button';
 import {
-    StandardForm,
-    StandardFormGroup,
-    StandardFormLabel,
-    StandardFormTextarea,
+  StandardForm,
+  StandardFormGroup,
+  StandardFormLabel,
+  StandardFormTextarea,
 } from '@/components/ui/standard-form';
 import { ArrowRight, RefreshCw, Sparkles, Star } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -18,16 +18,13 @@ import { useNavigate } from 'react-router-dom';
 
 // API and analytics imports
 import {
-    trackFunnelStep,
-    trackPageView,
-    trackSparkSelected,
-    trackSparksRegenerated,
+  trackFunnelStep,
+  trackPageView,
+  trackSparkSelected,
+  trackSparksRegenerated,
 } from '@/utils/analytics';
 import { logInteraction } from '@/utils/api';
-import {
-    generateSparks,
-    regenerateSparks
-} from '@/utils/sparkLayerApi';
+import { generateSparks, regenerateSparks } from '@/utils/sparkLayerApi';
 
 interface Spark {
   id: string;
@@ -207,8 +204,8 @@ const SparkLayer = () => {
         <div className="text-center mb-8 sm:mb-12">
           <PageTitle className="text-white mb-4">Choose Your Spark</PageTitle>
           <BodyText className="text-xl text-white opacity-90 max-w-3xl mx-auto">
-            We&apos;ve created three unique concepts tailored to your vision. Select
-            the one that resonates most with your goals.
+            We&apos;ve created three unique concepts tailored to your vision.
+            Select the one that resonates most with your goals.
           </BodyText>
         </div>
 
@@ -259,8 +256,8 @@ const SparkLayer = () => {
               Want Different Options?
             </SectionTitle>
             <BodyText className="text-white text-center mb-4 opacity-90">
-              Not quite right? Share what you&apos;d like to see different and we&apos;ll
-              generate new concepts.
+              Not quite right? Share what you&apos;d like to see different and
+              we&apos;ll generate new concepts.
             </BodyText>
 
             <StandardForm>

@@ -39,7 +39,8 @@ export const Followup: React.FC<FollowupProps> = ({
       </Button>
       {rating < 3 && (
         <div id="poor-followup" className="text-sm text-red-300 mt-2">
-          Sorry your SparkSplit didn&apos;t land! We&apos;ll reach out to make it right.
+          Sorry your SparkSplit didn&apos;t land! We&apos;ll reach out to make
+          it right.
         </div>
       )}
     </div>

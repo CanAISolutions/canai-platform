@@ -86,7 +86,8 @@ describe('FeedbackPage', () => {
   });
 
   test('handles form submission with success animation', async () => {
-    const mockSubmit = vi.fn().mockResolvedValue(undefined);
+    // Remove unused mockSubmit
+    // const mockSubmit = vi.fn().mockResolvedValue(undefined);
 
     render(<FeedbackPage />);
 

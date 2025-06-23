@@ -3,22 +3,33 @@ description:
 globs:
 alwaysApply: true
 ---
+
 # CanAI Form Patterns Guidelines
 
 ## Purpose
-Standardize form handling, validation, and accessibility patterns across the 9-stage user journey (F1-F9), ensuring consistent user experience, security, and compliance with WCAG 2.2 AA standards while leveraging the existing form infrastructure.
+
+Standardize form handling, validation, and accessibility patterns across the 9-stage user journey
+(F1-F9), ensuring consistent user experience, security, and compliance with WCAG 2.2 AA standards
+while leveraging the existing form infrastructure.
 
 ## Scope
-Apply to all form components, validation hooks, and form-related UI elements throughout the CanAI platform, prioritizing emotional resonance and trust-building through excellent form UX.
+
+Apply to all form components, validation hooks, and form-related UI elements throughout the CanAI
+platform, prioritizing emotional resonance and trust-building through excellent form UX.
 
 ## Core Principles
 
 ### Form Architecture
-- Use [useFormValidation.ts](mdc:frontend/src/hooks/useFormValidation.ts) hook for all form validation
-- Leverage [validated-form.tsx](mdc:frontend/src/components/ui/validated-form.tsx) for consistent form structure
-- Implement [standard-form.tsx](mdc:frontend/src/components/ui/standard-form.tsx) components for UI consistency
+
+- Use [useFormValidation.ts](mdc:frontend/src/hooks/useFormValidation.ts) hook for all form
+  validation
+- Leverage [validated-form.tsx](mdc:frontend/src/components/ui/validated-form.tsx) for consistent
+  form structure
+- Implement [standard-form.tsx](mdc:frontend/src/components/ui/standard-form.tsx) components for UI
+  consistency
 
 ### Validation Strategy
+
 - **Security First**: Always sanitize inputs using `DOMPurify` to prevent XSS attacks
 - **Real-time Feedback**: Validate on blur and provide immediate visual feedback
 - **Progressive Enhancement**: Show validation states (idle → validating → success/error)
@@ -27,6 +38,7 @@ Apply to all form components, validation hooks, and form-related UI elements thr
 ## Implementation Patterns
 
 ### ✅ Form Hook Usage
+
 ```typescript
 import { useFormValidation, ValidationRule } from '@/hooks/useFormValidation';
 
@@ -37,29 +49,24 @@ const validationRules: Record<string, ValidationRule> = {
     minLength: 3,
     maxLength: 50,
     sanitize: true, // Enable XSS protection
-    custom: (value) => {
+    custom: value => {
       if (value.includes('<script')) return 'Invalid characters detected';
       return null;
-    }
+    },
   },
   email: {
     required: true,
     email: true,
     sanitize: true,
-    maxLength: 254 // RFC 5321 compliance
-  }
+    maxLength: 254, // RFC 5321 compliance
+  },
 };
 
 export const BusinessDetailsForm = () => {
-  const { validations, getFieldProps, isFormValid, resetForm } =
-    useFormValidation(validationRules);
+  const { validations, getFieldProps, isFormValid, resetForm } = useFormValidation(validationRules);
 
   return (
-    <ValidatedForm
-      fields={validationRules}
-      onValidSubmit={handleSubmit}
-      variant="modal"
-    >
+    <ValidatedForm fields={validationRules} onValidSubmit={handleSubmit} variant="modal">
       <ValidatedField
         name="businessName"
         label="Business Name"
@@ -74,13 +81,10 @@ export const BusinessDetailsForm = () => {
 ```
 
 ### ✅ Validation States & Accessibility
+
 ```typescript
 // Proper ARIA labels and live regions
-<StandardFormGroup
-  validationState={fieldState}
-  error={error}
-  success={isValid}
->
+<StandardFormGroup validationState={fieldState} error={error} success={isValid}>
   <StandardFormLabel htmlFor="email" required>
     Email Address
   </StandardFormLabel>
@@ -88,17 +92,12 @@ export const BusinessDetailsForm = () => {
     id="email"
     type="email"
     validationState={validationState}
-    aria-describedby={error ? "email-error" : "email-helper"}
+    aria-describedby={error ? 'email-error' : 'email-helper'}
     aria-invalid={!!error}
     {...getFieldProps('email')}
   />
   {error && (
-    <div
-      id="email-error"
-      role="alert"
-      aria-live="polite"
-      className="text-red-500 text-sm mt-1"
-    >
+    <div id="email-error" role="alert" aria-live="polite" className="text-red-500 text-sm mt-1">
       {error}
     </div>
   )}
@@ -106,6 +105,7 @@ export const BusinessDetailsForm = () => {
 ```
 
 ### ✅ Multi-Step Forms (F2, F5)
+
 ```typescript
 // Journey-aware form progression
 interface FormStepProps {
@@ -120,7 +120,7 @@ export const MultiStepForm: React.FC<FormStepProps> = ({
   currentStep,
   totalSteps,
   onNext,
-  autoSave = true
+  autoSave = true,
 }) => {
   const form = useFormValidation(stepValidationRules);
   const { watch } = form;
@@ -149,6 +149,7 @@ export const MultiStepForm: React.FC<FormStepProps> = ({
 ```
 
 ### ✅ Error Handling & Recovery
+
 ```typescript
 // Graceful error handling with fallbacks
 const handleFormError = (error: FormError) => {
@@ -157,7 +158,7 @@ const handleFormError = (error: FormError) => {
     action: 'form_submission',
     error_type: error.type,
     user_journey_stage: currentStage,
-    form_data: sanitizedFormData
+    form_data: sanitizedFormData,
   });
 
   // Show user-friendly message
@@ -165,8 +166,8 @@ const handleFormError = (error: FormError) => {
   toast.error(userMessage, {
     action: {
       label: 'Try Again',
-      onClick: () => retrySubmission()
-    }
+      onClick: () => retrySubmission(),
+    },
   });
 };
 
@@ -175,7 +176,7 @@ const getUserFriendlyErrorMessage = (error: FormError): string => {
     case 'validation_failed':
       return 'Please check the highlighted fields and try again';
     case 'network_error':
-      return 'Connection issue. We\'ll retry automatically';
+      return "Connection issue. We'll retry automatically";
     case 'server_error':
       return 'Something went wrong. Our team has been notified';
     default:
@@ -187,6 +188,7 @@ const getUserFriendlyErrorMessage = (error: FormError): string => {
 ## Journey-Specific Patterns
 
 ### F2: Discovery Funnel Forms
+
 ```typescript
 // Quick, low-friction validation
 const discoveryValidation: ValidationRule = {
@@ -197,6 +199,7 @@ const discoveryValidation: ValidationRule = {
 ```
 
 ### F5: Detailed Input Collection
+
 ```typescript
 // Comprehensive validation with auto-save
 const detailedInputValidation: ValidationRule = {
@@ -204,13 +207,13 @@ const detailedInputValidation: ValidationRule = {
     required: true,
     minLength: 3,
     maxLength: 50,
-    sanitize: true
+    sanitize: true,
   },
   targetMarket: {
     required: true,
     maxLength: 500,
     sanitize: true,
-    custom: validateTargetMarket
+    custom: validateTargetMarket,
   },
   // Rich validation for detailed collection
 };
@@ -227,23 +230,25 @@ const useAutoSave = (formData: FormData, intervalMs: number = 2000) => {
 ```
 
 ### F6: Intent Mirror Validation
+
 ```typescript
 // Confirmation and edit patterns
 const intentMirrorValidation = {
   // Validate confidence scores
   confidence: {
     required: true,
-    custom: (value) => {
+    custom: value => {
       const score = parseFloat(value);
       return score >= 0.7 ? null : 'Low confidence - please review';
-    }
-  }
+    },
+  },
 };
 ```
 
 ## Security & Performance
 
 ### Input Sanitization
+
 ```typescript
 // Always sanitize user inputs
 const sanitizeInput = (value: string): string => {
@@ -261,6 +266,7 @@ const validateEmail = (email: string): boolean => {
 ```
 
 ### Performance Optimization
+
 ```typescript
 // Debounced validation for better UX
 const useDebouncedValidation = (
@@ -285,6 +291,7 @@ const useDebouncedValidation = (
 ## Testing Patterns
 
 ### Form Testing
+
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
@@ -322,6 +329,7 @@ describe('BusinessDetailsForm', () => {
 ## Anti-Patterns
 
 ### ❌ Avoid These Patterns
+
 ```typescript
 // DON'T: Inline validation without security
 <input onChange={(e) => setName(e.target.value)} /> // No sanitization
@@ -337,6 +345,7 @@ describe('BusinessDetailsForm', () => {
 ```
 
 ### ✅ Correct Patterns
+
 ```typescript
 // DO: Secure, accessible, user-friendly forms
 <ValidatedField
@@ -353,13 +362,14 @@ describe('BusinessDetailsForm', () => {
 ## Integration Requirements
 
 ### Analytics Integration
+
 ```typescript
 // Track form interactions for optimization
 const trackFormEvent = (eventName: string, properties: object) => {
   posthog.capture(eventName, {
     ...properties,
     journey_stage: currentStage,
-    form_type: formType
+    form_type: formType,
   });
 };
 
@@ -367,12 +377,13 @@ const trackFormEvent = (eventName: string, properties: object) => {
 useEffect(() => {
   trackFormEvent('form_step_viewed', {
     step: currentStep,
-    total_steps: totalSteps
+    total_steps: totalSteps,
   });
 }, [currentStep]);
 ```
 
 ### Error Logging
+
 ```typescript
 // Log form errors for improvement
 const logFormError = async (error: FormError) => {
@@ -380,7 +391,7 @@ const logFormError = async (error: FormError) => {
     error_message: error.message,
     error_type: 'form_validation',
     action: `form_${formType}_${currentStep}`,
-    user_id: userId
+    user_id: userId,
   });
 };
 ```
@@ -403,7 +414,4 @@ const logFormError = async (error: FormError) => {
 
 ---
 
-**Created**: January 2025
-**Version**: 1.0.0
-**Alignment**: PRD Sections 5, 6, 7, 9
-
+**Created**: January 2025 **Version**: 1.0.0 **Alignment**: PRD Sections 5, 6, 7, 9

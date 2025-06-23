@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: frontend/src/pages/**/*.{tsx}, frontend/src/components/**/*.{tsx}, backend/routes/*.js
+alwaysApply: false
 ---
 ---
 description: Guides implementation of the 9-stage user journey

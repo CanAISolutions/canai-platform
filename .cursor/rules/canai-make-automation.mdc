@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/webhooks/*.js, backend/webhooks/make_scenarios/*.json
+alwaysApply: false
 ---
 ---
 description: Guides Make.com automation workflows

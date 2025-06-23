@@ -16,7 +16,10 @@ export interface MessageResponse {
 export interface LogInteractionRequest {
   user_id?: string | undefined;
   interaction_type: string;
-  interaction_details: Record<string, string | number | boolean | null | undefined>;
+  interaction_details: Record<
+    string,
+    string | number | boolean | null | undefined
+  >;
 }
 
 export interface PreviewSparkRequest {
@@ -34,7 +37,13 @@ export interface PreviewSparkResponse {
 }
 
 export interface SaveProgressPayload {
-  [key: string]: string | number | boolean | null | undefined | Record<string, unknown>;
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | Record<string, unknown>;
 }
 
 export interface SaveProgressRequest {
@@ -83,7 +92,14 @@ export interface ErrorLog {
   user_id?: string;
   error_message: string;
   action: string;
-  error_type: 'timeout' | 'invalid_input' | 'stripe_failure' | 'low_confidence' | 'contradiction' | 'nsfw' | 'token_limit';
+  error_type:
+    | 'timeout'
+    | 'invalid_input'
+    | 'stripe_failure'
+    | 'low_confidence'
+    | 'contradiction'
+    | 'nsfw'
+    | 'token_limit';
 }
 
 // Base API configuration
@@ -162,7 +178,8 @@ const sanitizeErrorMessage = (error: unknown): string => {
 const validateUserInput = (data: LogInteractionRequest): boolean => {
   if (!data || typeof data !== 'object') return false;
   if (typeof data.interaction_type !== 'string') return false;
-  if (!data.interaction_details || typeof data.interaction_details !== 'object') return false;
+  if (!data.interaction_details || typeof data.interaction_details !== 'object')
+    return false;
   return true;
 };
 
@@ -241,7 +258,10 @@ const generateContextualSpark = (
       title: 'Investor-Ready Strategy',
       tagline: 'Position your business for successful funding',
     };
-  } else if (challengeStr?.includes('growth') || challengeStr?.includes('scale')) {
+  } else if (
+    challengeStr?.includes('growth') ||
+    challengeStr?.includes('scale')
+  ) {
     return {
       title: 'Growth Acceleration Plan',
       tagline: 'Strategic roadmap for sustainable expansion',
@@ -542,7 +562,8 @@ const generateContextualIntentMirror = (
 ): IntentMirrorResponse => {
   const businessName = data.businessName || 'your business';
   const primaryGoal = data.primaryGoal?.toLowerCase() || '';
-  const businessType = data.businessDescription?.toLowerCase() || '';
+  // Remove unused businessType
+  // const businessType = data.businessDescription?.toLowerCase() || '';
 
   let summary = `Create a comprehensive business plan for ${businessName}`;
   let confidenceScore = 0.75;

@@ -58,7 +58,14 @@ export interface ErrorLog {
   user_id?: string;
   error_message: string;
   action: string;
-  error_type: 'timeout' | 'invalid_input' | 'stripe_failure' | 'low_confidence' | 'contradiction' | 'nsfw' | 'token_limit';
+  error_type:
+    | 'timeout'
+    | 'invalid_input'
+    | 'stripe_failure'
+    | 'low_confidence'
+    | 'contradiction'
+    | 'nsfw'
+    | 'token_limit';
   support_request?: boolean;
 }
 
@@ -276,12 +283,14 @@ export const insertIntentMirrorLog = async (log: {
 };
 
 // Enhanced error logging with support_request
-export const insertErrorLog = async (log: Omit<ErrorLog, 'id' | 'created_at'>) => {
+export const insertErrorLog = async (
+  log: Omit<ErrorLog, 'id' | 'created_at'>
+) => {
   const { data, error } = await supabase
     .from('error_logs')
     .insert({
       ...log,
-      support_request: log.support_request ?? false
+      support_request: log.support_request ?? false,
     })
     .select()
     .single();

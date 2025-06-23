@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Clock, CreditCard, Shield } from 'lucide-react';
 import React from 'react';
@@ -39,9 +39,9 @@ const RefundPolicyModal: React.FC<RefundPolicyModalProps> = ({
               </h3>
             </div>
             <p className="text-canai-light mb-4">
-              We stand behind our work. If you&apos;re not completely satisfied with
-              your CanAI deliverable, we&apos;ll refund your full payment within 30
-              days of purchase.
+              We stand behind our work. If you&apos;re not completely satisfied
+              with your CanAI deliverable, we&apos;ll refund your full payment
+              within 30 days of purchase.
             </p>
           </div>
 

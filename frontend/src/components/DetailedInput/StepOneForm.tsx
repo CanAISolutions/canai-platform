@@ -54,10 +54,10 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 />
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
-                                  <p>
-                    E.g., &quot;Sprinkle Haven Bakery&quot; - Your official business name
-                    (3-50 characters)
-                  </p>
+                <p>
+                  E.g., &quot;Sprinkle Haven Bakery&quot; - Your official
+                  business name (3-50 characters)
+                </p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -91,10 +91,10 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 />
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
-                                  <p>
-                    E.g., &quot;Denver families with young children who value organic,
-                    artisanal baked goods&quot;
-                  </p>
+                <p>
+                  E.g., &quot;Denver families with young children who value
+                  organic, artisanal baked goods&quot;
+                </p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -224,8 +224,8 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 </TooltipTrigger>
                 <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
                   <p>
-                    How should your brand communicate? &quot;Warm&quot; works great for
-                    community bakeries
+                    How should your brand communicate? &quot;Warm&quot; works
+                    great for community bakeries
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -305,10 +305,10 @@ const StepOneForm: React.FC<StepOneFormProps> = ({
                 />
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe] text-white max-w-xs">
-                                  <p>
-                    E.g., &quot;Denver, CO&quot; - Where your business operates or will
-                    operate
-                  </p>
+                <p>
+                  E.g., &quot;Denver, CO&quot; - Where your business operates or
+                  will operate
+                </p>
               </TooltipContent>
             </Tooltip>
           </div>

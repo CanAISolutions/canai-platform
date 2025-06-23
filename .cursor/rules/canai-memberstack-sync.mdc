@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/middleware/auth.js, frontend/src/utils/memberstack*.ts
+alwaysApply: false
 ---
 ---
 description: Enforces secure user authentication practices

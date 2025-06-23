@@ -157,7 +157,7 @@ export const requestRevision = async (
         score: 0,
         factors: [],
         sentiment: 'neutral',
-        emotional_triggers: []
+        emotional_triggers: [],
       },
       trust_delta: 0,
       user_feedback: data.feedback,
@@ -199,7 +199,7 @@ export const requestRevision = async (
     await insertErrorLog({
       error_message: error instanceof Error ? error.message : 'Unknown error',
       action: 'request_revision',
-      error_type: 'timeout'
+      error_type: 'timeout',
     } as ErrorLogInput);
 
     // Fallback: Generate contextual revision
@@ -244,7 +244,7 @@ export const regenerateDeliverable = async (
         score: 0,
         factors: [],
         sentiment: 'neutral',
-        emotional_triggers: []
+        emotional_triggers: [],
       },
       trust_delta: 0,
       user_feedback: `Regeneration attempt ${data.attempt_count}`,
@@ -286,7 +286,7 @@ export const regenerateDeliverable = async (
     await insertErrorLog({
       error_message: error instanceof Error ? error.message : 'Unknown error',
       action: 'regenerate_deliverable',
-      error_type: 'timeout'
+      error_type: 'timeout',
     } as ErrorLogInput);
 
     // Fallback: Generate new content
@@ -313,7 +313,9 @@ const sanitizeContent = (content: string): string => {
 const validateHumeApiKey = (apiKey: string | undefined): boolean => {
   if (!apiKey) return false;
   // Basic validation - should be a non-empty string of reasonable length
-  return typeof apiKey === 'string' && apiKey.length >= 32 && apiKey.length <= 256;
+  return (
+    typeof apiKey === 'string' && apiKey.length >= 32 && apiKey.length <= 256
+  );
 };
 
 // Hume AI emotional resonance validation
@@ -323,7 +325,8 @@ export const validateEmotionalResonance = async (
   console.log('[DeliverableAPI] Validating emotional resonance with Hume AI');
 
   try {
-    const startTime = Date.now();
+    // Remove unused startTime
+    // const startTime = Date.now();
 
     // Validate input
     if (!content || typeof content !== 'string') {
@@ -374,7 +377,11 @@ export const validateEmotionalResonance = async (
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(`Hume AI API failed: ${response.status} - ${errorData.message || 'Unknown error'}`);
+        throw new Error(
+          `Hume AI API failed: ${response.status} - ${
+            errorData.message || 'Unknown error'
+          }`
+        );
       }
 
       const humeData = await response.json();
@@ -388,7 +395,10 @@ export const validateEmotionalResonance = async (
       clearTimeout(timeout);
     }
   } catch (error) {
-    console.error('[DeliverableAPI] Validation failed:', error instanceof Error ? error.message : 'Unknown error');
+    console.error(
+      '[DeliverableAPI] Validation failed:',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
     return generateMockHumeResponse();
   }
 };
@@ -418,7 +428,8 @@ export const generateDeliverableContent = async (
     const sanitizedInputs = Object.entries(businessInputs).reduce(
       (acc, [key, value]) => ({
         ...acc,
-        [key]: typeof value === 'string' ? value.replace(/<[^>]*>?/gm, '') : value,
+        [key]:
+          typeof value === 'string' ? value.replace(/<[^>]*>?/gm, '') : value,
       }),
       {}
     );
@@ -485,14 +496,16 @@ interface HumeApiResponse {
   isValid: boolean;
 }
 
-const processHumeResponse = (humeData: HumeApiResponse): HumeResonanceResponse => {
+const processHumeResponse = (
+  humeData: HumeApiResponse
+): HumeResonanceResponse => {
   return {
     arousal: humeData.arousal,
     valence: humeData.valence,
     canaiScore: humeData.canaiScore,
     genericScore: humeData.genericScore,
     delta: humeData.delta,
-    isValid: humeData.isValid
+    isValid: humeData.isValid,
   };
 };
 
@@ -519,9 +532,11 @@ interface GenerationResult {
   error?: string;
 }
 
-const generateMockBusinessInputs = (inputs: Partial<BusinessInputs> = {}): BusinessInputs => ({
+const generateMockBusinessInputs = (
+  inputs: Partial<BusinessInputs> = {}
+): BusinessInputs => ({
   businessType: inputs.businessType || 'default',
-  ...inputs
+  ...inputs,
 });
 
 const generateMockDeliverableContent = (
@@ -533,7 +548,7 @@ const generateMockDeliverableContent = (
   return {
     canaiOutput: `Mock CanAI output for ${productType} with business type ${mockInputs.businessType}`,
     genericOutput: `Mock generic output for ${productType}`,
-    emotionalResonance: generateMockHumeResponse()
+    emotionalResonance: generateMockHumeResponse(),
   };
 };
 
@@ -590,7 +605,9 @@ const generateGenericContent = async (
         },
         {
           role: 'user',
-          content: `Business type: ${mockInputs.businessType || 'general business'}`,
+          content: `Business type: ${
+            mockInputs.businessType || 'general business'
+          }`,
         },
       ],
       max_tokens: 1000,
@@ -604,41 +621,48 @@ export const handleApiError = (error: Error | ErrorResponse): never => {
   throw error;
 };
 
-export const validateDeliverable = async (data: DeliverableData): Promise<SuccessResponse<ValidationResult>> => {
+export const validateDeliverable = async (
+  _data: DeliverableData
+): Promise<SuccessResponse<ValidationResult>> => {
   // Implementation
   return {
     data: {
-      isValid: true
+      isValid: true,
     },
-    status: 200
+    status: 200,
   };
 };
 
-export const generateDeliverable = async (data: DeliverableData): Promise<SuccessResponse<GenerationResult>> => {
+export const generateDeliverable = async (
+  _data: DeliverableData
+): Promise<SuccessResponse<GenerationResult>> => {
   // Implementation
   return {
     data: {
       id: 'mock-id',
-      status: 'success'
+      status: 'success',
     },
-    status: 200
+    status: 200,
   };
 };
 
-export const updateDeliverable = async (id: string, data: Partial<DeliverableData>): Promise<SuccessResponse<DeliverableData>> => {
+export const updateDeliverable = async (
+  id: string,
+  data: Partial<DeliverableData>
+): Promise<SuccessResponse<DeliverableData>> => {
   // Implementation
   const defaultData: DeliverableData = {
     businessType: 'default',
     productType: 'default',
-    inputs: {}
+    inputs: {},
   };
 
   return {
     data: {
       ...defaultData,
-      ...data
+      ...data,
     },
-    status: 200
+    status: 200,
   };
 };
 
@@ -652,8 +676,9 @@ interface ErrorLogInput extends ErrorLogBase {
   user_id?: string;
 }
 
-interface ErrorLog extends ErrorLogBase {
-  id?: string;
-  created_at?: string;
-  user_id?: string;
-}
+// Remove unused interface
+// interface ErrorLog extends ErrorLogBase {
+//   id?: string;
+//   created_at?: string;
+//   user_id?: string;
+// }

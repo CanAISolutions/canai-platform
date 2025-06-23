@@ -13,8 +13,8 @@ const TrustIndicatorsSection = () => (
           Trusted by Forward-Thinking Founders
         </SectionTitle>
         <p className="text-[#cce7fa] text-base sm:text-lg opacity-80 max-w-2xl mx-auto">
-          Join hundreds of entrepreneurs who&apos;ve elevated their business with
-          CanAI
+          Join hundreds of entrepreneurs who&apos;ve elevated their business
+          with CanAI
         </p>
       </div>
 

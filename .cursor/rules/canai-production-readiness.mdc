@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/health.js, .github/workflows/deploy.yml, backend/config/production.js, databases/migrations/*.sql
+alwaysApply: false
 ---
 ---
 description: Comprehensive production readiness checklist and operational guidelines for CanAI deployment

@@ -2,10 +2,10 @@ import PageHeader from '@/components/PageHeader';
 import StandardBackground from '@/components/StandardBackground';
 import StandardCard from '@/components/StandardCard';
 import {
-    BodyText,
-    CaptionText,
-    CardTitle,
-    PageTitle
+  BodyText,
+  CaptionText,
+  CardTitle,
+  PageTitle,
 } from '@/components/StandardTypography';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -13,32 +13,32 @@ import { Textarea } from '@/components/ui/textarea';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
 import {
-    AlertCircle,
-    CheckCircle,
-    ChevronDown,
-    ChevronUp,
-    Clock,
-    Copy,
-    Download,
-    Edit3,
-    RefreshCw
+  AlertCircle,
+  CheckCircle,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Copy,
+  Download,
+  Edit3,
+  RefreshCw,
 } from 'lucide-react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 // Import new API functions
 import {
-    trackDeliverableGenerated,
-    trackDeliverableRegenerated,
-    trackEmotionalResonance,
-    trackPDFDownload,
-    trackRevisionRequested,
+  trackDeliverableGenerated,
+  trackDeliverableRegenerated,
+  trackEmotionalResonance,
+  trackPDFDownload,
+  trackRevisionRequested,
 } from '@/utils/analytics';
 import {
-    generateDeliverableContent,
-    getGenerationStatus,
-    regenerateDeliverable,
-    requestRevision
+  generateDeliverableContent,
+  getGenerationStatus,
+  regenerateDeliverable,
+  requestRevision,
 } from '@/utils/deliverableApi';
 
 interface DeliverableData {
@@ -67,12 +67,10 @@ interface GenerationProgress {
 
 const DeliverableGeneration: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
   const [isGenerating, setIsGenerating] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState<GenerationProgress>({
     step: 'analyzing',
     message: 'Analyzing your inputs...',
@@ -95,43 +93,57 @@ const DeliverableGeneration: React.FC = () => {
       | 'SITE_AUDIT') || 'BUSINESS_BUILDER';
   const promptId = searchParams.get('promptId') || 'demo-prompt-id';
 
-  // Sprinkle Haven Bakery 12-field inputs from Intent Mirror
-  const intentMirrorInputs = {
-    businessName: 'Sprinkle Haven Bakery',
-    targetAudience: 'Denver families',
-    primaryGoal: 'funding',
-    competitiveContext: 'Blue Moon Bakery',
-    brandVoice: 'warm',
-    resourceConstraints: '$50k budget; team of 3; 6 months',
-    currentStatus: 'Planning phase',
-    businessDescription: 'Artisanal bakery offering organic pastries',
-    revenueModel: 'Sales, events',
-    planPurpose: 'investor',
-    location: 'Denver, CO',
-    uniqueValue: 'Organic, community-focused pastries',
-  };
+  // Sprinkle Haven Bakery 12-field inputs from Intent Mirror - memoized to prevent useCallback dependency changes
+  const intentMirrorInputs = useMemo(
+    () => ({
+      businessName: 'Sprinkle Haven Bakery',
+      targetAudience: 'Denver families',
+      primaryGoal: 'funding',
+      competitiveContext: 'Blue Moon Bakery',
+      brandVoice: 'warm',
+      resourceConstraints: '$50k budget; team of 3; 6 months',
+      currentStatus: 'Planning phase',
+      businessDescription: 'Artisanal bakery offering organic pastries',
+      revenueModel: 'Sales, events',
+      planPurpose: 'investor',
+      location: 'Denver, CO',
+      uniqueValue: 'Organic, community-focused pastries',
+    }),
+    []
+  );
 
-  const generationSteps: GenerationProgress[] = [
-    { step: 'analyzing', message: 'Analyzing your inputs...', progress: 10 },
-    { step: 'processing', message: 'Processing with GPT-4o...', progress: 30 },
-    {
-      step: 'validating',
-      message: 'Validating emotional resonance with Hume AI...',
-      progress: 60,
-    },
-    { step: 'formatting', message: 'Formatting deliverable...', progress: 80 },
-    {
-      step: 'finalizing',
-      message: 'Finalizing and generating PDF...',
-      progress: 95,
-    },
-    { step: 'complete', message: 'Generation complete!', progress: 100 },
-  ];
+  // Memoized generation steps to prevent useCallback dependency changes
+  const generationSteps = useMemo(
+    () => [
+      { step: 'analyzing', message: 'Analyzing your inputs...', progress: 10 },
+      {
+        step: 'processing',
+        message: 'Processing with GPT-4o...',
+        progress: 30,
+      },
+      {
+        step: 'validating',
+        message: 'Validating emotional resonance with Hume AI...',
+        progress: 60,
+      },
+      {
+        step: 'formatting',
+        message: 'Formatting deliverable...',
+        progress: 80,
+      },
+      {
+        step: 'finalizing',
+        message: 'Finalizing and generating PDF...',
+        progress: 95,
+      },
+      { step: 'complete', message: 'Generation complete!', progress: 100 },
+    ],
+    []
+  );
 
   const generateDeliverable = useCallback(async () => {
     console.log('[DeliverableGeneration] Starting deliverable generation');
     setIsGenerating(true);
-    setProgress(0);
     setError(null);
 
     try {
@@ -140,14 +152,13 @@ const DeliverableGeneration: React.FC = () => {
       // Step-by-step generation with progress updates
       for (const step of generationSteps) {
         setCurrentStep(step);
-        setProgress(step.progress);
         await new Promise(resolve => setTimeout(resolve, 300));
       }
 
       console.log('[DeliverableGeneration] Generating content with API');
 
       // Generate content with graceful error handling
-      const { canaiOutput, genericOutput, emotionalResonance } =
+      const { canaiOutput, emotionalResonance } =
         await generateDeliverableContent(productType, intentMirrorInputs);
 
       console.log('[DeliverableGeneration] Content generated successfully');
@@ -207,7 +218,7 @@ const DeliverableGeneration: React.FC = () => {
         variant: 'destructive',
       });
     }
-  }, [productType, intentMirrorInputs, generationSteps, toast]);
+  }, [productType, intentMirrorInputs, generationSteps, toast, promptId]);
 
   useEffect(() => {
     console.log(
@@ -463,114 +474,7 @@ const DeliverableGeneration: React.FC = () => {
     });
   };
 
-  const getTemplateContent = (type: string): string => {
-    const {
-      businessName,
-      targetAudience,
-      location,
-      uniqueValue,
-      resourceConstraints,
-    } = intentMirrorInputs;
-
-    switch (type) {
-      case 'BUSINESS_BUILDER':
-        return `# ${businessName} Business Plan
-
-## Executive Summary
-${businessName} represents a unique opportunity to serve ${targetAudience} in ${location} with ${uniqueValue.toLowerCase()}. This investor-ready plan outlines our path to success with clear financial projections and operational strategy.
-
-## Market Analysis
-The ${location} market shows strong demand for artisanal bakery options, particularly among ${targetAudience}. Our competitive analysis against ${
-          intentMirrorInputs.competitiveContext
-        } reveals significant opportunities for differentiation through our ${uniqueValue.toLowerCase()}.
-
-## Unique Value Proposition
-${uniqueValue} sets us apart in a crowded marketplace. Our ${
-          intentMirrorInputs.brandVoice
-        } approach to customer service combined with premium organic ingredients creates an unmatched value proposition for ${targetAudience}.
-
-## Marketing Strategy
-Our go-to-market strategy focuses on building strong community relationships in ${location}. Digital marketing through social media and local partnerships will drive initial awareness, while word-of-mouth referrals will sustain long-term growth.
-
-## Operations Plan
-Located in ${location}, our operations are designed for efficiency and quality. ${resourceConstraints} provides the foundation for sustainable growth while maintaining our commitment to artisanal quality.
-
-## Competitive Advantage
-While ${
-          intentMirrorInputs.competitiveContext
-        } focuses on traditional approaches, ${businessName} differentiates through ${uniqueValue.toLowerCase()} and exceptional customer experience that resonates with ${targetAudience}.
-
-## Financial Projections
-Based on ${resourceConstraints}, we project break-even at month 10 with conservative growth assumptions. Revenue streams include daily pastries (60%), custom orders (30%), and catering (10%). Initial investment of $50,000 covers equipment, inventory, and 6 months operating expenses.
-
-## Team Structure
-Founder brings 8 years culinary experience with business management certification. Initial team of 3 includes head baker, customer service specialist, and part-time decorator. Planned expansion includes additional baker by month 6.`;
-
-      case 'SOCIAL_EMAIL':
-        return `# Social Media & Email Campaign Package for ${businessName}
-
-## Social Media Posts
-
-**Post 1 - Brand Introduction**
-🧁 Welcome to ${businessName}! Bringing ${uniqueValue.toLowerCase()} to ${location}. Our ${
-          intentMirrorInputs.brandVoice
-        } approach to baking creates memorable experiences for ${targetAudience}. Opening soon - follow our journey!
-
-**Post 2 - Behind the Scenes**
-👩‍🍳 Meet our passionate team! With years of experience in artisanal baking, we're dedicated to serving ${targetAudience} with the finest organic ingredients. Every pastry tells a story of craftsmanship and community connection.
-
-**Post 3 - Unique Value**
-✨ What makes us special? ${uniqueValue} combined with our ${
-          intentMirrorInputs.brandVoice
-        } service philosophy. Unlike ${
-          intentMirrorInputs.competitiveContext
-        }, we focus on creating personal connections with every customer in ${location}.
-
-## Email Campaigns
-
-**Email 1 - Welcome Series**
-Subject: Welcome to the ${businessName} Family! 🧁
-
-Dear Valued Customer,
-
-Thank you for joining our ${businessName} community! We're thrilled to share our passion for ${uniqueValue.toLowerCase()} with ${targetAudience} in ${location}.
-
-**Email 2 - Educational Content**
-Subject: The Art of Organic Baking - Our ${businessName} Promise
-
-Hello [Name],
-
-Ever wondered what makes organic baking special? Let us share the ${businessName} difference with ${targetAudience} in ${location}.`;
-
-      case 'SITE_AUDIT':
-        return `# Website Audit Report: ${businessName}
-
-## Current State Analysis
-
-The ${businessName} website requires comprehensive optimization to effectively serve ${targetAudience} in ${location} and support the goal of ${
-          intentMirrorInputs.primaryGoal
-        }. This audit reveals critical areas impacting user experience, conversion rates, and search visibility.
-
-## User Experience & Navigation
-The current site structure fails to clearly communicate ${uniqueValue} to ${targetAudience}. Navigation lacks intuitive pathways for key actions like viewing menus, placing custom orders, or learning about organic ingredients.
-
-## Content Strategy Gaps
-Existing content doesn't address ${targetAudience} pain points or highlight competitive advantages over ${
-          intentMirrorInputs.competitiveContext
-        }. The unique positioning of ${uniqueValue.toLowerCase()} is buried rather than prominently featured.
-
-## Strategic Recommendations
-
-**Immediate Technical Fixes**: Optimize images and implement lazy loading to achieve sub-2-second load times. Resolve mobile responsiveness issues affecting ${targetAudience} user experience.
-
-**Content Restructure**: Rewrite homepage to prominently feature ${uniqueValue} with ${
-          intentMirrorInputs.brandVoice
-        } messaging targeting ${targetAudience}. Create dedicated pages for organic ingredient sourcing and community involvement.`;
-
-      default:
-        return 'Content generation failed. Please try again.';
-    }
-  };
+  // Removed unused getTemplateContent function
 
   return (
     <StandardBackground>

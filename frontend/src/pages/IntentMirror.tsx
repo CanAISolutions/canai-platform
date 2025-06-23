@@ -6,14 +6,12 @@ import { BodyText, PageTitle } from '@/components/StandardTypography';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import {
-    trackIntentMirrorConfirmed,
-    trackIntentMirrorEdited,
-    trackSupportRequested,
+  trackIntentMirrorConfirmed,
+  trackIntentMirrorEdited,
+  trackSupportRequested,
 } from '@/utils/analytics';
 import { generateIntentMirror, trackFieldEdit } from '@/utils/api';
-import {
-    handleLowConfidenceSupport
-} from '@/utils/intentMirrorIntegration';
+import { handleLowConfidenceSupport } from '@/utils/intentMirrorIntegration';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -50,128 +48,92 @@ const IntentMirror = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const promptId = urlParams.get('prompt_id') || 'demo-prompt-id';
 
-  const generateMockIntentData = (confidenceLevel = 0.85): IntentMirrorData => {
-    const baseData = {
-      summary:
-        'Create a family-friendly organic bakery business plan for Sprinkle Haven in Denver, focusing on community engagement and investor funding.',
-      originalData: {
-        businessName: 'Sprinkle Haven Bakery',
-        targetAudience:
-          'Denver families with children seeking organic, artisanal baked goods',
-        primaryGoal: 'Secure $200K investor funding for bakery launch',
-        competitiveContext:
-          'Competing with Blue Moon Bakery and chain stores like King Soopers bakery',
-        brandVoice: 'warm',
-        location: 'Denver, Colorado',
-        uniqueValue:
-          'Organic, community-focused pastries with interactive family baking workshops',
-        resourceConstraints: '$50k initial budget; team of 3; 6-month timeline',
-        currentStatus: 'Planning phase with market research completed',
-        businessDescription:
-          'Artisanal neighborhood bakery specializing in organic pastries and family experiences',
-        revenueModel:
-          'Retail sales, custom orders, baking workshops, catering events',
-        planPurpose: 'Secure investor funding and establish market presence',
-      },
-    };
+  // Removed unused generateMockIntentData function
 
-    let clarifyingQuestions: string[] = [];
-    if (confidenceLevel < 0.8) {
-      clarifyingQuestions = [
-        'What specific funding amount are you targeting from investors?',
-        'How will you differentiate from Blue Moon Bakery specifically?',
-        "What's your projected monthly revenue for year 1?",
-        'Do you have any existing partnerships or supplier relationships?',
-        'What permits and certifications do you need for organic certification?',
-      ];
-    }
+  const loadIntentMirror = useCallback(
+    async (retryCount = 0) => {
+      setIsLoading(true);
 
-    return {
-      ...baseData,
-      confidenceScore: confidenceLevel,
-      clarifyingQuestions,
-    };
-  };
+      try {
+        const startTime = Date.now();
 
-  const loadIntentMirror = useCallback(async (retryCount = 0) => {
-    setIsLoading(true);
+        // Get business data from URL params or localStorage
+        const businessData = {
+          businessName: 'Sprinkle Haven Bakery', // TODO: Get from actual form data
+          targetAudience:
+            'Denver families with children seeking organic, artisanal baked goods',
+          primaryGoal: 'Secure $200K investor funding for bakery launch',
+          competitiveContext:
+            'Competing with Blue Moon Bakery and chain stores',
+          brandVoice: 'warm',
+          resourceConstraints:
+            '$50k initial budget; team of 3; 6-month timeline',
+          currentStatus: 'Planning phase with market research completed',
+          businessDescription:
+            'Artisanal neighborhood bakery specializing in organic pastries',
+          revenueModel:
+            'Retail sales, custom orders, baking workshops, catering events',
+          planPurpose: 'Secure investor funding and establish market presence',
+          location: 'Denver, Colorado',
+          uniqueValue:
+            'Organic, community-focused pastries with interactive family baking workshops',
+        };
 
-    try {
-      const startTime = Date.now();
+        // Use new API integration
+        const response = await generateIntentMirror(businessData);
 
-      // Get business data from URL params or localStorage
-      const businessData = {
-        businessName: 'Sprinkle Haven Bakery', // TODO: Get from actual form data
-        targetAudience:
-          'Denver families with children seeking organic, artisanal baked goods',
-        primaryGoal: 'Secure $200K investor funding for bakery launch',
-        competitiveContext: 'Competing with Blue Moon Bakery and chain stores',
-        brandVoice: 'warm',
-        resourceConstraints: '$50k initial budget; team of 3; 6-month timeline',
-        currentStatus: 'Planning phase with market research completed',
-        businessDescription:
-          'Artisanal neighborhood bakery specializing in organic pastries',
-        revenueModel:
-          'Retail sales, custom orders, baking workshops, catering events',
-        planPurpose: 'Secure investor funding and establish market presence',
-        location: 'Denver, Colorado',
-        uniqueValue:
-          'Organic, community-focused pastries with interactive family baking workshops',
-      };
-
-      // Use new API integration
-      const response = await generateIntentMirror(businessData);
-
-      setIntentData({
-        summary: response.summary,
-        confidenceScore: response.confidenceScore,
-        clarifyingQuestions: response.clarifyingQuestions,
-        originalData: businessData,
-      });
-
-      if (response.confidenceScore < 0.8) {
-        setLowConfidenceAttempts(prev => {
-          const newCount = prev + 1;
-
-          // Handle support request for multiple low confidence attempts
-          if (newCount >= 2) {
-            handleLowConfidenceSupport({
-              confidence_score: response.confidenceScore,
-              business_data: businessData,
-              attempt_count: newCount,
-            });
-          }
-
-          return newCount;
+        setIntentData({
+          summary: response.summary,
+          confidenceScore: response.confidenceScore,
+          clarifyingQuestions: response.clarifyingQuestions,
+          originalData: businessData,
         });
-      }
 
-      const endTime = Date.now();
-      console.log('Intent mirror loaded:', {
-        promptId,
-        confidence: response.confidenceScore,
-        loadTime: endTime - startTime,
-      });
-    } catch (error) {
-      console.error('Intent mirror load failed:', error);
+        if (response.confidenceScore < 0.8) {
+          setLowConfidenceAttempts(prev => {
+            const newCount = prev + 1;
 
-      if (retryCount < 3) {
-        const delay = Math.pow(2, retryCount) * 1000;
-        setTimeout(() => {
-          loadIntentMirror(retryCount + 1);
-        }, delay);
-      } else {
-        toast({
-          title: 'Loading failed',
-          description:
-            'Unable to load your business summary. Please try again.',
-          variant: 'destructive',
+            // Handle support request for multiple low confidence attempts
+            if (newCount >= 2) {
+              handleLowConfidenceSupport({
+                confidence_score: response.confidenceScore,
+                business_data: businessData,
+                attempt_count: newCount,
+              });
+            }
+
+            return newCount;
+          });
+        }
+
+        const endTime = Date.now();
+        console.log('Intent mirror loaded:', {
+          promptId,
+          confidence: response.confidenceScore,
+          loadTime: endTime - startTime,
         });
+      } catch (error) {
+        console.error('Intent mirror load failed:', error);
+
+        if (retryCount < 3) {
+          const delay = Math.pow(2, retryCount) * 1000;
+          setTimeout(() => {
+            loadIntentMirror(retryCount + 1);
+          }, delay);
+        } else {
+          toast({
+            title: 'Loading failed',
+            description:
+              'Unable to load your business summary. Please try again.',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
-    }
-  }, [promptId, toast]);
+    },
+    [promptId, toast]
+  );
 
   useEffect(() => {
     loadIntentMirror();
@@ -299,8 +261,8 @@ const IntentMirror = () => {
         <div className="text-center mb-8 animate-fade-in">
           <PageTitle className="mb-4">Review Your Business Summary</PageTitle>
           <BodyText className="text-lg opacity-90">
-            We&apos;ve analyzed your information and created this summary. Please
-            review and confirm it&apos;s accurate.
+            We&apos;ve analyzed your information and created this summary.
+            Please review and confirm it&apos;s accurate.
           </BodyText>
         </div>
 

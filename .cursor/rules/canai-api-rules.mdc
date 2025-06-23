@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/api/src/**/*.ts, backend/routes/*.js, backend/services/*.js
+alwaysApply: false
 ---
 ---
 description: Guides REST API design and implementation

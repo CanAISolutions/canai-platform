@@ -9,10 +9,10 @@ import PageHeader from '@/components/PageHeader';
 import StandardBackground from '@/components/StandardBackground';
 import StandardCard from '@/components/StandardCard';
 import {
-    BodyText,
-    CaptionText,
-    PageTitle,
-    SectionTitle,
+  BodyText,
+  CaptionText,
+  PageTitle,
+  SectionTitle,
 } from '@/components/StandardTypography';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,7 +42,7 @@ const FeedbackPage: React.FC = () => {
     handleRefer,
     handlePurge,
     handleShare,
-    openRefer,
+    // Remove unused openRefer
   } = useFeedbackForm(prompt_id);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,7 +55,7 @@ const FeedbackPage: React.FC = () => {
     setFeedbackSubmitted(true);
   };
 
-  const handleReferralSubmit = async (email: string) => {
+  const handleReferralSubmit = async (_email: string) => {
     const mockEvent = { preventDefault: () => {} } as React.FormEvent;
     await handleRefer(mockEvent);
   };

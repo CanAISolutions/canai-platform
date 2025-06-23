@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+// import { Button } from '@/components/ui/button';
+// import { ArrowLeft } from 'lucide-react';
 import PricingTable from '@/components/PurchaseFlow/PricingTable';
 import CheckoutModal from '@/components/PurchaseFlow/CheckoutModal';
 import ConfirmationSection from '@/components/PurchaseFlow/ConfirmationSection';

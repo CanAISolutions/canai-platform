@@ -228,7 +228,8 @@ export const switchProduct = async (
 };
 
 // Log payment initiation with F4-E1 retry logic
-interface PaymentInitiationDetails extends Record<string, string | number | boolean | null | undefined> {
+interface PaymentInitiationDetails
+  extends Record<string, string | number | boolean | null | undefined> {
   product: string;
   price: number;
   spark_title: string;
@@ -256,7 +257,9 @@ interface PurchaseErrorData {
   user_id?: string | undefined;
 }
 
-const logPurchaseError = async (errorData: PurchaseErrorData): Promise<void> => {
+const logPurchaseError = async (
+  errorData: PurchaseErrorData
+): Promise<void> => {
   await insertErrorLog({
     error_message: errorData.error_message,
     error_type: errorData.error_type,

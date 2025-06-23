@@ -298,7 +298,7 @@ const ChartLegendContent = React.forwardRef<
           className
         )}
       >
-        {payload.map((item) => {
+        {payload.map(item => {
           if (!item || !item.value) return null;
           const key = `${nameKey || item.dataKey || 'value'}`;
           const itemConfig = getPayloadConfigFromPayload(config, item, key);
@@ -370,9 +370,10 @@ function getPayloadConfigFromPayload(
 }
 
 export {
-    ChartContainer, ChartLegend,
-    ChartLegendContent,
-    ChartStyle, ChartTooltip,
-    ChartTooltipContent
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartStyle,
+  ChartTooltip,
+  ChartTooltipContent,
 };
-

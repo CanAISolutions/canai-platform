@@ -19,7 +19,7 @@ const requiredFiles = [
   '.taskmaster/config.json',
   'tasks/tasks.json',
   '.taskmaster/docs/prd.txt',
-  '.cursor/mcp.json'
+  '.cursor/mcp.json',
 ];
 
 console.log('📁 Checking project structure...');
@@ -36,7 +36,9 @@ requiredFiles.forEach(file => {
 });
 
 if (!structureValid) {
-  console.log('\n❌ Project structure incomplete. Please ensure all required files exist.');
+  console.log(
+    '\n❌ Project structure incomplete. Please ensure all required files exist.'
+  );
   process.exit(1);
 }
 
@@ -67,7 +69,10 @@ optionalKeys.forEach(key => {
 // Check TaskMaster installation
 console.log('\n📦 Checking TaskMaster installation...');
 try {
-  const version = execSync('npx task-master-ai --version', { encoding: 'utf8', stdio: 'pipe' });
+  const version = execSync('npx task-master-ai --version', {
+    encoding: 'utf8',
+    stdio: 'pipe',
+  });
   console.log(`  ✅ TaskMaster AI installed - Version: ${version.trim()}`);
 } catch (error) {
   console.log('  ❌ TaskMaster AI not installed or not accessible');
@@ -82,7 +87,9 @@ try {
   const tasksContent = JSON.parse(fs.readFileSync(tasksPath, 'utf8'));
 
   if (tasksContent.tasks && Array.isArray(tasksContent.tasks)) {
-    console.log(`  ✅ tasks.json format valid - ${tasksContent.tasks.length} tasks found`);
+    console.log(
+      `  ✅ tasks.json format valid - ${tasksContent.tasks.length} tasks found`
+    );
 
     // Check for required task fields
     const requiredFields = ['id', 'title', 'description', 'priority', 'status'];
@@ -91,7 +98,9 @@ try {
     tasksContent.tasks.forEach((task, index) => {
       requiredFields.forEach(field => {
         if (!task[field]) {
-          console.log(`  ❌ Task ${index + 1} missing required field: ${field}`);
+          console.log(
+            `  ❌ Task ${index + 1} missing required field: ${field}`
+          );
           tasksValid = false;
         }
       });
@@ -115,7 +124,10 @@ if (apiKeysValid) {
 
   try {
     console.log('  Testing models command...');
-    const modelsOutput = execSync('npx task-master-ai models', { encoding: 'utf8', stdio: 'pipe' });
+    const modelsOutput = execSync('npx task-master-ai models', {
+      encoding: 'utf8',
+      stdio: 'pipe',
+    });
     console.log('  ✅ Models command successful');
   } catch (error) {
     console.log('  ❌ Models command failed:', error.message);
@@ -123,13 +135,18 @@ if (apiKeysValid) {
 
   try {
     console.log('  Testing get-tasks command...');
-    const tasksOutput = execSync('npx task-master-ai get-tasks', { encoding: 'utf8', stdio: 'pipe' });
+    const tasksOutput = execSync('npx task-master-ai get-tasks', {
+      encoding: 'utf8',
+      stdio: 'pipe',
+    });
     console.log('  ✅ Get-tasks command successful');
   } catch (error) {
     console.log('  ❌ Get-tasks command failed:', error.message);
   }
 } else {
-  console.log('\n⚠️  Skipping TaskMaster command tests - API keys not configured');
+  console.log(
+    '\n⚠️  Skipping TaskMaster command tests - API keys not configured'
+  );
 }
 
 // Summary

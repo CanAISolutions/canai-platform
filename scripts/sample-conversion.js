@@ -6,28 +6,30 @@ console.log('🔄 Converting YAML tasks via TaskMaster API...');
 const sampleTasks = [
   {
     id: 'T6.1.1-messages-api',
-    description: 'Implement GET /v1/messages API to fetch trust indicators with caching and stats',
+    description:
+      'Implement GET /v1/messages API to fetch trust indicators with caching and stats',
     dependencies: ['T8.2.1-supabase-schema'],
     instructions: [
       'Create Express route for GET /v1/messages',
       'Integrate Supabase client to query trust_indicators',
       'Calculate stats (SELECT COUNT(*) FROM comparisons WHERE created_at IS NOT NULL)',
       'Implement caching with node-cache',
-      'Log funnel_step event with PostHog'
-    ]
+      'Log funnel_step event with PostHog',
+    ],
   },
   {
     id: 'T6.1.2-log-interaction',
-    description: 'Implement POST /v1/log-interaction API and Make.com webhook for interaction logging',
+    description:
+      'Implement POST /v1/log-interaction API and Make.com webhook for interaction logging',
     dependencies: ['T6.1.1-messages-api', 'T8.3.2-makecom-other-scenarios'],
     instructions: [
       'Create Express route for POST /v1/log-interaction',
       'Validate request with Joi (interaction_type, details)',
       'Store logs in Supabase session_logs',
       'Set up Make.com webhook handler',
-      'Log pricing_modal_viewed event with PostHog'
-    ]
-  }
+      'Log pricing_modal_viewed event with PostHog',
+    ],
+  },
 ];
 
 function createTaskPrompt(task) {

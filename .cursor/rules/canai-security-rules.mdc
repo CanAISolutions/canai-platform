@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/middleware/*.js, backend/server.js, databases/migrations/*.sql, .github/workflows/security.yml
+alwaysApply: false
 ---
 ---
 description: Enforces robust security practices

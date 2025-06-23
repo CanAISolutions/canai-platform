@@ -6,7 +6,7 @@ function useCountUp({
   to,
   duration = 1200,
   step = 1,
-  start = 0
+  start = 0,
 }: {
   to: number;
   duration?: number;

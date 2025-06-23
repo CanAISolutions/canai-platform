@@ -31,7 +31,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
           </div>
         ) : (
           <div className="space-y-4">
-            {messages.map((message) => (
+            {messages.map(message => (
               <div key={message.id} className="p-4 bg-gray-100 rounded-lg">
                 <p className="text-gray-800">{message.content}</p>
                 <p className="text-sm text-gray-500 mt-2">

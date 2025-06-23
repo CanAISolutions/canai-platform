@@ -1,18 +1,18 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { StepTwoFormProps } from '@/types/formTypes';
 import { POSTHOG_EVENTS, trackEvent } from '@/utils/analytics';
@@ -293,8 +293,8 @@ const StepTwoForm: React.FC<StepTwoFormProps> = ({
                 </TooltipTrigger>
                 <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe]/50 text-white max-w-xs p-3 rounded-lg shadow-lg">
                   <p className="text-sm">
-                    E.g., &quot;Planning phase - researched location, need business
-                    plan for loan&quot;
+                    E.g., &quot;Planning phase - researched location, need
+                    business plan for loan&quot;
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -334,7 +334,7 @@ const StepTwoForm: React.FC<StepTwoFormProps> = ({
                 </div>
               </TooltipTrigger>
               <TooltipContent className="bg-[#0A0F1C] border-[#36d1fe]/50 text-white max-w-xs p-3 rounded-lg shadow-lg">
-                                  <p className="text-sm">
+                <p className="text-sm">
                   {getTooltipContent(
                     'revenueModel',
                     'E.g., &quot;Bakery sales, events, catering services&quot;'

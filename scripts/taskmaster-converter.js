@@ -9,7 +9,8 @@ function parseTasksFromMarkdown(content) {
   const sections = [];
 
   // Split content by sections - look for "## Section X.X:" pattern
-  const sectionRegex = /## Section (\d+\.\d+): ([^\n]+)\n\n```yaml\n([\s\S]*?)\n```/g;
+  const sectionRegex =
+    /## Section (\d+\.\d+): ([^\n]+)\n\n```yaml\n([\s\S]*?)\n```/g;
   let match;
 
   while ((match = sectionRegex.exec(content)) !== null) {
@@ -38,7 +39,12 @@ function parseYAMLTasks(yamlText) {
 
     if (line.match(/^\s*- id:/)) {
       if (currentTask) tasks.push(currentTask);
-      currentTask = { dependencies: [], inputs: [], outputs: [], instructions: [] };
+      currentTask = {
+        dependencies: [],
+        inputs: [],
+        outputs: [],
+        instructions: [],
+      };
       currentField = null;
     }
 
@@ -67,7 +73,11 @@ function parseYAMLTasks(yamlText) {
       } else {
         currentTask[currentField].push(value);
       }
-    } else if (currentField === 'description' && trimmed && !trimmed.startsWith('-')) {
+    } else if (
+      currentField === 'description' &&
+      trimmed &&
+      !trimmed.startsWith('-')
+    ) {
       // Continue multi-line description
       currentTask.description += ' ' + trimmed;
     }
@@ -98,18 +108,25 @@ function convertToTaskMaster(sections) {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
-      const priority = (yamlTask.description &&
+      const priority =
+        yamlTask.description &&
         (yamlTask.description.toLowerCase().includes('critical') ||
-         yamlTask.description.toLowerCase().includes('urgent') ||
-         yamlTask.description.toLowerCase().includes('security'))) ? 'high' : 'medium';
+          yamlTask.description.toLowerCase().includes('urgent') ||
+          yamlTask.description.toLowerCase().includes('security'))
+          ? 'high'
+          : 'medium';
 
-      const details = yamlTask.instructions.length > 0
-        ? yamlTask.instructions.map(inst => `- ${inst}`).join('\n')
-        : 'Implementation details to be defined.';
+      const details =
+        yamlTask.instructions.length > 0
+          ? yamlTask.instructions.map(inst => `- ${inst}`).join('\n')
+          : 'Implementation details to be defined.';
 
-      const testStrategy = yamlTask.outputs.length > 0
-        ? `Verify outputs:\n${yamlTask.outputs.map(output => `- ${output}`).join('\n')}`
-        : 'Test implementation meets requirements.';
+      const testStrategy =
+        yamlTask.outputs.length > 0
+          ? `Verify outputs:\n${yamlTask.outputs
+              .map(output => `- ${output}`)
+              .join('\n')}`
+          : 'Test implementation meets requirements.';
 
       convertedTasks.push({
         id: newId,
@@ -125,8 +142,8 @@ function convertToTaskMaster(sections) {
           originalId: yamlTask.id,
           section: section.sectionTitle,
           inputs: yamlTask.inputs,
-          outputs: yamlTask.outputs
-        }
+          outputs: yamlTask.outputs,
+        },
       });
 
       console.log(`  Converted: ${yamlTask.id} -> ${newId}: ${title}`);
@@ -137,13 +154,17 @@ function convertToTaskMaster(sections) {
   console.log('Resolving dependencies...');
   for (const section of sections) {
     for (const yamlTask of section.tasks) {
-      const converted = convertedTasks.find(t => t.metadata.originalId === yamlTask.id);
+      const converted = convertedTasks.find(
+        t => t.metadata.originalId === yamlTask.id
+      );
       if (converted) {
         converted.dependencies = yamlTask.dependencies
           .map(dep => {
             const mappedId = taskMap.get(dep);
             if (!mappedId) {
-              console.warn(`  Warning: Dependency ${dep} not found for task ${yamlTask.id}`);
+              console.warn(
+                `  Warning: Dependency ${dep} not found for task ${yamlTask.id}`
+              );
             }
             return mappedId;
           })
@@ -171,7 +192,9 @@ try {
   const sections = parseTasksFromMarkdown(content);
 
   if (sections.length === 0) {
-    throw new Error('No sections found in the markdown file. Check the format.');
+    throw new Error(
+      'No sections found in the markdown file. Check the format.'
+    );
   }
 
   console.log(`Found ${sections.length} sections`);
@@ -179,25 +202,26 @@ try {
   console.log(`Converted ${tasks.length} tasks total`);
 
   const taskMasterData = {
-    version: "1.0.0",
+    version: '1.0.0',
     project: {
-      name: "CanAI Platform Backend",
-      description: "Backend development tasks for CanAI Emotional Sovereignty Platform",
-      created: new Date().toISOString()
+      name: 'CanAI Platform Backend',
+      description:
+        'Backend development tasks for CanAI Emotional Sovereignty Platform',
+      created: new Date().toISOString(),
     },
     tags: {
       master: {
-        name: "master",
-        description: "Main development tasks converted from YAML format",
+        name: 'master',
+        description: 'Main development tasks converted from YAML format',
         created: new Date().toISOString(),
-        tasks: tasks
-      }
+        tasks: tasks,
+      },
     },
     metadata: {
       totalTasks: tasks.length,
-      convertedFrom: "taskmaster_tasks.md",
-      conversionDate: new Date().toISOString()
-    }
+      convertedFrom: 'taskmaster_tasks.md',
+      conversionDate: new Date().toISOString(),
+    },
   };
 
   // Ensure output directory exists
@@ -219,12 +243,13 @@ try {
     throw new Error('File was not created successfully');
   }
 
-  console.log(`✅ Converted ${tasks.length} tasks from ${sections.length} sections`);
+  console.log(
+    `✅ Converted ${tasks.length} tasks from ${sections.length} sections`
+  );
   console.log('\n🎉 Conversion completed!');
   console.log('\nNext steps:');
   console.log('1. Run: task-master list');
   console.log('2. Start with: task-master next');
-
 } catch (error) {
   console.error('❌ Conversion failed:', error.message);
   console.error('Stack trace:', error.stack);

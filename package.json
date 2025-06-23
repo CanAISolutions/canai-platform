@@ -38,6 +38,10 @@
     "validate:md": "node scripts/validate-md-sections.js",
     "validate:mdc": "npm run sync:mdc && npm run canai:validate && npm run lint:md && npm run validate:md",
     "taskmaster": "task-master list",
+    "tm": "node .taskmaster/scripts/taskmaster-wrapper.js",
+    "taskmaster:setup": "npm run taskmaster:install",
+    "taskmaster:install": "powershell -ExecutionPolicy Bypass -File .taskmaster/scripts/install-hooks.ps1",
+    "taskmaster:install:unix": "bash .taskmaster/scripts/install-hooks.sh",
     "start:backend": "node backend/dist/index.js",
     "start:frontend": "cd frontend && vite",
     "build": "npm run build:backend && npm run build:frontend",
@@ -54,6 +58,7 @@
     "validate": "npm run canai:validate",
     "prepare": "husky install",
     "validate:all": "npm run typecheck:strict && npm run lint:strict && npm run format:check && npm run test:ci",
+    "health:all": "npm run canai:validate && npm run canai:rules:enforce && npm run validate:mdc && npm run security:check && npm run health:check || echo 'Health check failed'",
     "pre-commit": "lint-staged"
   },
   "devDependencies": {

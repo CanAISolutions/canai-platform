@@ -1,27 +1,27 @@
 import ProgressIndicator from '@/components/enhanced/ProgressIndicator';
 import StandardBackground from '@/components/StandardBackground';
 import {
-    BodyText,
-    PageTitle,
-    SectionTitle,
+  BodyText,
+  PageTitle,
+  SectionTitle,
 } from '@/components/StandardTypography';
 import { EnhancedButton } from '@/components/ui/enhanced-button';
 import {
-    MobileOptimizedCard,
-    MobileOptimizedCardContent,
+  MobileOptimizedCard,
+  MobileOptimizedCardContent,
 } from '@/components/ui/mobile-optimized-card';
 import {
-    ResponsiveModal,
-    ResponsiveModalContent,
-    ResponsiveModalDescription,
-    ResponsiveModalHeader,
-    ResponsiveModalTitle,
+  ResponsiveModal,
+  ResponsiveModalContent,
+  ResponsiveModalDescription,
+  ResponsiveModalHeader,
+  ResponsiveModalTitle,
 } from '@/components/ui/responsive-modal';
 import {
-    StandardForm,
-    StandardFormGroup,
-    StandardFormInput,
-    StandardFormLabel,
+  StandardForm,
+  StandardFormGroup,
+  StandardFormInput,
+  StandardFormLabel,
 } from '@/components/ui/standard-form';
 import { useAccessibility } from '@/hooks/useAccessibility';
 import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
@@ -31,9 +31,9 @@ import { useNavigate } from 'react-router-dom';
 
 // API and analytics imports
 import {
-    trackFunnelStep,
-    trackPageView,
-    trackTrustScoreUpdate,
+  trackFunnelStep,
+  trackPageView,
+  trackTrustScoreUpdate,
 } from '@/utils/analytics';
 import { logInteraction } from '@/utils/api';
 import { submitInitialPrompt, validateInput } from '@/utils/discoveryFunnelApi';
@@ -302,8 +302,8 @@ const DiscoveryFunnel = () => {
               Ready to Create Something Amazing?
             </ResponsiveModalTitle>
             <ResponsiveModalDescription className="text-center">
-              We&apos;ve captured your vision. Let&apos;s transform it into something
-              extraordinary with CanAI&apos;s emotional intelligence.
+              We&apos;ve captured your vision. Let&apos;s transform it into
+              something extraordinary with CanAI&apos;s emotional intelligence.
             </ResponsiveModalDescription>
           </ResponsiveModalHeader>
 

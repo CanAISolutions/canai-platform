@@ -1,11 +1,12 @@
 import { trackPerformance } from '@/utils/analytics';
 import { useEffect, useRef } from 'react';
 
-interface PerformanceMetrics {
-  loadTime: number;
-  renderTime: number;
-  interactionTime?: number;
-}
+// Remove unused interface
+// interface PerformanceMetrics {
+//   loadTime: number;
+//   renderTime: number;
+//   interactionTime?: number;
+// }
 
 export const usePerformanceMonitor = (
   pageName: string,
@@ -22,13 +23,12 @@ export const usePerformanceMonitor = (
 
     // Track performance metrics
     trackPerformance(`${pageName}_load`, loadTime, {
-      page: pageName,
-      meets_target: loadTime < targetLoadTime,
-      target_ms: targetLoadTime,
+      action: 'page_load',
+      success: loadTime < targetLoadTime,
     });
 
     // Log performance in development
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log(
         `[Performance] ${pageName} loaded in ${loadTime.toFixed(2)}ms`
       );
@@ -40,14 +40,15 @@ export const usePerformanceMonitor = (
       }
     }
 
+    // Copy the start time to avoid stale closure
+    const startTime = startTimeRef.current;
+
     return () => {
-      const startTime = startTimeRef.current;
-      const renderTime = renderTimeRef.current;
       if (startTime) {
         const timeOnPage = performance.now() - startTime;
         trackPerformance(`${pageName}_engagement`, timeOnPage, {
-          page: pageName,
-          engagement_level: timeOnPage > 10000 ? 'high' : timeOnPage > 3000 ? 'medium' : 'low',
+          action: 'page_engagement',
+          success: timeOnPage > 3000,
         });
       }
     };
@@ -58,9 +59,8 @@ export const usePerformanceMonitor = (
       performance.now() - (renderTimeRef.current || startTimeRef.current);
 
     trackPerformance(`${pageName}_interaction`, interactionTime, {
-      page: pageName,
-      interaction: interactionName,
-      time_to_interaction: interactionTime,
+      action: interactionName,
+      success: true,
     });
   };
 

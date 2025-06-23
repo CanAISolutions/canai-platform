@@ -113,7 +113,7 @@
       "canai-cortex-rules": {
         "path": ".cursor/rules/canai-cortex-rules.mdc",
         "tags": ["memory", "context", "canai", "prd"],
-        "context": [".cursor/rules/cortex.md", "backend/Taskmaster-Tasks.md"]
+        "context": [".cursor/rules/cortex.md", ".taskmaster/tasks/tasks.json"]
       },
       "cortex-milestones": {
         "path": ".cursor/rules/cortex.md",

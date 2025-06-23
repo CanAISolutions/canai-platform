@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: backend/services/{sentry,posthog}.js, backend/health.js
+alwaysApply: false
 ---
 ---
 description: Enforces system health monitoring practices

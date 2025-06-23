@@ -93,6 +93,7 @@ tags: [typescript, react, markdown, api, security, testing, supabase, analytics,
     "./rules/canai-llm-rules.mdc",
     "./rules/canai-llm-prompting.mdc",
     "./rules/canai-make-automation.mdc",
+    "/rules/cursor_rules.mdc
     "./rules/canai-memberstack-sync.mdc",
     "./rules/canai-feature-flags-rules.mdc",
     "./rules/canai-data-lifecycle-rules.mdc",

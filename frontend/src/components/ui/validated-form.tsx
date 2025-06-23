@@ -2,12 +2,12 @@ import { useFormValidation, ValidationRule } from '@/hooks/useFormValidation';
 import { cn } from '@/lib/utils';
 import * as React from 'react';
 import {
-    StandardForm,
-    StandardFormGroup,
-    StandardFormHelperText,
-    StandardFormInput,
-    StandardFormLabel,
-    StandardFormTextarea,
+  StandardForm,
+  StandardFormGroup,
+  StandardFormHelperText,
+  StandardFormInput,
+  StandardFormLabel,
+  StandardFormTextarea,
 } from './standard-form';
 
 interface ValidatedFormProps extends React.FormHTMLAttributes<HTMLFormElement> {
@@ -32,8 +32,7 @@ export const ValidatedForm = React.forwardRef<
     },
     ref
   ) => {
-    const { validations, getFieldProps, isFormValid } =
-      useFormValidation(fields);
+    const { validations, isFormValid } = useFormValidation(fields);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -73,10 +72,15 @@ interface ValidationProps {
     value: string;
     error: string | undefined;
     validationState: 'error' | 'success' | 'idle' | 'validating';
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onChange: (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void;
     onBlur: () => void;
   };
-  validations: Record<string, { value: string; state: 'error' | 'success' | 'idle' | 'validating' }>;
+  validations: Record<
+    string,
+    { value: string; state: 'error' | 'success' | 'idle' | 'validating' }
+  >;
 }
 
 interface ValidatedFieldProps {
@@ -174,4 +178,3 @@ export const ValidatedField = React.forwardRef<
 ValidatedField.displayName = 'ValidatedField';
 
 export { useFormValidation };
-

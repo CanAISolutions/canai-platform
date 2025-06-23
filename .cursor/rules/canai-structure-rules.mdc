@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: frontend/src/**/*, backend/**/*, databases/**/*, docs/**/*, packages/**/*, .github/workflows/*
+alwaysApply: false
 ---
 ---
 description: Guides consistent project file and folder organization

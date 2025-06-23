@@ -1,7 +1,7 @@
 ---
 description:
-globs:
-alwaysApply: true
+globs: databases/migrations/*.sql, backend/supabase/client.js, frontend/src/integrations/supabase/*.ts
+alwaysApply: false
 ---
 ---
 description: Enforces optimal Supabase integration practices
