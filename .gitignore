@@ -1,4 +1,3 @@
-
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -324,3 +323,11 @@ dev-debug.log
 
 # Cursor MCP configuration with API keys
 .cursor/mcp.json
+
+# Task files
+# tasks.json
+# tasks/
+
+# Added by Task Master AI
+tasks.json
+tasks/ 

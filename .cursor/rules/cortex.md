@@ -18,6 +18,10 @@ context, ensure PRD alignment, and highlight impacts on user trust, engagement, 
 
 ## Milestones
 
+### Infrastructure
+
+[Express Backend Server Setup] - [2025-06-23] - [Infrastructure] - [Done] - [6.0] - [Foundational server architecture enabling all F1-F9 API endpoints] - [backend/server.js, backend/health.js, backend/middleware/, backend/package.json] - [TaskMaster Task #1]
+
 ### F1: Discovery Hook
 
 [Trust Indicators Implemented] - [2025-06-18] - [F1] - [Done] - [6.1] - [Increased user engagement
@@ -97,5 +101,5 @@ Enabled] - [2025-07-27] - [F9] - [Planned] - [6.9] - [Increased user advocacy] -
 
 ## Version
 
-- **Current**: 1.0.0
-- **Updated**: June 19, 2025
+- **Current**: 1.0.1
+- **Updated**: June 23, 2025
