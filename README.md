@@ -522,4 +522,4 @@ Special thanks to:
 
 </div>
 
-<!-- Trigger CI/CD: Supabase test DB automation validation -->
+<!-- Trigger CI: Node.js 20 workflow update validation -->
