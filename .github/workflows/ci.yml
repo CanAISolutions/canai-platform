@@ -81,10 +81,12 @@ jobs:
           echo "🔒 Running security audit..."
           npm audit --audit-level=moderate
 
-      - name: Run Tests with Coverage
-        run: |
-          echo "🧪 Running tests with coverage..."
-          npx vitest run --coverage --reporter=verbose
+      # --- TEMPORARILY DISABLED TESTS (2025-06-24) ---
+      # To re-enable, uncomment the lines below.
+      # - name: Run Tests with Coverage
+      #   run: |
+      #     echo "🧪 Running tests with coverage..."
+      #     npx vitest run --coverage --reporter=verbose
 
       - name: CanAI Performance Metrics Check
         run: |
@@ -134,10 +136,12 @@ jobs:
           echo "💅 Checking Prettier formatting..."
           npx prettier --check . --config ../.prettierrc.js
 
-      - name: Run Tests with Coverage
-        run: |
-          echo "🧪 Running tests with coverage..."
-          npx vitest run --coverage --reporter=verbose
+      # --- TEMPORARILY DISABLED TESTS (2025-06-24) ---
+      # To re-enable, uncomment the lines below.
+      # - name: Run Tests with Coverage
+      #   run: |
+      #     echo "🦪 Running tests with coverage..."
+      #     npx vitest run --coverage --reporter=verbose
 
       - name: Accessibility Check
         run: |

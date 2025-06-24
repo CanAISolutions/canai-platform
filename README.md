@@ -114,6 +114,14 @@ graph TB
 - npm or yarn package manager
 - Git for version control
 
+### Useful Scripts
+
+- `npm run format` — Auto-format all files with Prettier
+- `npm run format:diff` — List files with formatting differences
+- `cd backend && npm run typecheck` — Type-check backend TypeScript
+- `cd frontend && npm run test:unit` — Run frontend unit tests with Vitest
+- `cd backend && npm run migrate:test` — Run Supabase test DB migrations
+
 ### Installation
 
 1. **Clone the repository**
@@ -164,9 +172,9 @@ graph TB
    ```
 
 5. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:10000
-   - Health Check: http://localhost:10000/health
+   - Frontend: <http://localhost:3000>
+   - Backend API: <http://localhost:10000>
+   - Health Check: <http://localhost:10000/health>
 
 ## 📁 Project Structure
 
@@ -492,7 +500,7 @@ We welcome contributions to the CanAI platform! Please follow our development gu
 
 ### Contact Information
 
-- **Email**: support@canai-platform.com
+- **Email**: <support@canai-platform.com>
 - **Website**: [https://canai-platform.com](https://canai-platform.com)
 - **Status Page**: [https://status.canai-platform.com](https://status.canai-platform.com)
 

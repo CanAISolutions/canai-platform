@@ -45,4 +45,4 @@ describe('Supabase Connectivity via /health endpoint', () => {
       process.env['SUPABASE_URL'] = originalUrl;
     }
   });
-}); 
+});

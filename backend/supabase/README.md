@@ -1,17 +1,21 @@
 # Supabase Database Setup
 
 > **STATUS: Preparation/Design Phase**
-> 
+>
 > - Migration files and RLS policy scripts are written and staged in `backend/supabase/migrations/`.
-> - Integration tests for RLS enforcement are ready in `backend/tests/integration/rls-policies.test.js`.
-> - **Note:** The actual Supabase tables and policies are not yet deployed. Testing will be performed after initial schema migration.
+> - Integration tests for RLS enforcement are ready in
+>   `backend/tests/integration/rls-policies.test.js`.
+> - **Note:** The actual Supabase tables and policies are not yet deployed. Testing will be
+>   performed after initial schema migration.
 > - See PRD.md and tasks.json for the planned schema and security requirements.
 
-This directory contains the database schema and migration files for the CanAI Emotional Sovereignty Platform.
+This directory contains the database schema and migration files for the CanAI Emotional Sovereignty
+Platform.
 
 ## Quick Start
 
 1. **Environment Setup**
+
    ```bash
    # Set your Supabase environment variables
    export SUPABASE_URL="your-project-url"
@@ -27,6 +31,7 @@ This directory contains the database schema and migration files for the CanAI Em
 ## Migration Files
 
 ### 001_core_tables.sql
+
 Creates the core application tables:
 
 - **prompt_logs** - Detailed input collection (12 fields per PRD)
@@ -36,21 +41,27 @@ Creates the core application tables:
 ## Table Overview
 
 ### prompt_logs
+
 Stores user input data for deliverable generation:
+
 - 12 detailed business input fields
 - Completion tracking and validation status
 - Auto-save functionality support
 - Emotional drivers and context analysis
 
 ### spark_logs
+
 Manages initial spark generation:
+
 - Generated sparks array (3 sparks per generation)
 - Selection tracking and attempt limits (max 4)
 - Trust scoring and emotional resonance data
 - Product track classification
 
 ### comparisons
+
 Handles SparkSplit comparison functionality:
+
 - CanAI vs Generic output comparison
 - TrustDelta scoring (target ≥4.2)
 - Emotional resonance tracking (target >0.7)
@@ -81,13 +92,11 @@ Handles SparkSplit comparison functionality:
 
 ```javascript
 // Insert new prompt log
-const { data, error } = await supabase
-  .from('prompt_logs')
-  .insert({
-    business_description: 'A tech startup...',
-    target_market: 'Small businesses',
-    validation_status: 'draft'
-  });
+const { data, error } = await supabase.from('prompt_logs').insert({
+  business_description: 'A tech startup...',
+  target_market: 'Small businesses',
+  validation_status: 'draft',
+});
 
 // Query user's spark logs
 const { data, error } = await supabase
@@ -101,7 +110,7 @@ const { data, error } = await supabase
   .from('comparisons')
   .update({
     user_preference: 'canai',
-    preference_recorded_at: new Date().toISOString()
+    preference_recorded_at: new Date().toISOString(),
   })
   .eq('id', comparisonId);
 ```
@@ -117,6 +126,7 @@ const { data, error } = await supabase
 ## Next Steps
 
 After running this migration, you'll need to:
+
 1. Create additional supporting tables (error_logs, feedback_logs, etc.)
 2. Set up database triggers for audit logging
 3. Configure Supabase vault for sensitive data encryption

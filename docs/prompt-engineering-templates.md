@@ -58,6 +58,7 @@ Generate a [product_track] deliverable (e.g., 700–800-word business plan) for 
 
 - **Input**: `businessType=retail, primaryChallenge=Need $75k, preferredTone=warm`
 - **Output**:
+
   ```json
   { "feedback": "Clear funding goal!", "trustScore": 85 }
   ```
@@ -67,6 +68,7 @@ Generate a [product_track] deliverable (e.g., 700–800-word business plan) for 
 - **Input**:
   `businessType=retail, primaryChallenge=funding, preferredTone=warm, desiredOutcome=secure funding`
 - **Output**:
+
   ```json
   {
     "sparks": [
@@ -83,6 +85,7 @@ Generate a [product_track] deliverable (e.g., 700–800-word business plan) for 
 - **Input**:
   `businessType=retail, businessDescription=Artisanal bakery in Denver, preferredTone=warm`
 - **Output**:
+
   ```json
   {
     "summary": "Launch a warm, community-focused bakery in Denver",
@@ -95,6 +98,7 @@ Generate a [product_track] deliverable (e.g., 700–800-word business plan) for 
 - **Input**:
   `product_track=business_builder, businessType=retail, businessDescription=Sprinkle Haven Bakery, preferredTone=warm, location=Denver`
 - **Output**:
+
   ```
   Sprinkle Haven Bakery Business Plan: A warm, community-focused bakery in Denver’s LoHi, targeting $75k funding with artisan pastries…
   ```

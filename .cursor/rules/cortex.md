@@ -20,7 +20,9 @@ context, ensure PRD alignment, and highlight impacts on user trust, engagement, 
 
 ### Infrastructure
 
-[Express Backend Server Setup] - [2025-06-23] - [Infrastructure] - [Done] - [6.0] - [Foundational server architecture enabling all F1-F9 API endpoints] - [backend/server.js, backend/health.js, backend/middleware/, backend/package.json] - [TaskMaster Task #1]
+[Express Backend Server Setup] - [2025-06-23] - [Infrastructure] - [Done] - [6.0] - [Foundational
+server architecture enabling all F1-F9 API endpoints] - [backend/server.js, backend/health.js,
+backend/middleware/, backend/package.json] - [TaskMaster Task #1]
 
 ### F1: Discovery Hook
 
