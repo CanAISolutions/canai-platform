@@ -521,3 +521,5 @@ Special thanks to:
 [💼 Connect on LinkedIn](https://linkedin.com/company/canai-platform)
 
 </div>
+
+<!-- Trigger CI/CD: Supabase test DB automation validation -->
