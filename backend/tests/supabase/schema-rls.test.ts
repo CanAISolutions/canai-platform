@@ -2,7 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 import { testTable, testColumn, testIndex, testPolicy } from 'supatest';
 
 // Set up your Supabase client (use env vars or test project keys)
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 describe('Supabase Schema & RLS', () => {
   // Schema checks

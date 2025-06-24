@@ -25,7 +25,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: 20
+          cache: npm
 
       - name: Frontend Dependency Audit
         working-directory: frontend
@@ -85,3 +86,8 @@ jobs:
           echo "- GDPR data protection compliance"
           echo ""
           echo "🎯 Security validations completed"
+
+permissions:
+  security-events: write
+  actions: read
+  contents: read

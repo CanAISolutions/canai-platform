@@ -39,7 +39,7 @@ jobs:
           cd ../backend && npm run lint:report
 
       - name: Upload ESLint results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: eslint-results
@@ -123,7 +123,7 @@ jobs:
         run: cd frontend && npm run lint:css
 
       - name: Upload Stylelint results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: stylelint-results
