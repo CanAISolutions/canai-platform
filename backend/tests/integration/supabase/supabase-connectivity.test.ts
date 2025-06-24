@@ -15,7 +15,7 @@ import { describe, it, expect } from 'vitest';
 import axios from 'axios';
 
 // Adjust BASE_URL as needed for your test environment
-const BASE_URL = process.env.TEST_API_BASE_URL || 'http://localhost:3000';
+const BASE_URL = process.env['TEST_API_BASE_URL'] || 'http://localhost:3000';
 
 describe('Supabase Connectivity via /health endpoint', () => {
   it('should return healthy status if Supabase is reachable', async () => {
@@ -28,9 +28,21 @@ describe('Supabase Connectivity via /health endpoint', () => {
   });
 
   it('should fail clearly if Supabase is not reachable', async () => {
-    // This is a placeholder: in real CI, if Supabase is down, the above test will fail
-    // Optionally, you could simulate a failure by mocking the endpoint or using a bad config
-    // For now, this test is informational
-    expect(true).toBe(true);
+    const originalUrl = process.env['SUPABASE_URL'];
+    process.env['SUPABASE_URL'] = 'https://invalid.supabase.co'; // Invalid URL
+    try {
+      await axios.get(`${BASE_URL}/health`, { timeout: 5000 });
+      expect.fail('Expected request to fail');
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response) {
+        expect(err.response.status).toBe(500);
+        expect(err.response.data?.supabase).toBe('unhealthy');
+        expect(err.response.data?.error).toBeDefined();
+      } else {
+        throw err;
+      }
+    } finally {
+      process.env['SUPABASE_URL'] = originalUrl;
+    }
   });
 }); 
