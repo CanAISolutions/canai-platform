@@ -140,4 +140,45 @@ When running `npx supabase start`, your local Supabase stack provides the follow
 
 ---
 
-**For the full checklist, see [supabase-test-environment-checklist.md](./supabase-test-environment-checklist.md).** 
+**For the full checklist, see [supabase-test-environment-checklist.md](./supabase-test-environment-checklist.md).**
+
+---
+
+## Supabase Connectivity Test Script (Canonical Workflow)
+
+To verify Supabase test environment connectivity and permissions, use the script at `backend/scripts/check-supabase.js`:
+
+- Loads credentials from `backend/.env.test` (see variable names below).
+- Inserts a test row with a valid UUID into the `prompt_logs` table.
+- Selects the test row to confirm both write and read access.
+- Deletes the test row after verification to keep the table clean.
+- Logs all steps and errors for transparency.
+
+### Required .env.test Variables
+```
+SUPABASE_URL=...
+SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_KEY=...
+```
+
+### How to Run
+```sh
+cd backend
+node scripts/check-supabase.js
+```
+
+### Expected Output
+- Success: Shows insert, select, and cleanup logs, e.g.
+  ```
+  ✅ Inserted test row: null
+  ✅ Supabase connectivity OK, test row found: { id: '...' }
+  🧹 Test row cleaned up.
+  ```
+- Failure: Clear error message for missing env vars, insert/select errors, or cleanup issues.
+
+### Why This Matters
+- Ensures test environment is safe, isolated, and always ready for CI/CD or local runs.
+- Prevents test data buildup in tables.
+- Canonical reference for onboarding and troubleshooting.
+
+---
