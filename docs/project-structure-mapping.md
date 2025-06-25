@@ -63,6 +63,7 @@ canai-platform/
 
 ```
 backend/
+├── db.js                    # Direct Postgres/SQL client for admin scripts and migrations (Node.js only, never used in frontend)
 ├── api/src/                   # Express APIs
 │   ├── App.ts
 │   ├── Server.ts
@@ -72,7 +73,7 @@ backend/
 ├── middleware/               # Express middleware
 ├── routes/                   # API routes
 ├── services/                 # Business logic
-├── supabase/client.js        # Supabase client
+├── supabase/client.js        # Supabase client for RLS-safe CRUD (preferred for app logic)
 ├── tests/                    # Test suites
 │   ├── unit/
 │   ├── integration/
@@ -91,6 +92,8 @@ backend/
 - **Health Endpoints**: `/` and `/health` with system metrics
 - **Environment**: Production deployment with graceful shutdown
 - **Docker**: Containerized with Alpine Node.js 18, non-root user
+
+- **db.js**: Provides a direct Postgres connection using the `postgres` library. Use only for backend admin scripts, migrations, or advanced analytics that require raw SQL. Always use environment variable `DATABASE_URL` for credentials. Do **not** use in frontend or expose to client code.
 
 ### 3. Frontend (Workspace)
 
@@ -112,8 +115,14 @@ frontend/
 │   │   ├── IntentMirror.tsx  # F6
 │   │   ├── SparkSplit.tsx    # F8
 │   │   └── Feedback.tsx      # F9
-│   ├── utils/                # Integrations
-│   │   ├── supabase.ts
+│   ├── integrations/         # External service integrations
+│   │   └── supabase/         # Supabase client and types
+│   │       ├── client.ts     # Supabase client instance
+│   │       ├── server.ts     # Server-side Supabase client
+│   │       ├── supabase.ts   # Supabase configuration
+│   │       └── types.ts      # Database type definitions
+│   ├── utils/                # Utility functions
+│   │   ├── supabase.ts       # Supabase utilities
 │   │   ├── memberstack.ts
 │   │   └── analytics.ts
 │   └── tests/                # Unit, integration, e2e
@@ -139,6 +148,7 @@ docs/
 ├── deployment/guide.md       # Deployment guide
 ├── crm-export-guide.md       # CRM integration
 ├── glossary.md               # Project terms
+├── supabase-frontend-integration.md # Supabase React/Vite integration guide
 └── project-structure-mapping.md # This document
 ```
 

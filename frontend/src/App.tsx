@@ -16,6 +16,7 @@ import PurchaseFlow from './pages/PurchaseFlow';
 import DeliverableGeneration from './pages/DeliverableGeneration';
 import SparkSplit from './pages/SparkSplit';
 import FeedbackPage from './pages/Feedback';
+import TodoList from './components/TodoList';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/discovery-hook" element={<DiscoveryHook />} />
             <Route path="/samples" element={<Samples />} />
+            <Route path="/todos" element={<TodoList />} />
             <Route path="/discovery-funnel" element={<DiscoveryFunnel />} />
             <Route path="/spark-layer" element={<SparkLayer />} />
             <Route path="/purchase" element={<PurchaseFlow />} />
@@ -47,6 +49,7 @@ const App = () => (
             <Route path="/deliverable" element={<DeliverableGeneration />} />
             <Route path="/spark-split" element={<SparkSplit />} />
             <Route path="/feedback" element={<FeedbackPage />} />
+            <Route path="/prompts" element={<TodoList />} />
 
             {/* Legacy/placeholder routes */}
             <Route

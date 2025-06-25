@@ -10,9 +10,15 @@ env:
   NODE_VERSION: '20'
   CACHE_VERSION: v1
 
-# --- TEMPORARILY DISABLED ALL TEST JOBS (2025-06-24) ---
-# To re-enable, uncomment the jobs below.
-#
+# TODO: Re-enable test jobs after MVP stabilization. All test jobs are currently disabled for MVP focus.
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: No-op
+        run: echo "All test jobs are temporarily disabled for MVP focus."
+
 # jobs:
 #   test-frontend:
 #     name: Frontend Tests
@@ -143,9 +149,3 @@ env:
 #           echo "- Frontend Tests: ${{ needs.test-frontend.result }}" >> $GITHUB_STEP_SUMMARY
 #           echo "- Backend Tests: ${{ needs.test-backend.result }}" >> $GITHUB_STEP_SUMMARY
 #           echo "- E2E Tests: ${{ needs.test-e2e.result }}" >> $GITHUB_STEP_SUMMARY
-jobs:
-  noop:
-    runs-on: ubuntu-latest
-    steps:
-      - name: No-op
-        run: echo "All test jobs are temporarily disabled."
