@@ -333,3 +333,37 @@ All work is aligned with PRD.md (see Section 7.2 Security Requirements and relat
 ---
 
 **Author:** AI-assisted (Cursor Agent)
+
+## Analytics & Event Tracking Milestones
+
+- **2025-06-25**: All analytics events (backend and frontend) are now automatically enriched with `appVersion`, `environment`, and `deploymentId` for every event. This applies to:
+  - `backend/services/posthog.js` (Node: uses process.env.npm_package_version, NODE_ENV, DEPLOYMENT_ID)
+  - `frontend/src/utils/analytics.ts` (Vite: uses import.meta.env['VITE_APP_VERSION'], MODE, VITE_DEPLOYMENT_ID)
+- This fulfills TaskMaster subtask 3.6 and aligns with PRD analytics enrichment requirements and canai-analytics-rules.
+
+## [2024-06-20] PostHog Analytics Integration Updates
+- Updated `backend/services/posthog.js` for PRD compliance: connection validation, SIGTERM shutdown, improved retry logic, batching config.
+- Updated/expanded unit tests in `backend/tests/unit/posthog.test.js`.
+- Added `backend/tests/vitest.setup.js` for test environment setup.
+- Updated `backend/vitest.config.js` to include setup file.
+- Cleaned up `package.json` and `tsconfig.json` duplicates.
+- All changes align with TaskMaster Task 3 and PRD analytics requirements.
+
+- See [docs/analytics-implementation-log.md](analytics-implementation-log.md) for analytics milestone history and technical audit trail.
+
+## Analytics Implementation (PostHog)
+- **Service:** `backend/services/posthog.js` — Handles PostHog client initialization, event batching, user/session tracking, event enrichment, and privacy compliance.
+- **Unit Tests:** `backend/tests/unit/posthog.test.js` — Covers event validation, PII scrubbing, session management, event enrichment, all event tracking functions, and batching logic.
+- **Integration Test Skeleton:** `backend/tests/integration/posthog.integration.test.js` — Placeholder for dashboard verification logic.
+- **Setup:** `backend/tests/vitest.setup.js` — Ensures all analytics-related environment variables are set for tests.
+- **Config:** `vitest.config.js` — Includes setup file and integration test path.
+
+## Test Coverage
+- All analytics logic is unit tested, including error and user action events.
+- Batching logic is tested for flushAt compliance.
+- Integration test placeholder exists for future dashboard/API verification.
+
+## Next Steps
+- Implement integration test logic for dashboard verification.
+- Migrate sessionStore to Redis/DB for production scalability.
+- Update documentation as analytics evolves.
