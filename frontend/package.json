@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run --coverage",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@types/dompurify": "3.0.5",
@@ -23,6 +24,10 @@
     "@typescript-eslint/parser": "8.34.1",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
-    "eslint-plugin-react-refresh": "0.4.20"
+    "eslint-plugin-react-refresh": "0.4.20",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

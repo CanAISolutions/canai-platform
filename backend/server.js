@@ -1,8 +1,11 @@
-const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
-const morgan = require('morgan');
-require('dotenv').config();
+import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import supabase from './supabase/client';
+
+dotenv.config();
 
 const app = express();
 
@@ -23,29 +26,36 @@ app.set('strict routing', true);
 // ==============================================
 
 // Security headers middleware (helmet)
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+      },
     },
-  },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  }
-}));
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+  })
+);
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || ['http://localhost:3000', 'http://localhost:5173'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || [
+      'http://localhost:3000',
+      'http://localhost:5173',
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  })
+);
 
 // Request logging middleware (morgan)
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
@@ -64,18 +74,33 @@ app.get('/', (req, res) => {
     status: 'ok',
     message: 'CanAI Backend Server is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
 // Dedicated health endpoint for monitoring
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'healthy',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-    memory: process.memoryUsage()
-  });
+app.get('/health', async (req, res) => {
+  try {
+    // Attempt a simple Supabase query (adjust table name as needed)
+    const { error } = await supabase.from('profiles').select('id').limit(1);
+    if (error) throw error;
+    res.status(200).json({
+      status: 'healthy',
+      supabase: 'healthy',
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      memory: process.memoryUsage(),
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'unhealthy',
+      supabase: 'unhealthy',
+      error: err.message,
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      memory: process.memoryUsage(),
+    });
+  }
 });
 
 // TODO: Add API routes
@@ -91,7 +116,7 @@ app.use('*', (req, res) => {
   res.status(404).json({
     error: 'Not Found',
     message: `Route ${req.originalUrl} not found`,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -99,8 +124,11 @@ app.use('*', (req, res) => {
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(err.status || 500).json({
-    error: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message,
-    timestamp: new Date().toISOString()
+    error:
+      process.env.NODE_ENV === 'production'
+        ? 'Internal Server Error'
+        : err.message,
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -116,7 +144,9 @@ const server = app.listen(PORT, () => {
   console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔒 Security headers: enabled`);
   console.log(`🌐 CORS: configured`);
-  console.log(`📝 Logging: ${process.env.NODE_ENV === 'production' ? 'combined' : 'dev'}`);
+  console.log(
+    `📝 Logging: ${process.env.NODE_ENV === 'production' ? 'combined' : 'dev'}`
+  );
 });
 
 // Graceful shutdown

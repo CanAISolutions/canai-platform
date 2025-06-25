@@ -1,10 +1,13 @@
 ---
-description: Guidelines for continuously improving VS Code rules based on emerging code patterns and best practices.
-applyTo: "**/*"
+description:
+  Guidelines for continuously improving VS Code rules based on emerging code patterns and best
+  practices.
+applyTo: '**/*'
 alwaysApply: true
 ---
 
 - **Rule Improvement Triggers:**
+
   - New code patterns not covered by existing rules
   - Repeated similar implementations across files
   - Common error patterns that could be prevented
@@ -12,6 +15,7 @@ alwaysApply: true
   - Emerging best practices in the codebase
 
 - **Analysis Process:**
+
   - Compare new code with existing rules
   - Identify patterns that should be standardized
   - Look for references to external documentation
@@ -19,7 +23,9 @@ alwaysApply: true
   - Monitor test patterns and coverage
 
 - **Rule Updates:**
+
   - **Add New Rules When:**
+
     - A new technology/pattern is used in 3+ files
     - Common bugs could be prevented by a rule
     - Code reviews repeatedly mention the same feedback
@@ -32,13 +38,14 @@ alwaysApply: true
     - Implementation details have changed
 
 - **Example Pattern Recognition:**
+
   ```typescript
   // If you see repeated patterns like:
   const data = await prisma.user.findMany({
     select: { id: true, email: true },
-    where: { status: 'ACTIVE' }
+    where: { status: 'ACTIVE' },
   });
-  
+
   // Consider adding to [prisma.md](.github/instructions/prisma.md):
   // - Standard select fields
   // - Common where conditions
@@ -46,12 +53,14 @@ alwaysApply: true
   ```
 
 - **Rule Quality Checks:**
+
   - Rules should be actionable and specific
   - Examples should come from actual code
   - References should be up to date
   - Patterns should be consistently enforced
 
 - **Continuous Improvement:**
+
   - Monitor code review comments
   - Track common development questions
   - Update rules after major refactors
@@ -59,6 +68,7 @@ alwaysApply: true
   - Cross-reference related rules
 
 - **Rule Deprecation:**
+
   - Mark outdated patterns as deprecated
   - Remove rules that no longer apply
   - Update references to deprecated rules
@@ -68,5 +78,5 @@ alwaysApply: true
   - Keep examples synchronized with code
   - Update references to external docs
   - Maintain links between related rules
-  - Document breaking changes
-Follow [vscode_rules.md](.github/instructions/vscode_rules.md) for proper rule formatting and structure.
+  - Document breaking changes Follow [vscode_rules.md](.github/instructions/vscode_rules.md) for
+    proper rule formatting and structure.

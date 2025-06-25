@@ -25,6 +25,11 @@
         "path": ".cursor/rules/canai-data-lifecycle-rules.mdc",
         "tags": ["data", "compliance", "canai", "prd"],
         "context": ["backend/**/*", "databases/**/*"]
+      },
+      "canai-api-client-patterns": {
+        "path": ".cursor/rules/canai-api-client-patterns.mdc",
+        "tags": ["api", "client", "patterns", "canai", "prd"],
+        "context": ["backend/api/**/*", "frontend/src/utils/**/*"]
       }
     },
     "frontend": {
@@ -32,6 +37,16 @@
         "path": ".cursor/rules/canai-user-journey.mdc",
         "tags": ["mvp", "ui", "user-journey"],
         "context": ["frontend/**/*"]
+      },
+      "canai-component-patterns": {
+        "path": ".cursor/rules/canai-component-patterns.mdc",
+        "tags": ["component", "patterns", "frontend", "canai", "prd"],
+        "context": ["frontend/src/components/**/*"]
+      },
+      "canai-form-patterns": {
+        "path": ".cursor/rules/canai-form-patterns.mdc",
+        "tags": ["form", "patterns", "frontend", "canai", "prd"],
+        "context": ["frontend/src/components/**/*", "frontend/src/hooks/**/*"]
       },
       "canai-structure-rules": {
         "path": ".cursor/rules/canai-structure-rules.mdc",
@@ -107,6 +122,11 @@
         "path": ".cursor/rules/canai-testing-rules.mdc",
         "tags": ["testing", "jest", "canai", "prd"],
         "context": ["backend/tests/**/*", "frontend/tests/**/*"]
+      },
+      "canai-integration-testing": {
+        "path": ".cursor/rules/canai-integration-testing.mdc",
+        "tags": ["integration", "testing", "canai", "prd"],
+        "context": ["backend/tests/**/*", "frontend/tests/**/*", "backend/**/*", "frontend/**/*"]
       }
     },
     "memory": {

@@ -85,7 +85,8 @@ backend/
 ```
 
 **Backend Infrastructure Status**: ✅ **PRODUCTION READY**
-- **Live URL**: https://canai-router.onrender.com
+
+- **Live URL**: <https://canai-router.onrender.com>
 - **Port**: 10000 with SSL termination
 - **Middleware Stack**: Helmet (security), CORS, Morgan (logging), Body parsing
 - **Health Endpoints**: `/` and `/health` with system metrics
@@ -198,7 +199,7 @@ packages/
 - ✅ Testing: Vitest structure
 - ✅ Documentation: CRM, deployment, glossary
 - ✅ **Backend Infrastructure**: Express server with production middleware
-- ✅ **Deployment**: Render containerized deployment (https://canai-router.onrender.com)
+- ✅ **Deployment**: Render containerized deployment (<https://canai-router.onrender.com>)
 - ✅ **Security**: Helmet, CORS, SSL termination, non-root Docker user
 - ✅ **Monitoring**: Health endpoints, Morgan logging, graceful shutdown
 
@@ -221,10 +222,14 @@ packages/
 ### Commands
 
 - Test: `npm run test`
+- Unit Test (Frontend): `cd frontend && npm run test:unit`
 - Lint: `npm run lint`
-- Typecheck: `npm run typecheck:strict`
+- Typecheck (Root): `npm run typecheck:strict`
+- Typecheck (Backend): `cd backend && npm run typecheck`
 - Format: `npm run format`
+- Format Diff: `npm run format:diff`
 - Build: `npm run build`
+- Migrate Test DB (Backend): `cd backend && npm run migrate:test`
 
 ### Quality Assurance
 
@@ -255,15 +260,20 @@ packages/
 **Last updated:** [AI-assisted, YYYY-MM-DD]
 
 ### Overview
-This section tracks the implementation and verification of the Supabase database schema, Row Level Security (RLS) policies, and performance indexes as mapped to TaskMaster task 2 and its subtasks. All work is aligned with PRD.md (see Section 7.2 Security Requirements and related schema specs).
+
+This section tracks the implementation and verification of the Supabase database schema, Row Level
+Security (RLS) policies, and performance indexes as mapped to TaskMaster task 2 and its subtasks.
+All work is aligned with PRD.md (see Section 7.2 Security Requirements and related schema specs).
 
 ### Migration Files
+
 - `backend/supabase/migrations/001_core_tables.sql`
 - `backend/supabase/migrations/002_logging_tables.sql`
 - `backend/supabase/migrations/003_business_tables.sql`
 - `backend/supabase/migrations/004_rls_policies.sql`
 
 ### Core Tables (Subtask 1: **done**)
+
 - **Tables:** `prompt_logs`, `comparisons`, `spark_logs`
 - **Features:**
   - Proper data types, constraints, UUID/timestamp defaults
@@ -274,6 +284,7 @@ This section tracks the implementation and verification of the Supabase database
 - **Validation:** Schema, RLS, and index checks passed; test data insert/query successful
 
 ### Logging Tables (Subtask 2: **pending**)
+
 - **Tables:** `feedback_logs`, `share_logs`, `error_logs`, `session_logs`
 - **Features:**
   - Data retention policies (24 months)
@@ -283,6 +294,7 @@ This section tracks the implementation and verification of the Supabase database
 - **Validation:** Migration applied, schema and RLS checks passed
 
 ### Business Tables (Subtask 3: **pending**)
+
 - **Tables:** `payment_logs`, `support_requests`, `pricing`
 - **Features:**
   - Audit triggers for change tracking
@@ -293,20 +305,25 @@ This section tracks the implementation and verification of the Supabase database
 - **Validation:** Migration applied, schema and RLS checks passed
 
 ### RLS Policies for Core Tables (Subtask 4: **pending**)
+
 - RLS enabled and tested for `prompt_logs`, `comparisons`, `spark_logs`
 - Admin override policies in place
 - No anonymous/public access (per PRD)
 
 ### RLS Policies for Logging & Business Tables (Subtask 5: **pending**)
+
 - RLS enabled for all logging and business tables
 - Role-based access for payment_logs, support_requests, pricing
 
 ### Composite Indexes (Subtask 6: **pending**)
+
 - Indexes created for all user-specific tables: `(user_id, created_at)`
-- Additional indexes: `(user_id, status)` for support_requests, `(error_type, created_at)` for error_logs
+- Additional indexes: `(user_id, status)` for support_requests, `(error_type, created_at)` for
+  error_logs
 - Indexes are PRD-compliant and validated for performance
 
 ### Test & Validation Summary
+
 - All migrations applied successfully (no errors)
 - Schema, RLS, and index existence verified via SQL
 - Test data insert/query performed for core and logging tables
@@ -314,4 +331,5 @@ This section tracks the implementation and verification of the Supabase database
 - No destructive operations performed on production data
 
 ---
+
 **Author:** AI-assisted (Cursor Agent)
