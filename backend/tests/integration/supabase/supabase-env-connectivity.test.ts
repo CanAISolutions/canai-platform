@@ -29,7 +29,10 @@ describe('Supabase .env connectivity (debug)', () => {
     console.log('SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? 'set' : 'not set');
 
     expect(SUPABASE_URL, 'SUPABASE_URL is not set in .env').toBeTruthy();
-    expect(SUPABASE_ANON_KEY, 'SUPABASE_ANON_KEY is not set in .env').toBeTruthy();
+    expect(
+      SUPABASE_ANON_KEY,
+      'SUPABASE_ANON_KEY is not set in .env'
+    ).toBeTruthy();
 
     const supabase = createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!);
     const { data, error } = await supabase
@@ -39,4 +42,4 @@ describe('Supabase .env connectivity (debug)', () => {
     expect(error).toBeNull();
     expect(Array.isArray(data)).toBe(true);
   });
-}); 
+});

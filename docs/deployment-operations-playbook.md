@@ -1023,3 +1023,10 @@ SELECT cron.schedule(
 This comprehensive deployment playbook ensures reliable, secure, and maintainable operations for the
 CanAI platform while supporting the complete 9-stage user journey and TaskMaster integration
 requirements.
+
+### Useful Scripts for Deployment & QA
+
+- Typecheck backend: `cd backend && npm run typecheck`
+- Unit test frontend: `cd frontend && npm run test:unit`
+- Format diff: `npm run format:diff`
+- Migrate test DB: `cd backend && npm run migrate:test`

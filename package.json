@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20"
   },
   "scripts": {
     "lint": "eslint backend frontend --ext .ts,.tsx --max-warnings=0",
@@ -16,6 +16,7 @@
     "typecheck:strict": "tsc --noEmit --strict --exactOptionalPropertyTypes --noUncheckedIndexedAccess",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "format:diff": "prettier --list-different .",
     "test": "vitest run --coverage",
     "test:backend": "vitest run backend/tests/ --coverage",
     "test:frontend": "vitest run frontend/src/tests/ --coverage",
@@ -56,14 +57,18 @@
     "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "clean": "rm -rf backend/dist frontend/dist node_modules/.cache",
     "validate": "npm run canai:validate",
-    "prepare": "husky install",
+    "prepare": "husky",
     "validate:all": "npm run typecheck:strict && npm run lint:strict && npm run format:check && npm run test:ci",
     "health:all": "npm run canai:validate && npm run canai:rules:enforce && npm run validate:mdc && npm run security:check && npm run health:check || echo 'Health check failed'",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "supabase:start": "npx supabase start",
+    "supabase:stop": "npx supabase stop",
+    "supabase:status": "npx supabase status",
+    "supabase:studio": "npx supabase studio"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.0.3",
-    "@commitlint/config-conventional": "^19.0.3",
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
     "@eslint/js": "9.29.0",
     "@sentry/node": "^7.28.0",
     "@tailwindcss/typography": "^0.5.15",
@@ -82,7 +87,6 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "@vitest/coverage-v8": "^3.2.3",
     "autoprefixer": "^10.4.20",
-    "commitlint": "^17.0.0",
     "concurrently": "^8.2.2",
     "conventional-changelog-cli": "^2.2.2",
     "cross-env": "^7.0.3",
@@ -99,18 +103,19 @@
     "eslint-plugin-tsdoc": "0.2.17",
     "glob": "10.3.10",
     "globals": "15.15.0",
-    "husky": "^9.0.11",
+    "husky": "^9.0.0",
     "jsdom": "^25.0.1",
     "lint-staged": "^15.2.0",
     "lovable-tagger": "^1.1.7",
     "markdownlint": "0.34.0",
-    "markdownlint-cli": "0.45.0",
+    "markdownlint-cli": "^0.41.0",
     "mongodb": "^6.3.0",
     "pino": "^8.19.0",
     "pino-http": "^9.0.0",
     "postcss": "8.5.6",
     "posthog-node": "5.1.1",
     "prettier": "2.8.8",
+    "supabase": "2.26.9",
     "tailwindcss": "^3.4.11",
     "task-master": "1.0.4",
     "typescript": "5.3.3",
@@ -150,7 +155,7 @@
     "@radix-ui/react-tooltip": "1.2.7",
     "@supabase/supabase-js": "2.50.0",
     "@tanstack/react-query": "^5.56.2",
-    "axios": "1.10.0",
+    "axios": "^1.7.0",
     "body-parser": "^1.20.2",
     "canvas-confetti": "^1.6.0",
     "class-variance-authority": "^0.7.1",
@@ -184,7 +189,8 @@
     "uuid": "11.1.0",
     "vaul": "^0.9.3",
     "vite": "^5.4.2",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "esbuild": "^0.25.0"
   },
   "workspaces": [
     "backend",

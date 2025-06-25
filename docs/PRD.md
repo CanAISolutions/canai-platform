@@ -357,6 +357,7 @@ graph TD
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
 
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     CREATE TABLE trust_indicators (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -612,6 +613,7 @@ tasks:
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
 
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     CREATE TABLE initial_prompt_logs (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -805,6 +807,7 @@ tasks:
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
 
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     CREATE TABLE spark_logs (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -990,6 +993,7 @@ tasks:
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
 
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     CREATE TABLE payment_logs (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1189,6 +1193,7 @@ tasks:
     auto-save, and field validation.
 - **Technical Specifications**:
   - **API Endpoints**:
+
     ```json
     POST /v1/save-progress
     Handler: backend/routes/inputs.js
@@ -1224,6 +1229,7 @@ validation, 1hr expiry) Service: backend/services/supabase.js (fetch prompt_logs
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     CREATE TABLE prompt_logs (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1242,6 +1248,7 @@ validation, 1hr expiry) Service: backend/services/supabase.js (fetch prompt_logs
       FOR ALL TO authenticated
       USING (auth.uid() = user_id);
     ```
+
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
 
   - **Performance Targets**:
@@ -1401,6 +1408,7 @@ tasks:
     score, support trigger, and edit flows.
 - **Technical Specifications**:
   - **API Endpoint**:
+
     ```json
     POST /v1/intent-mirror
     Handler: backend/routes/intent.js
@@ -1443,6 +1451,7 @@ support_requests_rls ON support_requests FOR ALL TO authenticated USING (auth.ui
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
 
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     ALTER TABLE prompt_logs
       ADD COLUMN summary TEXT CHECK (length(summary) BETWEEN 15 AND 25),
@@ -1648,6 +1657,7 @@ tasks:
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
 
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     CREATE TABLE comparisons (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1824,6 +1834,7 @@ tasks:
     emotional resonance, and feedback prompts.
 - **Technical Specifications**:
   - **API Endpoint**:
+
     ```json
     POST /v1/spark-split
     Handler: backend/routes/sparkSplit.js
@@ -1845,9 +1856,11 @@ tasks:
     Cache: backend/services/cache.js (key: spark_split_{prompt_id}, TTL: 1hr)
     Webhook: backend/webhooks/save_comparison.js (Make.com)
     ```
+
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
 
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     CREATE TABLE comparisons (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -2054,6 +2067,7 @@ tasks:
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
 
   - **Supabase Schema** (`databases/migrations/`):
+
     ```sql
     CREATE TABLE feedback_logs (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -2201,7 +2215,7 @@ The CanAI Emotional Sovereignty Platform must meet stringent non-functional requ
 performance, security, scalability, accessibility, cost efficiency, and compliance. These
 requirements are implemented across the backend (`backend/`), database (`databases/`), and frontend
 (`frontend/`), with specific configurations for Render deployment
-(https://canai-router.onrender.com, internal: canai-router:10000, IPs: 52.41.36.82, 54.191.253.12,
+(<https://canai-router.onrender.com>, internal: canai-router:10000, IPs: 52.41.36.82, 54.191.253.12,
 44.226.122.3) and Supabase integration. All tasks are designed for execution via TaskMaster and
 optimized for Cursor AI, referencing project files (e.g., `backend/middleware/`,
 `databases/migrations/`).
@@ -2310,16 +2324,20 @@ The platform manages user data with a clear lifecycle to ensure compliance and e
     (`backend/routes/purge.js`).
 - **Implementation**:
   - Schedule `pg_cron` job to purge inactive data:
+
     ```sql
     -- databases/cron/purge.sql
     DELETE FROM initial_prompt_logs WHERE created_at < NOW() - INTERVAL '24 months' AND user_id NOT IN (SELECT user_id FROM session_logs WHERE created_at > NOW() - INTERVAL '24 months');
     DELETE FROM feedback_logs WHERE created_at < NOW() - INTERVAL '24 months';
     ```
+
   - Anonymize feedback for training:
+
     ```sql
     -- databases/cron/anonymize.sql
     UPDATE feedback_logs SET user_id = NULL, comment = REGEXP_REPLACE(comment, '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', '[email redacted]') WHERE created_at < NOW() - INTERVAL '1 month';
     ```
+
   - Implement `/v1/purge-data` API to delete user data with RLS (`backend/routes/purge.js`).
   - Log purge requests to `databases/error_logs` (`error_type: 'purge'`).
 - **Monitoring**:
@@ -2348,6 +2366,7 @@ The platform scales to support 10k monthly users without performance degradation
   - Configure Render auto-scaling (`docker-compose.yml`) for 10k users, with health checks
     (`backend/health.js`).
   - Store cached sparks in `databases/spark_cache`:
+
     ```sql
     -- databases/migrations/spark_cache.sql
     CREATE TABLE spark_cache (
@@ -2358,6 +2377,7 @@ The platform scales to support 10k monthly users without performance degradation
       INDEX idx_spark_cache_expires_at (expires_at)
     );
     ```
+
   - Implement cache-first strategy in `backend/services/cache.js` (check `spark_cache` before
     GPT-4o).
   - Optimize Supabase queries with indexes (`databases/migrations/`, e.g.,
@@ -2411,6 +2431,7 @@ The platform optimizes costs for GPT-4o and Hume AI while maintaining quality.
   - **Fallback Threshold**: <5% requests use GPT-4o fallback, with TrustDelta degradation ≤0.2.
 - **Implementation**:
   - Implement circuit breaker in `backend/middleware/hume.js`:
+
     ```javascript
     // backend/middleware/hume.js
     const checkHumeLimit = async (req, res, next) => {
@@ -2425,7 +2446,9 @@ The platform optimizes costs for GPT-4o and Hume AI while maintaining quality.
       next();
     };
     ```
+
   - Track usage in Supabase (`databases/usage_logs`):
+
     ```sql
     -- databases/migrations/usage_logs.sql
     CREATE TABLE usage_logs (
@@ -2437,6 +2460,7 @@ The platform optimizes costs for GPT-4o and Hume AI while maintaining quality.
       INDEX idx_usage_logs_service (service)
     );
     ```
+
   - Log cost warnings with PostHog:
     - `posthog.capture('hume_limit_warning', { usage: number });`
 - **Monitoring**:
@@ -2608,7 +2632,7 @@ WHERE created_at < NOW() - INTERVAL '1 month' AND user_id IS NOT NULL;
 # 8. Technical Architecture
 
 The CanAI Emotional Sovereignty Platform is a SaaS solution built with a modular, scalable
-architecture, leveraging a serverless backend on Render (https://canai-router.onrender.com,
+architecture, leveraging a serverless backend on Render (<https://canai-router.onrender.com>,
 internal: canai-router:10000, IPs: 52.41.36.82, 54.191.253.12, 44.226.122.3), a Webflow frontend
 (Site ID: 656604b87d3f1c1d75e4c392), and Supabase for data persistence. The architecture integrates
 MemberStack for authentication, Stripe for payments, Make.com for automation, PostHog for analytics,
@@ -2736,6 +2760,7 @@ graph TD
     `databases/cron/anonymize.sql`).
   - Storage for deliverables (`supabase/storage/plans/`, MemberStack-gated).
 - **Key Schema**:
+
   ```sql
   -- databases/migrations/prompt_logs.sql
   CREATE TABLE prompt_logs (
@@ -2778,6 +2803,7 @@ graph TD
     INDEX idx_spark_cache_expires_at (expires_at)
   );
   ```
+
 - **Data Lifecycle**:
   - Purge after 24 months (`databases/cron/purge.sql`).
   - Anonymize feedback monthly (`databases/cron/anonymize.sql`).
@@ -2874,6 +2900,7 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
 ````
 
 - **POST /v1/validate-input**:
+
   ```json
   Handler: backend/routes/funnel.js
   Request: { "businessType": "string", "otherType": "string|null", "primaryChallenge": "string", "preferredTone": "string", "customTone": "string|null", "desiredOutcome": "string" }
@@ -2882,7 +2909,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Service: backend/services/gpt4o.js (trust score), backend/services/hume.js (resonance)
   Webhook: backend/webhooks/save_funnel.js (Make.com)
   ```
+
 - **POST /v1/generate-sparks**:
+
   ```json
   Handler: backend/routes/sparks.js
   Request: { "businessType": "string", "tone": "string", "outcome": "string", "initial_prompt_id": "uuid" }
@@ -2892,7 +2921,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Cache: backend/services/cache.js (key: sparks_{businessType}_{tone}_{outcome}, TTL: 1hr)
   Webhook: backend/webhooks/generate_sparks.js (Make.com)
   ```
+
 - **POST /v1/regenerate-sparks**:
+
   ```json
   Handler: backend/routes/sparks.js
   Request: { "businessType": "string", "tone": "string", "outcome": "string", "initial_prompt_id": "uuid", "attempt_count": number, "trust_score": number, "feedback": "string|null" }
@@ -2900,7 +2931,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Middleware: backend/middleware/rateLimit.js (max 3/4 attempts)
   Service: backend/services/gpt4o.js
   ```
+
 - **POST /v1/stripe-session**:
+
   ```json
   Handler: backend/routes/stripe.js
   Request: { "spark": { "title": "string", "product_track": "string" }, "user_id": "uuid", "spark_log_id": "uuid" }
@@ -2909,7 +2942,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Service: backend/services/stripe.js (Stripe session)
   Webhook: backend/webhooks/add_project.js (Make.com)
   ```
+
 - **POST /v1/refund**:
+
   ```json
   Handler: backend/routes/stripe.js
   Request: { "session_id": "string", "reason": "string", "user_id": "uuid" }
@@ -2917,7 +2952,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Middleware: backend/middleware/auth.js
   Service: backend/services/stripe.js (Stripe refund)
   ```
+
 - **POST /v1/switch-product**:
+
   ```json
   Handler: backend/routes/stripe.js
   Request: { "session_id": "string", "new_product": "string", "user_id": "uuid" }
@@ -2926,7 +2963,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Service: backend/services/stripe.js (refund, new session)
   Webhook: backend/webhooks/add_project.js
   ```
+
 - **POST /v1/save-progress**:
+
   ```json
   Handler: backend/routes/inputs.js
   Request: { "prompt_id": "uuid|null", "payload": { "businessName": "string", "targetAudience": "string", ... } }
@@ -2935,7 +2974,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Service: backend/services/supabase.js (store to prompt_logs)
   Webhook: backend/webhooks/save_inputs.js (Make.com)
   ```
+
 - **POST /v1/intent-mirror**:
+
   ```json
   Handler: backend/routes/intent.js
   Request: { "businessName": "string", "targetAudience": "string", "primaryGoal": "string", ... }
@@ -2943,14 +2984,18 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Middleware: backend/middleware/validation.js
   Service: backend/services/gpt4o.js (summary generation)
   ```
+
 - **GET /v1/generation-status**:
+
   ```json
   Handler: backend/routes/deliverables.js
   Response: { "status": "complete|pending", "pdf_url": "string|null", "error": null }
   Middleware: backend/middleware/auth.js
   Service: backend/services/supabase.js (check comparisons)
   ```
+
 - **POST /v1/request-revision**:
+
   ```json
   Handler: backend/routes/deliverables.js
   Request: { "prompt_id": "uuid", "feedback": "string" }
@@ -2959,7 +3004,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Service: backend/services/gpt4o.js (revision), backend/services/hume.js (resonance)
   Webhook: backend/webhooks/generate_deliverable.js (Make.com)
   ```
+
 - **POST /v1/regenerate-deliverable**:
+
   ```json
   Handler: backend/routes/deliverables.js
   Request: { "prompt_id": "uuid", "attempt_count": number }
@@ -2967,7 +3014,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Middleware: backend/middleware/rateLimit.js (max 3 attempts)
   Service: backend/services/gpt4o.js
   ```
+
 - **POST /v1/spark-split**:
+
   ```json
   Handler: backend/routes/sparkSplit.js
   Request: { "canaiOutput": "string", "genericOutput": "string", "prompt_id": "uuid" }
@@ -2975,7 +3024,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Middleware: backend/middleware/auth.js
   Service: backend/services/sparkSplit.js, backend/services/hume.js
   ```
+
 - **POST /v1/feedback**:
+
   ```json
   Handler: backend/routes/feedback.js
   Request: { "prompt_id": "uuid", "rating": number, "comment": "string", "shared_platforms": ["string"], "user_id": "uuid" }
@@ -2984,7 +3035,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Service: backend/services/gpt4o.js (sentiment analysis), backend/services/supabase.js (feedback_logs)
   Webhook: backend/webhooks/save_feedback.js (Make.com)
   ```
+
 - **POST /v1/refer**:
+
   ```json
   Handler: backend/routes/refer.js
   Request: { "user_id": "uuid", "friend_email": "string" }
@@ -2993,7 +3046,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Service: backend/services/supabase.js (session_logs), backend/services/cache.js (link caching)
   Webhook: backend/webhooks/save_referral.js (Make.com)
   ```
+
 - **POST /v1/generate-tooltip**:
+
   ```json
   Handler: backend/routes/tooltip.js
   Request: { "field": "string" }
@@ -3002,7 +3057,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Service: backend/services/gpt4o.js
   Cache: backend/services/cache.js (key: tooltip_{field}, TTL: 1hr)
   ```
+
 - **POST /v1/detect-contradiction**:
+
   ```json
   Handler: backend/routes/contradiction.js
   Request: { "preferredTone": "string", "desiredOutcome": "string" }
@@ -3010,7 +3067,9 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Middleware: backend/middleware/validation.js
   Service: backend/services/gpt4o.js
   ```
+
 - **POST /v1/filter-input**:
+
   ```json
   Handler: backend/routes/filter.js
   Request: { "payload": { "businessDescription": "string", "primaryGoal": "string", ... } }
@@ -3018,13 +3077,16 @@ The API Catalog documents all backend endpoints (`backend/routes/`) supporting t
   Middleware: backend/middleware/validation.js (Joi, DOMPurify)
   Service: backend/services/gpt4o.js (NSFW detection)
   ```
+
 - **GET /v1/admin-metrics**:
+
   ```json
   Handler: backend/routes/admin.js
   Response: { "funnel_metrics": { "stepName": number }, "error_logs": [{ "error_message": "string" }], "feedback_trends": { "avg_rating": number, "poor_count": number }, "error": null }
   Middleware: backend/middleware/auth.js (admin only)
   Service: backend/services/supabase.js (fetch from logs)
   ```
+
 - **Rate Limiting**: All endpoints limited to 100 req/min/IP (`backend/middleware/rateLimit.js`).
 - **Security**: MemberStack auth and Supabase RLS enforced where applicable.
 - **Acceptance Criteria**:
@@ -3537,6 +3599,7 @@ compliant, ≥48px tap targets), backend actions, and logging to maintain trust 
   ```
 
 - **Supabase Schema**:
+
   ```sql
   -- databases/migrations/error_logs.sql
   CREATE TABLE error_logs (
@@ -3555,6 +3618,7 @@ compliant, ≥48px tap targets), backend actions, and logging to maintain trust 
     FOR ALL TO authenticated
     USING (auth.uid() = user_id);
   ```
+
 - **Rate Limiting**: 100 req/min/IP via `backend/middleware/rateLimit.js`.
 - **Performance**: Error detection <200ms, optimized with async GPT-4o calls, Supabase indexes, and
   node-cache (`backend/services/cache.js`).
@@ -3720,6 +3784,7 @@ CO).
 2. **F2 2-Step Discovery Funnel**:
 
    - Sarah completes the funnel (<30s, `frontend/public/funnel.html`):
+
      ```json
      {
        "businessType": "retail",
@@ -3730,6 +3795,7 @@ CO).
        "desiredOutcome": "secure funding"
      }
      ```
+
    - Backend: `POST /v1/validate-input` (`backend/routes/funnel.js`) validates inputs with Joi
      (`backend/middleware/validation.js`), computes trust score (e.g., 85%) via GPT-4o
      (`backend/services/gpt4o.js`), and checks emotional resonance (arousal >0.5, valence >0.6) via
@@ -3764,6 +3830,7 @@ CO).
 5. **F5 Detailed Input Collection**:
 
    - Sarah submits 12-field inputs (`frontend/public/inputs.html`):
+
      ```json
      {
        "businessName": "Sprinkle Haven Bakery",
@@ -3780,6 +3847,7 @@ CO).
        "uniqueValue": "Organic, community-focused pastries"
      }
      ```
+
    - Backend: `POST /v1/save-progress` (`backend/routes/inputs.js`) validates inputs, stores in
      `databases/prompt_logs`, and triggers `save_inputs.json` (`backend/webhooks/save_inputs.js`).
      GPT-4o infers emotional drivers (e.g., community, trust) via
@@ -3839,6 +3907,7 @@ CO).
 **Technical Specifications**:
 
 - **API Call Sequence**:
+
   ```json
   [
     {
@@ -3888,7 +3957,9 @@ CO).
     }
   ]
   ```
+
 - **Supabase Schema** (`databases/migrations/comparisons.sql`):
+
   ```sql
   CREATE TABLE comparisons (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3907,6 +3978,7 @@ CO).
     FOR ALL TO authenticated
     USING (auth.uid() = user_id);
   ```
+
 - **Performance Targets**:
   - Spark generation: <1.5s (`POST /v1/generate-sparks`).
   - Deliverable generation: <2s (`POST /v1/request-revision`).
@@ -3935,6 +4007,7 @@ emphasizing optimism and inclusivity, achieving TrustDelta ≥4.2 and emotional 
 2. **F2 2-Step Discovery Funnel**:
 
    - Jasmine submits:
+
      ```json
      {
        "businessType": "service",
@@ -3945,6 +4018,7 @@ emphasizing optimism and inclusivity, achieving TrustDelta ≥4.2 and emotional 
        "desiredOutcome": "boost online presence"
      }
      ```
+
    - Backend: `POST /v1/validate-input` detects no contradictions via
      `POST /v1/detect-contradiction` (`backend/routes/contradiction.js`). Trust score: 90%. Stored
      in `databases/initial_prompt_logs`.
@@ -3965,6 +4039,7 @@ emphasizing optimism and inclusivity, achieving TrustDelta ≥4.2 and emotional 
 5. **F5 Detailed Input Collection**:
 
    - Inputs:
+
      ```json
      {
        "businessName": "Serenity Yoga Studio",
@@ -3981,6 +4056,7 @@ emphasizing optimism and inclusivity, achieving TrustDelta ≥4.2 and emotional 
        "uniqueValue": "Inclusive wellness community"
      }
      ```
+
    - Backend: `POST /v1/save-progress` stores in `databases/prompt_logs`. GPT-4o infers inclusivity
      driver (`backend/prompts/social_media.js`).
 
@@ -4036,6 +4112,7 @@ resonance >0.7.
 2. **F2 2-Step Discovery Funnel**:
 
    - Inputs:
+
      ```json
      {
        "businessType": "tech",
@@ -4046,6 +4123,7 @@ resonance >0.7.
        "desiredOutcome": "improve operations"
      }
      ```
+
    - Backend: `POST /v1/validate-input`, trust score: 88%.
 
 3. **F3 Spark Layer**:
@@ -4060,6 +4138,7 @@ resonance >0.7.
 5. **F5 Detailed Input Collection**:
 
    - Inputs:
+
      ```json
      {
        "businessName": "TechTrend Innovations",
@@ -4076,6 +4155,7 @@ resonance >0.7.
        "uniqueValue": "Advanced analytics solutions"
      }
      ```
+
    - Backend: `POST /v1/save-progress`, using `backend/prompts/website_audit.js`.
 
 6. **F6 Intent Mirror**:
