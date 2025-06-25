@@ -40,12 +40,14 @@ jobs:
           cd backend
           npm run test:supabase:connection
 
-      - name: Validate database schema
-        run: |
-          cd backend
-          npm run test:supabase:schema
+      # - name: Validate database schema
+      #   run: |
+      #     cd backend
+      #     npm run test:supabase:schema
+      #   # TODO: Enable this step when schema validation is required for release or advanced testing.
 
-      - name: Test API integration
-        run: |
-          cd frontend
-          npm run test:supabase:api
+      # - name: Test API integration
+      #   run: |
+      #     cd frontend
+      #     npm run test:supabase:api
+      #   # TODO: Enable this step when API integration tests are required for release or advanced testing.

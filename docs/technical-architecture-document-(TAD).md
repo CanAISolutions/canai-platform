@@ -65,6 +65,7 @@ graph LR
 - **React 18.0**: Component library with shadcn/ui integration.
 - **TypeScript 4.9**: Frontend logic (`frontend/src/`) with strict mode enabled.
 - **Memberstack 2.0**: Authentication (`backend/services/memberstack.js`) with JWT validation.
+- **Supabase Integration**: React/Vite client integration following `docs/supabase-frontend-integration.md`.
 
 ### Backend
 
@@ -78,6 +79,7 @@ graph LR
 - **pg_cron**: Data purging after 24 months (`databases/cron/purge.sql`) for GDPR/CCPA compliance.
 - **Indexes**: Optimized for <50ms queries (`idx_prompt_logs_user_id`,
   `idx_comparisons_trust_delta`).
+- **Direct SQL Access**: For migrations or admin scripts, use `backend/db.js` (Node.js only, never in frontend). This utility uses the `postgres` library and the `DATABASE_URL` environment variable for secure, direct Postgres access.
 
 ### Integrations
 
