@@ -16,7 +16,6 @@
     "noImplicitThis": true,
     "alwaysStrict": true,
     "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
 
@@ -24,7 +23,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
 
     // Module Resolution & Imports
     "esModuleInterop": true,
