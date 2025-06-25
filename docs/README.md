@@ -18,10 +18,11 @@ from the PRD, which resides in `/requirements/prd.md`.
 
 This folder houses the following documents to support Cursor AI in executing the CanAI build:
 
-- **Technical Architecture Document**: Defines the platform’s architecture, tech stack, and
+- **Technical Architecture Document**: Defines the platform's architecture, tech stack, and
   integration flows.
 - **API Contract Specification**: Documents all API endpoints, schemas, and integration details.
 - **Data Model and Schema Definition**: Specifies Supabase schemas, relationships, and RLS policies.
+- **Supabase Frontend Integration Guide**: Step-by-step instructions for integrating Supabase with the React/Vite frontend.
 - **Prompt Engineering Templates**: Standardizes GPT-4o prompts for emotionally resonant outputs.
 - **Test Case Specification**: Outlines tests for functionality, performance, and quality assurance.
 - **Coding Standards and Style Guide**: Enforces consistent code conventions for maintainability.
@@ -29,7 +30,7 @@ This folder houses the following documents to support Cursor AI in executing the
 - **Risk and Assumption Log**: Tracks risks and assumptions with mitigation strategies.
 - **Change Management and Versioning Matrix**: Manages updates to code, schemas, and prompts.
 
-These documents ensure Cursor AI can comprehend and fluently implement the platform’s requirements,
+These documents ensure Cursor AI can comprehend and fluently implement the platform's requirements,
 with no other file types (e.g., code, configs) residing here to maintain clarity.
 
 ## Folder Structure
@@ -44,6 +45,7 @@ with no other file types (e.g., code, configs) residing here to maintain clarity
 ├── deployment-operations-playbook.md # Deployment and operations procedures
 ├── prompt-engineering-templates.md # GPT-4o prompt templates
 ├── risk-assumption-log.md       # Risks, assumptions, and mitigations
+├── supabase-frontend-integration.md # Supabase React/Vite integration guide
 ├── technical-architecture-document-(TAD).md # System architecture and integration flows
 └── test-case-specification.md  # Test cases and coverage goals
 ```
@@ -57,7 +59,7 @@ with no other file types (e.g., code, configs) residing here to maintain clarity
 
 ### For Developers
 
-- **Access**: Review these documents to understand the platform’s architecture, APIs, and
+- **Access**: Review these documents to understand the platform's architecture, APIs, and
   operational requirements before starting development.
 - **Reference**: Use as the primary guide for implementing features, testing, and deploying the
   platform, ensuring alignment with the PRD.
@@ -85,16 +87,19 @@ with no other file types (e.g., code, configs) residing here to maintain clarity
 
 ## Related Resources
 
-- **PRD**: Located at `/requirements/prd.md`, defining the platform’s requirements and user journey.
+- **PRD**: Located at `/requirements/prd.md`, defining the platform's requirements and user journey.
 - **Codebase**: Implementation files in `/backend/`, `/frontend/`, and `/databases/` (per
   `coding-standards-style-guide.md`).
 - **CI/CD Pipelines**: Configured in `.github/workflows/` for build, test, and deploy (per
   `deployment-operations-playbook.md`).
 - **TaskMaster Tasks**: Embedded in documents and validated in `.github/workflows/taskmaster.yml`
   (per `change-management-versioning-matrix.md`).
+- **Backend Database Utilities**: 
+  - `backend/db.js` — Direct Postgres client for admin/migration scripts (Node.js only).
+  - `backend/supabase/client.js` — Supabase client for RLS-safe CRUD (preferred for app/API logic).
 
 ## Contact
 
 For questions or clarifications, contact the solo developer (placeholder for contact details, per
-PRD Section 1.4). Issues should be logged in the project’s Git repository, with errors tracked via
+PRD Section 1.4). Issues should be logged in the project's Git repository, with errors tracked via
 Sentry (`backend/services/sentry.js`) and analytics via PostHog (`backend/services/posthog.js`).

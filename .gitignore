@@ -324,10 +324,8 @@ dev-debug.log
 # Cursor MCP configuration with API keys
 .cursor/mcp.json
 
+# Added by Task Master AI
+
 # Task files
 # tasks.json
-# tasks/
-
-# Added by Task Master AI
-tasks.json
-tasks/ 
+# tasks/ 

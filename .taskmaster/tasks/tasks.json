@@ -71,7 +71,7 @@
         "testStrategy": "Run Supatest to validate schema creation. Test RLS policies with different user contexts. Verify indexes improve query performance with EXPLAIN ANALYZE.",
         "priority": "high",
         "dependencies": [],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -143,7 +143,7 @@
               5
             ],
             "details": "Set up Supabase vault for encrypting payment information and PII. Create triggers for updated_at timestamps, audit logging for payment_logs and support_requests, and data validation triggers. Implement trigger functions for automatic data archiving and cleanup policies for old logs.",
-            "status": "pending"
+            "status": "done"
           },
           {
             "id": 8,
@@ -156,7 +156,7 @@
               7
             ],
             "details": "Run Supatest suite to validate all RLS policies, foreign key constraints, and triggers. Perform load testing with sample data to validate index performance. Test backup/restore procedures, data migration scripts, and edge cases for all business logic. Document performance benchmarks and optimization recommendations.",
-            "status": "pending"
+            "status": "done"
           }
         ]
       },
@@ -170,7 +170,7 @@
         "dependencies": [
           1
         ],
-        "status": "in-progress",
+        "status": "pending",
         "subtasks": [
           {
             "id": 1,
