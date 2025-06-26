@@ -140,4 +140,80 @@ This document records major analytics and observability implementation milestone
 - Environment setup and config updated for robust testing.
 - See `project-structure-mapping.md` for details.
 
+## [2025-06-25] Sentry DSN Configuration and Initialization
+- Implemented Sentry SDK setup in backend (`backend/api/src/Server.ts`) and frontend (`frontend/src/main.tsx`).
+- Environment variables `SENTRY_DSN` and `SENTRY_ENV` added to `.env` files for both backend and frontend.
+- Verified Sentry connection with test error triggers.
+- Aligned with PRD privacy, observability, and error monitoring goals.
+
+## [2025-06-26] Sentry Frontend Integration (Task 4)
+
+### Summary
+- Integrated Sentry React SDK (`@sentry/react` v7+) in `frontend/src/main.tsx` for error monitoring and release tracking.
+- Removed all usage of `@sentry/tracing` and `BrowserTracing` for compatibility with Sentry v7+.
+- App is wrapped in a custom ErrorBoundary for robust UI error capture.
+- Sentry test error logic and manual trigger button were removed after successful verification.
+
+### PRD & Rule Alignment
+- Fully aligns with TaskMaster Task 4 and PRD.md (robust error capture, privacy, observability).
+- Follows canai-sentry-rules and project documentation standards.
+
+### Technical Notes
+- Sentry DSN and environment are loaded from `.env` and CI/CD secrets.
+- Sentry is initialized before app render; all errors are captured in production.
+- Verified error reporting in Sentry dashboard.
+
+### Verification
+- Triggered test error and confirmed event in Sentry dashboard.
+- All frontend errors will now be reported to Sentry.
+
+## Sentry Error Capture (Task 4.2)
+- **Date**: 2025-06-26
+- **Details**: Implemented error capture, PII scrubbing, and context for backend/frontend. Added manual test routes for validation.
+- **Verification**: Test errors sent to Sentry and confirmed in dashboard.
+- Validation: Confirmed errors, tags, and breadcrumbs in Sentry for /test-error and /sentry-test.
+
+## [2025-06-27] Sentry Performance Monitoring, Release Tracking & Source Map Automation (Task 4.3)
+
+### Summary
+- Implemented Sentry performance monitoring for backend (Node.js/Express) and frontend (React/Vite).
+- Added Sentry transaction and span instrumentation to backend API endpoints (see `/test-sentry`).
+- Enabled release tagging for both backend and frontend, with version injected by CI/CD.
+- Automated source map uploads for both backend and frontend in GitHub Actions (`ci.yml`), ensuring readable stack traces in Sentry.
+
+### PRD & Rule Alignment
+- Fully aligns with TaskMaster Task 4.3 and PRD.md (robust error capture, performance monitoring, release traceability, auditability).
+- Follows canai-sentry-rules, canai-structure-rules, and canai-typescript-rules.
+
+### Technical Notes
+- Backend: Sentry initialized in `instrument.ts`, transactions/spans in `App.ts`, source maps built with `tsc`.
+- Frontend: Sentry initialized in `main.tsx`, source maps built with Vite.
+- CI/CD: Source maps uploaded to Sentry using `@sentry/cli` in both jobs, release version set to `${{ github.sha }}`.
+
+### Verification
+- Triggered test errors and transactions; confirmed in Sentry dashboard.
+- Stack traces resolve to original source code for both backend and frontend.
+- Release tracking and source map uploads verified in Sentry UI.
+
+## [2025-06-27] Sentry Alerting & User Identification (Task 4.4)
+
+### Summary
+- Enabled Sentry alerting via both email and Slack for critical errors and performance issues.
+- Configured alert rules for high error frequency and performance degradation.
+- Backend Sentry context enrichment now uses real user, session, and tenant data from the request object.
+- Frontend Sentry context enrichment is ready to use real user and tenant data from the authentication system.
+
+### PRD & Rule Alignment
+- Fully aligns with TaskMaster Task 4.4 and PRD.md (proactive alerting, user-centric debugging, team notification).
+- Follows canai-sentry-rules, canai-structure-rules, canai-typescript-rules, and canai-ci-cd-rules.
+
+### Technical Notes
+- Backend: `setSentryContext` in `instrument.ts` uses `req.user?.id`, `req.session?.id`, and `req.tenant?.id`.
+- Frontend: `setSentryContext` in `utils/sentry.ts` and `App.tsx` is ready for integration with Memberstack or other auth providers.
+- Sentry alert rules send notifications to both email and Slack.
+
+### Verification
+- Triggered test errors and confirmed alert delivery to both email and Slack.
+- Verified Sentry events include user, session, and tenant context for debugging.
+
 *Add new entries above this line as further analytics/observability milestones are delivered.* 
