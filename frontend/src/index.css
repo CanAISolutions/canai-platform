@@ -1,12 +1,13 @@
+@import './styles/themes.css';
+@import './styles/components.css';
+@import './styles/animations.css';
+@import './styles/utilities.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* Import CanAI Modular Styles */
-@import './styles/themes.css';
-@import './styles/components.css';
-@import './styles/animations.css';
-@import './styles/utilities.css';
 
 /* Base Body Styles */
 @layer base {

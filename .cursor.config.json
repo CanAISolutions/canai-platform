@@ -11,6 +11,11 @@
         "tags": ["security", "canai", "prd"],
         "context": ["backend/**/*", ".github/workflows/*"]
       },
+      "canai-sentry-rules.mdc": {
+        "path": ".cursor/rules/canai-sentry-rules.mdc",
+        "tags": ["sentry", "canai"],
+        "context": ["backend/api/*", ".github/workflows/*"]
+    },
       "canai-ci-cd-rules": {
         "path": ".cursor/rules/canai-ci-cd-rules.mdc",
         "tags": ["ci", "cd", "canai", "prd"],
