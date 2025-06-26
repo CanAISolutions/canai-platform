@@ -367,3 +367,71 @@ All work is aligned with PRD.md (see Section 7.2 Security Requirements and relat
 - Implement integration test logic for dashboard verification.
 - Migrate sessionStore to Redis/DB for production scalability.
 - Update documentation as analytics evolves.
+
+## Sentry Error Monitoring Setup
+
+### Backend (Node.js)
+- Sentry initialized in `backend/api/src/Server.ts` using `@sentry/node` and `@sentry/tracing`.
+- DSN and environment set via `SENTRY_DSN` and `SENTRY_ENV` in `backend/api/.env`.
+- Profiling and release tagging enabled.
+- Test error can be triggered with `SENTRY_TEST_ERROR=true`.
+
+### Frontend (React)
+- Sentry initialized in `frontend/src/main.tsx` using `@sentry/react` and `@sentry/tracing`.
+- DSN and environment set via `SENTRY_DSN` and `SENTRY_ENV` in `frontend/.env`.
+- Release tagging and BrowserTracing enabled.
+- Test error can be triggered with `VITE_SENTRY_TEST_ERROR=true`.
+
+## Sentry Frontend Configuration (Task 4)
+- **File**: `frontend/src/main.tsx`
+- **Purpose**: Initializes Sentry React SDK for error monitoring and release tracking.
+- **Environment Variables**:
+  - `VITE_SENTRY_DSN` (or `SENTRY_DSN`): Sentry DSN for error reporting, stored in `.env` and CI/CD secrets.
+  - `VITE_SENTRY_ENV` (or `SENTRY_ENV`): Environment name (development, production).
+- **Integration Details**:
+  - Uses `@sentry/react` v7+ only (no `@sentry/tracing` or `BrowserTracing`).
+  - Sentry is initialized in `main.tsx` before rendering the app.
+  - App is wrapped in a custom `ErrorBoundary` for UI error capture.
+  - Sentry test error logic and manual trigger button have been removed after verification.
+- **Verification**:
+  - Sentry test error was triggered and confirmed in the Sentry dashboard.
+  - All errors in production will be reported to Sentry.
+- **Documentation Updated**: 2025-06-26
+
+## Sentry Error Capture (Task 4.2)
+- **Backend**: Configured PII scrubbing, context tags, and error handlers in `backend/api/src/instrument.ts` and middleware in `backend/api/src/Shared/Logger.ts`.
+- **Frontend**: Added error boundary, context enrichment, and test route in `frontend/src/App.tsx` and `frontend/src/components/SentryTest.tsx`.
+- **Validation**: Errors captured with tags and breadcrumbs in Sentry dashboard.
+
+- [ ] Backend: Triggered /test-error, confirmed error with tags (user.id, session.id, tenant.id) and [REDACTED] PII in Sentry.
+- [ ] Frontend: Visited /sentry-test, clicked button, confirmed error with tags and ui.click breadcrumb.
+
+### Sentry Performance Monitoring & Release Tracking (Task 4.3)
+- **Backend**:  
+  - Sentry initialized in `backend/api/src/instrument.ts` with `tracesSampleRate`, `profilesSampleRate`, and release tagging.
+  - API endpoints instrumented with Sentry transactions and spans (see `/test-sentry` in `App.ts` for template).
+  - Source maps are generated via TypeScript build (`tsc --sourceMap true --outDir dist`) and uploaded to Sentry in CI/CD (`.github/workflows/ci.yml`).
+  - Release version is set from `process.env.npm_package_version` (injected by CI).
+- **Frontend**:  
+  - Sentry initialized in `frontend/src/main.tsx` with `tracesSampleRate` and release tagging.
+  - Vite build outputs source maps to `dist/`, which are uploaded to Sentry in CI/CD.
+  - Release version is set from `import.meta.env.VITE_APP_VERSION` (injected by CI).
+- **CI/CD**:  
+  - Both backend and frontend jobs in `.github/workflows/ci.yml` include steps to build with source maps and upload them to Sentry using `@sentry/cli`.
+  - Sentry release version is set to `${{ github.sha }}` for traceability.
+- **Validation**:  
+  - Test errors and transactions are visible in Sentry dashboard.
+  - Source maps resolve stack traces to original TypeScript/React code.
+  - Release tracking is visible in Sentry for both backend and frontend.
+
+### Sentry User Identification & Alerting (Task 4.4)
+- **Backend**:  
+  - Sentry context enrichment now uses real user, session, and tenant data from the request object (see `setSentryContext` in `instrument.ts`).
+  - All Sentry events are tagged with the actual user ID, session ID, and tenant ID when available.
+- **Frontend**:  
+  - Sentry context enrichment is ready to use real user and tenant data from the authentication system (see `setSentryContext` in `utils/sentry.ts` and usage in `App.tsx`).
+  - Update the call to `setSentryContext` to use real user/session/tenant data as soon as available from Memberstack or your auth provider.
+- **Alerting**:  
+  - Both email and Slack alerting are enabled in Sentry for critical errors and performance issues.
+  - Alert rules are configured for high error frequency and performance degradation.
+  - Notifications are routed to project members via email and to the designated Slack channel.

@@ -87,6 +87,19 @@ jobs:
       #       echo "❌ Found 'any' types - violates CanAI TypeScript rules"
       #       exit 1
       #     fi
+      - name: Install Sentry CLI
+        run: npm install -g @sentry/cli
+      - name: Upload backend source maps to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: canai-solutions
+          SENTRY_PROJECT: node
+          SENTRY_URL: https://sentry.io
+          RELEASE_VERSION: ${{ github.sha }}
+        run: |
+          sentry-cli releases new $RELEASE_VERSION
+          sentry-cli releases files $RELEASE_VERSION upload-sourcemaps ./dist --rewrite --url-prefix '~/dist'
+          sentry-cli releases finalize $RELEASE_VERSION
 
   frontend:
     name: Frontend - CanAI TypeScript Rules
@@ -138,6 +151,19 @@ jobs:
       #         echo "⚠️  Bundle size is large: ${BUNDLE_SIZE}KB"
       #       fi
       #     fi
+      - name: Install Sentry CLI
+        run: npm install -g @sentry/cli
+      - name: Upload frontend source maps to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: canai-solutions
+          SENTRY_PROJECT: javascript-react
+          SENTRY_URL: https://sentry.io
+          RELEASE_VERSION: ${{ github.sha }}
+        run: |
+          sentry-cli releases new $RELEASE_VERSION
+          sentry-cli releases files $RELEASE_VERSION upload-sourcemaps ./dist --rewrite --url-prefix '~/'
+          sentry-cli releases finalize $RELEASE_VERSION
 
   # cursor-rules-validation:
   #   name: Cursor Rules Validation

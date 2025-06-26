@@ -121,6 +121,11 @@ const mockPostHog = {
   },
 };
 
+// --- Analytics enrichment constants ---
+const APP_VERSION = import.meta.env['VITE_APP_VERSION'] || '0.0.0';
+const APP_ENV = import.meta.env.MODE || 'development';
+const DEPLOYMENT_ID = import.meta.env['VITE_DEPLOYMENT_ID'] || 'unknown';
+
 // Page view tracking
 export const trackPageView = (
   page: string,
@@ -149,6 +154,10 @@ export const trackEvent = (
       timestamp: new Date().toISOString(),
       correlation_id: generateCorrelationId(),
       ...properties,
+      // --- Analytics enrichment ---
+      appVersion: APP_VERSION,
+      environment: APP_ENV,
+      deploymentId: DEPLOYMENT_ID,
     });
   } catch (error) {
     console.error('[Analytics] Event tracking failed:', error);
@@ -347,6 +356,32 @@ export const trackError = (error: Error, context?: ErrorProperties) => {
   });
 };
 
+// Log interaction to backend /v1/log-interaction endpoint
+export async function logInteraction({ interaction_type, interaction_details }: {
+  interaction_type: string;
+  interaction_details?: Record<string, any>;
+}) {
+  try {
+    const res = await fetch('/v1/log-interaction', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        interaction_type,
+        interaction_details,
+        timestamp: new Date().toISOString(),
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to log interaction: ${res.status}`);
+    }
+    return await res.json();
+  } catch (error) {
+    console.error('[Analytics] logInteraction failed:', error);
+  }
+}
+
 export default {
   trackPageView,
   trackEvent,
@@ -371,4 +406,5 @@ export default {
   trackEmotionalResonance,
   trackPerformance,
   trackError,
+  logInteraction,
 };

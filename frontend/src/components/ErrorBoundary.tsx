@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Sentry from '@sentry/react';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -23,13 +24,19 @@ class ErrorBoundary extends React.Component<
   }
 
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    Sentry.captureException(error, { extra: { ...errorInfo } });
     console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
   override render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A0F1C] to-[#00B2E3] flex items-center justify-center">
+        <div
+          role="alert"
+          tabIndex={-1}
+          ref={node => node && node.focus()}
+          className="min-h-screen bg-gradient-to-br from-[#0A0F1C] to-[#00B2E3] flex items-center justify-center"
+        >
           <div className="text-center text-white p-8">
             <h1 className="text-4xl font-bold mb-4">Something went wrong</h1>
             <p className="text-lg mb-6">
