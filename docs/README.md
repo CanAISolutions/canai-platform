@@ -103,3 +103,20 @@ with no other file types (e.g., code, configs) residing here to maintain clarity
 For questions or clarifications, contact the solo developer (placeholder for contact details, per
 PRD Section 1.4). Issues should be logged in the project's Git repository, with errors tracked via
 Sentry (`backend/services/sentry.js`) and analytics via PostHog (`backend/services/posthog.js`).
+
+## Secret Management
+
+For instructions on securely adding API keys and other secrets to Supabase, see the 'Managing Encrypted Secrets (Supabase Vault)' section in [project-structure-mapping.md](./project-structure-mapping.md).
+
+## [2025-06-19] Task 5.4 Complete: Prompt Template System
+
+- Implemented modular, PRD-aligned prompt templates for business plans, social media/email campaigns, and website audits.
+- Added robust input validation, gold standard schemas, and test harnesses for each template.
+- See `docs/project-structure-mapping.md` for technical details and file locations.
+
+---
+**Update (2025-06-27):**
+- Task 5 (GPT-4o Service Integration) and all subtasks (5.1–5.5) are now complete and tested.
+- The main and only relevant test file for GPT-4o is `backend/tests/gpt4o.test.js` (all others obsolete).
+- Task 6 (Hume AI Emotional Resonance Service) is the next major milestone.
+---

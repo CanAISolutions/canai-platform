@@ -1,5 +1,18 @@
 # CanAI Emotional Sovereignty Platform
 
+## GPT-4o Token Counting & Cost Tracking (PRD Section 1.5, Task 5.5)
+
+- **Token Counting:** Uses tiktoken to count tokens for GPT-4o inputs, supporting up to 128K tokens per request.
+- **Cost Tracking:** Calculates cost at $5 per 1M tokens, logs usage and cost to `prompt_logs` (fields: user_id, token_usage, cost, prompt_version).
+- **Chunking:** Automatically splits inputs >128K tokens using MapReduce, prioritizing `businessDescription`.
+- **High Cost Alerts:** Logs to `support_requests` and PostHog if daily cost exceeds $50.
+- **PostHog Events:** Emits `gpt4o_request` and `cost_threshold_exceeded` for observability.
+- **Unit Tests:** >80% coverage for token counting, cost calculation, and chunking in `backend/tests/gpt4o.test.js`.
+
+**Usage:**
+- See `GPT4Service` in `backend/services/gpt4o.js` for methods: `countTokens`, `calculateCost`, `chunkInput`.
+- Fully aligned with PRD Section 1.5 and TaskMaster Task 5.5. No scope creep or non-PRD features included.
+
 <div align="center">
 
 ![CanAI Logo](https://via.placeholder.com/200x80/1E40AF/FFFFFF?text=CanAI)

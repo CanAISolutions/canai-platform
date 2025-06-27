@@ -33,8 +33,8 @@ CREATE TABLE public.comparisons (
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now(),
   CONSTRAINT comparisons_pkey PRIMARY KEY (id),
-  CONSTRAINT comparisons_prompt_log_id_fkey FOREIGN KEY (prompt_log_id) REFERENCES public.prompt_logs(id),
-  CONSTRAINT comparisons_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+  CONSTRAINT comparisons_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+  CONSTRAINT comparisons_prompt_log_id_fkey FOREIGN KEY (prompt_log_id) REFERENCES public.prompt_logs(id)
 );
 CREATE TABLE public.error_logs (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -56,8 +56,8 @@ CREATE TABLE public.error_logs (
   resolved_at timestamp with time zone,
   CONSTRAINT error_logs_pkey PRIMARY KEY (id),
   CONSTRAINT error_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
-  CONSTRAINT fk_error_logs_session_id FOREIGN KEY (session_id) REFERENCES public.session_logs(id),
-  CONSTRAINT error_logs_feedback_id_fkey FOREIGN KEY (feedback_id) REFERENCES public.feedback_logs(id)
+  CONSTRAINT error_logs_feedback_id_fkey FOREIGN KEY (feedback_id) REFERENCES public.feedback_logs(id),
+  CONSTRAINT fk_error_logs_session_id FOREIGN KEY (session_id) REFERENCES public.session_logs(id)
 );
 CREATE TABLE public.feedback_logs (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -71,8 +71,8 @@ CREATE TABLE public.feedback_logs (
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now(),
   CONSTRAINT feedback_logs_pkey PRIMARY KEY (id),
-  CONSTRAINT feedback_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
-  CONSTRAINT feedback_logs_prompt_id_fkey FOREIGN KEY (prompt_id) REFERENCES public.prompt_logs(id)
+  CONSTRAINT feedback_logs_prompt_id_fkey FOREIGN KEY (prompt_id) REFERENCES public.prompt_logs(id),
+  CONSTRAINT feedback_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
 CREATE TABLE public.payment_logs (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -122,9 +122,18 @@ CREATE TABLE public.prompt_logs (
   context_analysis jsonb DEFAULT '{}'::jsonb,
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now(),
+  template_version text,
   CONSTRAINT prompt_logs_pkey PRIMARY KEY (id),
-  CONSTRAINT prompt_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
-  CONSTRAINT fk_prompt_logs_spark_log_id FOREIGN KEY (spark_log_id) REFERENCES public.spark_logs(id)
+  CONSTRAINT fk_prompt_logs_spark_log_id FOREIGN KEY (spark_log_id) REFERENCES public.spark_logs(id),
+  CONSTRAINT prompt_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
+CREATE TABLE public.prompt_templates (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  template_type text CHECK (template_type = ANY (ARRAY['businessPlan'::text, 'socialMedia'::text, 'websiteAudit'::text])),
+  version text NOT NULL,
+  content text NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT prompt_templates_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.session_logs (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -162,8 +171,8 @@ CREATE TABLE public.share_logs (
   success boolean DEFAULT true,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT share_logs_pkey PRIMARY KEY (id),
-  CONSTRAINT share_logs_prompt_id_fkey FOREIGN KEY (prompt_id) REFERENCES public.prompt_logs(id),
-  CONSTRAINT share_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+  CONSTRAINT share_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+  CONSTRAINT share_logs_prompt_id_fkey FOREIGN KEY (prompt_id) REFERENCES public.prompt_logs(id)
 );
 CREATE TABLE public.spark_logs (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -196,6 +205,6 @@ CREATE TABLE public.support_requests (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   updated_at timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT support_requests_pkey PRIMARY KEY (id),
-  CONSTRAINT support_requests_assigned_to_fkey FOREIGN KEY (assigned_to) REFERENCES auth.users(id),
-  CONSTRAINT support_requests_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+  CONSTRAINT support_requests_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
+  CONSTRAINT support_requests_assigned_to_fkey FOREIGN KEY (assigned_to) REFERENCES auth.users(id)
 );
