@@ -359,7 +359,7 @@ export const trackError = (error: Error, context?: ErrorProperties) => {
 // Log interaction to backend /v1/log-interaction endpoint
 export async function logInteraction({ interaction_type, interaction_details }: {
   interaction_type: string;
-  interaction_details?: Record<string, any>;
+  interaction_details?: Record<string, string | number | boolean | null>;
 }) {
   try {
     const res = await fetch('/v1/log-interaction', {

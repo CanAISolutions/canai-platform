@@ -146,8 +146,10 @@ databases/
 docs/
 ├── api/endpoints.md          # API docs
 ├── deployment/guide.md       # Deployment guide
+├── cost-optimization-blueprint.md # Cost-value optimization strategy ✨ NEW
 ├── crm-export-guide.md       # CRM integration
 ├── glossary.md               # Project terms
+├── PRD.md                    # Production Readiness Document (authoritative)
 ├── supabase-frontend-integration.md # Supabase React/Vite integration guide
 └── project-structure-mapping.md # This document
 ```
@@ -188,6 +190,29 @@ packages/
   - Vitest testing
   - ESLint, Prettier
 
+## Cost Optimization Strategy
+
+The platform implements a **tiered intelligence architecture** for sustainable scaling:
+
+### Pricing Tiers
+- **Basic** ($49/mo): GPT-3.5 + cultural awareness
+- **Growth** ($199/mo): GPT-4o-mini + full emotional intelligence  
+- **Scale** ($499/mo): GPT-4o + premium features
+
+### Technical Implementation
+- **Smart Model Selection**: Automatic tier-based routing
+- **Multi-level Caching**: Cultural context (24hr), templates (1hr), responses (30min)
+- **Progressive Enhancement**: Tier-specific feature scaling
+- **Cost Control**: 60-75% reduction target through optimization
+
+### Expected Outcomes
+- **API Cost Reduction**: $0.30 → $0.05-0.25 per request
+- **Cache Hit Rate**: 40-70% API call reduction
+- **Quality Maintenance**: TrustDelta ≥4.2, emotional resonance ≥0.7
+- **Business Impact**: $124/month blended ARPU, >85% gross margins
+
+*Full details in `docs/cost-optimization-blueprint.md`*
+
 ## Development Status
 
 ### Completed
@@ -198,6 +223,7 @@ packages/
 - ✅ CI/CD: 17 GitHub Actions workflows
 - ✅ Testing: Vitest structure
 - ✅ Documentation: CRM, deployment, glossary
+- ✅ Cost optimization strategy and blueprint
 - ✅ **Backend Infrastructure**: Express server with production middleware
 - ✅ **Deployment**: Render containerized deployment (<https://canai-router.onrender.com>)
 - ✅ **Security**: Helmet, CORS, SSL termination, non-root Docker user
@@ -435,3 +461,51 @@ All work is aligned with PRD.md (see Section 7.2 Security Requirements and relat
   - Both email and Slack alerting are enabled in Sentry for critical errors and performance issues.
   - Alert rules are configured for high error frequency and performance degradation.
   - Notifications are routed to project members via email and to the designated Slack channel.
+
+## Managing Encrypted Secrets (Supabase Vault)
+
+To securely store API keys and other sensitive secrets in Supabase, always use the built-in `vault.create_secret` SQL function. This ensures proper encryption, UUID generation, and avoids permission errors.
+
+**How to add a new secret:**
+
+```sql
+SELECT vault.create_secret('your_secret_value', 'unique_name', 'description');
+```
+
+- `your_secret_value`: The actual secret (e.g., API key)
+- `unique_name`: A unique identifier for the secret (e.g., 'openai_api_key')
+- `description`: A human-readable description for context
+
+**Example:**
+```sql
+SELECT vault.create_secret('sk-XXXXXXXXXXXXXXXXXXXXXXXX', 'openai_api_key', 'OpenAI API key for GPT-4o integration');
+```
+
+**To verify the secret was added:**
+```sql
+SELECT name, description FROM vault.secrets WHERE name = 'openai_api_key';
+```
+
+**Important:**
+- Do NOT use direct `INSERT` statements or the table editor for `vault.secrets`—these will fail due to permissions and UUID requirements.
+- The `secret` value is encrypted and not visible in query results.
+
+**Reference:** See Supabase Vault documentation: https://supabase.com/docs/guides/database/vault
+
+## [2025-06-19] Prompt Template System Overhaul
+
+- Added modular, PRD-aligned prompt templates for:
+  - Business Plans (`backend/prompts/businessPlanTemplate.js`)
+  - Social Media & Email Campaigns (`backend/prompts/socialMediaTemplate.js`)
+  - Website Audit & Feedback (`backend/prompts/websiteAuditTemplate.js`)
+- All templates inherit from `backend/prompts/framework.js` (emotional/cultural context, validation, versioning).
+- Each template has a dedicated test harness (see `backend/prompts/testGoldStandard.js`, `testSocialMediaTemplate.js`, `testWebsiteAuditTemplate.js`).
+- Input validation (Joi), gold standard output schemas, and robust validation functions implemented.
+- Fully extensible for future prompt types and PRD changes.
+- All tests pass with real-world, PRD-aligned data.
+
+## GPT-4o Service Integration (Task 5)
+- Status: Complete and production-ready.
+- All subtasks (5.1–5.5) are done and tested.
+- The only relevant test file for GPT-4o is `backend/tests/gpt4o.test.js`.
+- Next: Task 6 (Hume AI Emotional Resonance Service).
