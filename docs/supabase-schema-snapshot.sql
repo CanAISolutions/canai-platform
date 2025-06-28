@@ -1,5 +1,6 @@
 -- WARNING: This schema is for context only and is not meant to be run.
 -- Table order and constraints may not be valid for execution.
+-- Updated by AI agent (2025-06-27) for Task 6: Added emotional_score and score_source to public.comparisons
 
 CREATE TABLE public.audit_logs (
   id bigint NOT NULL DEFAULT nextval('audit_logs_id_seq'::regclass),
@@ -32,6 +33,8 @@ CREATE TABLE public.comparisons (
   status text DEFAULT 'generated'::text CHECK (status = ANY (ARRAY['generated'::text, 'delivered'::text, 'revised'::text, 'finalized'::text])),
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now(),
+  emotional_score jsonb,
+  score_source text CHECK (score_source = ANY (ARRAY['hume'::text, 'gpt4o'::text])),
   CONSTRAINT comparisons_pkey PRIMARY KEY (id),
   CONSTRAINT comparisons_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
   CONSTRAINT comparisons_prompt_log_id_fkey FOREIGN KEY (prompt_log_id) REFERENCES public.prompt_logs(id)

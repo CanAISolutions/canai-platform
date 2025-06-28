@@ -326,6 +326,11 @@ export function initPosthog() {
   };
 }
 
+const posthogDefault = {
+  capture: (...args) => safeCapture && safeCapture(...args)
+};
+export default posthogDefault;
+
 export {
   posthog,
   trackFunnelStep,

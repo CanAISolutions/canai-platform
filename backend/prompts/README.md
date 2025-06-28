@@ -116,10 +116,11 @@ backend/prompts/
 
 # Prompt Templates (Task 5.4)
 
-Implements prompt templates for CanAI’s three product tracks per PRD Sections 6.2, 6.7, 6.8, 10.2, 10.3:
+Implements prompt templates for CanAI's three product tracks per PRD Sections 6.2, 6.7, 6.8, 10.2, 10.3:
 - **businessPlanTemplate.js**: Generates 700–800-word business plans (PRD Section 10.1, Sprinkle Haven).
 - **socialMediaTemplate.js**: Generates 3–7 social posts, 3–5 emails (PRD Section 10.2, Serenity Yoga).
 - **websiteAuditTemplate.js**: Generates 300–400-word website audits (PRD Section 10.3, TechTrend).
+  - Accessibility validation now checks for color contrast, alt text, heading structure, focus management, and form labels, not just keywords like WCAG/accessibility.
 - **framework.js**: Provides emotional/cultural context, versioning, and regex validation (PRD Section 6.2).
 
 **Usage**:

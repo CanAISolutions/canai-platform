@@ -120,3 +120,6 @@ For instructions on securely adding API keys and other secrets to Supabase, see 
 - The main and only relevant test file for GPT-4o is `backend/tests/gpt4o.test.js` (all others obsolete).
 - Task 6 (Hume AI Emotional Resonance Service) is the next major milestone.
 ---
+
+- GPT-4o service (`backend/services/gpt4o.js`) now uses ES6 export syntax and pino logger for all logging (no console.log in production).
+- Website audit template (`backend/prompts/websiteAuditTemplate.js`) now validates accessibility by checking for color contrast, alt text, heading structure, focus management, and form labels, not just keywords.
