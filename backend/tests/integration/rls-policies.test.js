@@ -1,6 +1,6 @@
+import 'dotenv/config';
 // Integration tests for Supabase RLS policies on core tables
 // Tests: prompt_logs, comparisons, spark_logs for user, admin, anon roles
-// Usage: Set SUPABASE_URL and appropriate keys in env before running
 
 import { createClient } from '@supabase/supabase-js';
 import { describe, it } from 'vitest';
@@ -9,7 +9,7 @@ import assert from 'assert';
 describe('Supabase RLS Policies - Core Tables', () => {
   const url = process.env.SUPABASE_URL;
   const anonKey = process.env.SUPABASE_KEY;
-  const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+  // No serviceKey needed
 
   // Helper to create client with custom JWT or key
   function getClient(key, jwt) {
@@ -38,6 +38,8 @@ describe('Supabase RLS Policies - Core Tables', () => {
   it('Admin can access all prompt_logs', async () => {
     const supabase = getClient(anonKey, adminJwt);
     const { data, error } = await supabase.from('prompt_logs').select('*');
+    console.log('Admin select error:', error);
+    console.log('Admin select data:', data);
     assert(!error, `Admin select error: ${error && error.message}`);
     assert(data.length > 1, "Admin should see multiple users' rows");
   });

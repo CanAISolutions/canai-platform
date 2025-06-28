@@ -4,6 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import supabase from './supabase/client';
+import emotionalAnalysisRouter from './routes/emotionalAnalysis.js';
 
 dotenv.config();
 
@@ -102,6 +103,9 @@ app.get('/health', async (req, res) => {
     });
   }
 });
+
+// Mount emotional analysis API
+app.use('/v1', emotionalAnalysisRouter);
 
 // TODO: Add API routes
 // TODO: Add authentication routes
