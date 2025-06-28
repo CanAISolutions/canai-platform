@@ -100,9 +100,25 @@ class WebsiteAuditTemplate extends EmotionallyIntelligentPromptFramework {
         websiteAuditErrors.push(`Generic_Output: Invalid word count (${genericWordCount}, must be 300–400)`);
       }
 
-      // Validate accessibility (basic check)
-      if (output.Audit.CanAI_Output && !output.Audit.CanAI_Output.includes('WCAG') && !output.Audit.CanAI_Output.includes('accessibility')) {
-        websiteAuditErrors.push('CanAI_Output: Missing accessibility analysis');
+      // Validate accessibility (improved check)
+      if (output.Audit.CanAI_Output) {
+        const hasAccessibilityKeyword = /WCAG|accessibility/i.test(output.Audit.CanAI_Output);
+        if (!hasAccessibilityKeyword) {
+          websiteAuditErrors.push('CanAI_Output: Missing accessibility analysis (no mention of WCAG or accessibility)');
+        }
+        // Check for specific accessibility elements
+        const checks = [
+          { key: 'color contrast', label: 'color contrast' },
+          { key: 'alt text', label: 'alt text for images' },
+          { key: 'heading', label: 'heading structure' },
+          { key: 'focus', label: 'focus management' },
+          { key: 'form label', label: 'form labels' }
+        ];
+        for (const check of checks) {
+          if (!new RegExp(check.key, 'i').test(output.Audit.CanAI_Output)) {
+            websiteAuditErrors.push(`CanAI_Output: Missing accessibility element (${check.label})`);
+          }
+        }
       }
     }
 
