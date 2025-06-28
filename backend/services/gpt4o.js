@@ -7,6 +7,7 @@ import { PostHog } from 'posthog-node';
 import Joi from 'joi';
 import { encoding_for_model } from '@dqbd/tiktoken';
 import { HumeClient } from 'hume';
+import log from '../api/src/Shared/Logger.js';
 
 dotenv.config();
 
@@ -24,9 +25,9 @@ class GPT4Service {
 
   async initialize() {
     try {
-      console.log('Initializing GPT-4o client');
+      log.info('Initializing GPT-4o client');
       const { data, error } = await this.supabase.rpc('get_secret', { secret_name: 'openai_api_key' });
-      console.log('Vault get_secret:', { data, error });
+      log.info('Vault get_secret', { data, error });
       if (error) throw new Error(`Vault error: ${error.message}`);
       let apiKey = '';
       if (typeof data === 'string') {
@@ -40,7 +41,7 @@ class GPT4Service {
       if (!apiKey) throw new Error('No OpenAI API key found.');
       this.client = new OpenAI({ apiKey });
       await this.client.models.list();
-      console.log('GPT-4o client initialized');
+      log.info('GPT-4o client initialized');
     } catch (err) {
       Sentry.captureException(err);
       throw err;
@@ -94,10 +95,10 @@ class GPT4Service {
   }
 
   countTokens(text) {
-    console.log('countTokens input:', text);
+    log.debug('countTokens input', { text });
     const enc = encoding_for_model('gpt-4o');
     const tokens = enc.encode(text);
-    console.log('countTokens tokens:', tokens);
+    log.debug('countTokens tokens', { tokens });
     enc.free();
     return tokens.length;
   }
@@ -105,7 +106,7 @@ class GPT4Service {
   async calculateCost({ user_id, token_usage, prompt_version, prompt_type }) {
     const costPerMillion = 5;
     const cost = (token_usage / 1_000_000) * costPerMillion;
-    console.log('calculateCost cost:', cost);
+    log.info('calculateCost', { cost });
     await this.supabase.from('prompt_logs').insert({
       user_id,
       token_usage,
@@ -124,7 +125,7 @@ class GPT4Service {
   }
 
   chunkInput(input, maxTokens = 128000) {
-    console.log('chunkInput input:', input);
+    log.debug('chunkInput input', { input });
     const enc = encoding_for_model('gpt-4o');
     let text = '';
     if (typeof input === 'object' && input !== null) {
@@ -133,12 +134,12 @@ class GPT4Service {
       text = String(input);
     }
     const tokens = enc.encode(text);
-    console.log('chunkInput tokens:', tokens);
+    log.debug('chunkInput tokens', { tokens });
     const chunks = [];
     for (let i = 0; i < tokens.length; i += maxTokens) {
       const decoded = enc.decode(tokens.slice(i, i + maxTokens));
       const chunk = typeof decoded === 'string' ? decoded : String.fromCharCode(...decoded);
-      console.log('chunkInput chunk:', chunk);
+      log.debug('chunkInput chunk', { chunk });
       chunks.push(chunk);
     }
     enc.free();
@@ -164,7 +165,7 @@ class GPT4Service {
       if (humeReqsToday > 900) throw new Error('Hume circuit breaker');
       const hume = new HumeClient({ apiKey: process.env.HUME_API_KEY });
       const result = await hume.language.analyzeText({ texts: [response] });
-      console.log('Hume analyzeText result:', result);
+      log.debug('Hume analyzeText result', { result });
       const pred = result?.predictions?.[0] || {};
       resonance.arousal = pred.arousal ?? null;
       resonance.valence = pred.valence ?? null;
@@ -175,7 +176,7 @@ class GPT4Service {
       try {
         const fallbackPrompt = `Estimate emotional resonance (arousal 0-1, valence 0-1) as JSON: { "arousal": <float>, "valence": <float> }\nText: ${response}`;
         const fallbackRaw = await this.generate(fallbackPrompt, { max_tokens: 60 });
-        console.log('Fallback resonance result:', fallbackRaw);
+        log.debug('Fallback resonance result', { fallbackRaw });
         const fallbackParsed = JSON.parse(fallbackRaw.match(/\{.*\}/s)?.[0] || '{}');
         resonance.arousal = fallbackParsed.arousal ?? null;
         resonance.valence = fallbackParsed.valence ?? null;
@@ -191,7 +192,7 @@ class GPT4Service {
     try {
       const toxPrompt = `Is this text toxic? Respond "yes" or "no".\nText: ${response}`;
       const toxResult = await this.generate(toxPrompt, { max_tokens: 5 });
-      console.log('Toxicity result:', toxResult);
+      log.debug('Toxicity result', { toxResult });
       if (/yes/i.test(toxResult)) {
         toxicity = true;
         issues.push('Toxic content detected');
@@ -219,7 +220,7 @@ class GPT4Service {
       wcagPassed = false;
       issues.push('Missing semantic HTML structure');
     }
-    console.log('WCAG issues:', issues, 'wcagPassed:', wcagPassed);
+    log.debug('WCAG issues', { issues, wcagPassed });
 
     const resonanceScore = resonance.score || 0;
     const trustDeltaScore = trustDelta ? Math.min(Math.max(trustDelta, 0), 5) : 0;
@@ -232,7 +233,7 @@ class GPT4Service {
         : (resonanceScore * 0.3 + (trustDeltaScore / 5) * 0.2 + completeness * 0.1) * 100
     );
     isValid = resonanceScore > 0.7 && trustDeltaScore >= 4.2 && trustScore >= 50 && !toxicity && wcagPassed && issues.length === 0;
-    console.log('Validation result:', { isValid, trustScore, issues });
+    log.info('Validation result', { isValid, trustScore, issues });
 
     try {
       await this.supabase.from('comparisons').insert({
@@ -253,4 +254,4 @@ class GPT4Service {
   }
 }
 
-module.exports = { GPT4Service };
+export { GPT4Service };
