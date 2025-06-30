@@ -441,15 +441,15 @@
         "dependencies": [
           2
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
             "title": "Initialize Stripe SDK with secret key",
             "description": "Set up Stripe SDK configuration with proper secret key management and environment variable handling",
             "dependencies": [],
-            "details": "Install Stripe SDK, configure environment variables for API keys (test/live), create Stripe client initialization with proper error handling, implement key validation, and set up basic connection testing",
-            "status": "pending"
+            "details": "Install Stripe SDK, configure environment variables for API keys (test/live), create Stripe client initialization with proper error handling, implement key validation, and set up basic connection testing\n<info added on 2025-06-30T21:02:31.717Z>\nDetailed Implementation Steps:\n\n1. Review PRD and stripe-payment-strategy.md for F4 Purchase Flow requirements and compliance needs\n2. Verify/Install Stripe SDK:\n   - Run `npm install stripe --save` or equivalent package manager command\n   - Check compatibility with current backend framework version\n\n3. Environment Configuration:\n   - Add STRIPE_SECRET_KEY_TEST and STRIPE_SECRET_KEY_LIVE to .env template\n   - Update environment loading in backend configuration\n   - Document key management process in team documentation\n   - Implement environment validation checks at startup\n\n4. Create stripe.ts/js service module:\n   - Define TypeScript interfaces for Stripe client configuration\n   - Implement key validation logic with specific error messages\n   - Create singleton pattern for Stripe client instance\n   - Add comprehensive error handling for initialization failures\n   - Include retry logic for temporary connection issues\n\n5. Connection Testing:\n   - Implement health check function using Stripe.balance.retrieve()\n   - Add startup validation sequence\n   - Create connection status monitoring utility\n   - Log connection events appropriately\n\n6. Documentation:\n   - Add JSDoc comments for all public methods\n   - Update project-structure-mapping.md with new service details\n   - Include code examples for common usage patterns\n   - Document error handling approaches and recovery procedures\n\n7. Integration Preparation:\n   - Define service interfaces for upcoming payment processing features\n   - Create stub methods for planned checkout session functionality\n   - Establish logging standards for payment operations\n   - Set up error tracking integration\n\nExpected Deliverables:\n- Functioning Stripe client initialization service\n- Environment configuration template\n- Connection testing utilities\n- Updated documentation\n- TypeScript definitions (if applicable)\n- Integration-ready service structure\n</info added on 2025-06-30T21:02:31.717Z>",
+            "status": "done"
           },
           {
             "id": 2,
@@ -458,8 +458,8 @@
             "dependencies": [
               1
             ],
-            "details": "Create checkout session endpoint, implement product/price mapping, configure success/cancel URLs, add customer data handling, implement session metadata, and add proper error handling for session creation failures",
-            "status": "pending"
+            "details": "Create checkout session endpoint, implement product/price mapping, configure success/cancel URLs, add customer data handling, implement session metadata, and add proper error handling for session creation failures\n<info added on 2025-06-30T21:21:43.411Z>\nDetailed Implementation Plan for Checkout Session Creation:\n\n1. Review F4 Purchase Flow requirements in PRD and stripe-payment-strategy.md\n2. Design backend service (backend/services/stripeCheckout.js):\n   - Session creation logic\n   - Price mapping and validation\n   - Customer data handling\n   - Error management\n\n3. Implement POST /v1/payments/checkout-session endpoint:\n   - Input: product track, user ID, metadata\n   - Schema validation using Joi/Zod\n   - Dynamic pricing validation\n   - Product track configuration\n   - User/plan metadata attachment\n   - Environment-based success/cancel URLs\n   - Idempotency key implementation\n   - Error handling and logging\n\n4. TypeScript Interface Development:\n   - CheckoutSessionInput\n   - ProductTrackConfig\n   - SessionResponse\n   - Error types\n\n5. Testing Requirements:\n   - Unit tests for service logic\n   - Integration tests with mocked Stripe API\n   - Error scenario coverage\n   - Idempotency verification\n\n6. Documentation Tasks:\n   - Code comments\n   - Update project-structure-mapping.md\n   - API endpoint documentation\n   - Error handling guide\n\n7. Webhook/Payment Logging Preparation:\n   - Event type definitions\n   - Logging structure setup\n   - Integration points identification\n\nReference Stripe Checkout documentation for best practices and security requirements.\n</info added on 2025-06-30T21:21:43.411Z>",
+            "status": "in-progress"
           },
           {
             "id": 3,
@@ -5902,7 +5902,7 @@
     ],
     "metadata": {
       "created": "2025-06-20T11:49:39.574Z",
-      "updated": "2025-06-30T18:04:59.354Z",
+      "updated": "2025-06-30T21:20:47.678Z",
       "description": "Tasks for master context"
     }
   }
