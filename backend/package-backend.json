@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "CanAI Platform Backend Server",
   "main": "server.js",
+  "type": "module",
   "author": "CanAI Solutions",
   "license": "MIT",
   "private": true,
