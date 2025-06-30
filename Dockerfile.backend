@@ -1,5 +1,5 @@
 # Backend Dockerfile for CanAI Platform
-# Simplified version that matches current backend/server.js setup
+# Updated for full ESM and Render compatibility
 
 FROM node:18-alpine
 
@@ -16,9 +16,8 @@ COPY backend/package-backend.json ./package.json
 # Install dependencies
 RUN npm ci --only=production && npm cache clean --force
 
-# Copy backend source code
-COPY backend/server.js ./server.js
-COPY backend/health.js ./health.js
+# Copy full backend source code
+COPY backend/. ./
 
 # Set correct permissions
 RUN chown -R nodejs:nodejs /app
@@ -35,5 +34,5 @@ ENV PORT=10000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD node -e "const http = require('http'); http.get('http://localhost:10000/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => { process.exit(1); });"
 
-# Start the application
-CMD ["npm", "start"] 
+# Start the application directly with node for ESM support
+CMD ["node", "server.js"]
