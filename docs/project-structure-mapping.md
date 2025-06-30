@@ -567,3 +567,14 @@ SELECT name, description FROM vault.secrets WHERE name = 'openai_api_key';
   keys.
 - **CI secret scan**: `.github/workflows/secret-scan.yml` blocks pushes/PRs with likely secrets.
 - **Contributor documentation**: See `docs/CONTRIBUTING.md` for secret/API key hygiene rules.
+
+## backend/services/
+
+### stripe.js
+- Stripe payment integration service
+- Supports STRIPE_SECRET_KEY_TEST and STRIPE_SECRET_KEY_LIVE (with STRIPE_SECRET_KEY fallback)
+- Validates key presence and environment
+- Exports a singleton Stripe client instance
+- Provides testStripeConnection() for health checks
+- Fully PRD-aligned (see docs/PRD.md and docs/stripe-payment-strategy.md)
+- Ready for integration with payment, refund, and subscription flows
