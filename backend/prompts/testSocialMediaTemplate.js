@@ -11,7 +11,10 @@ async function testSocialMedia() {
     // Print prompts and schema
     console.log('System Prompt:', result.systemPrompt);
     console.log('User Prompt:', result.userPrompt);
-    console.log('Expected Schema:', JSON.stringify(result.expectedSchema, null, 2));
+    console.log(
+      'Expected Schema:',
+      JSON.stringify(result.expectedSchema, null, 2)
+    );
 
     // Validate a mock output (or real model output)
     const validation = result.validation(expectedOutput);
@@ -29,4 +32,4 @@ async function testSocialMedia() {
 
 export { testSocialMedia };
 
-testSocialMedia(); 
+testSocialMedia();

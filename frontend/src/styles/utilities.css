@@ -22,11 +22,15 @@
 
 /* Text Effects */
 .enhanced-text-shadow {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(54, 209, 254, 0.2);
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(54, 209, 254, 0.2);
 }
 
 .enhanced-text-shadow-subtle {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 15px rgba(54, 209, 254, 0.1);
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 15px rgba(54, 209, 254, 0.1);
 }
 
 .enhanced-caption-glow {
@@ -34,40 +38,58 @@
 }
 
 .text-glow-hero {
-  text-shadow: 0 0 22px #36d1fecc, 0 0 8px #00cfff99, 0 1px 2px #fff;
+  text-shadow:
+    0 0 22px #36d1fecc,
+    0 0 8px #00cfff99,
+    0 1px 2px #fff;
 }
 
 /* Button Effects */
 .enhanced-cta-glow {
-  box-shadow: 0 0 20px rgba(54, 209, 254, 0.4), 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 0 20px rgba(54, 209, 254, 0.4),
+    0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .enhanced-cta-glow:hover {
-  box-shadow: 0 0 30px rgba(54, 209, 254, 0.6), 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 0 30px rgba(54, 209, 254, 0.6),
+    0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .canai-btn-glow {
-  box-shadow: 0 0 0 0 #00cfff, 0 0 20px #00f0ffcc, 0 0 30px #00cfff80;
+  box-shadow:
+    0 0 0 0 #00cfff,
+    0 0 20px #00f0ffcc,
+    0 0 30px #00cfff80;
   transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .canai-btn-glow:hover,
 .canai-btn-glow:focus-visible {
-  box-shadow: 0 0 0 4px #00f0ff55, 0 0 38px #00f0ffee, 0 0 65px #00cfff99;
+  box-shadow:
+    0 0 0 4px #00f0ff55,
+    0 0 38px #00f0ffee,
+    0 0 65px #00cfff99;
   filter: brightness(1.08) drop-shadow(0 0 32px #00cfffcc);
 }
 
 /* Focus Effects */
 .canai-focus-glow:focus-visible {
   outline: 0 !important;
-  box-shadow: 0 0 0 4px #00f0ffcc, 0 0 18px #00cfffcc, 0 0 32px #00cfffaa,
+  box-shadow:
+    0 0 0 4px #00f0ffcc,
+    0 0 18px #00cfffcc,
+    0 0 32px #00cfffaa,
     0 0 52px #00f0ff88;
   border-color: #00cfff;
 }
 
 /* Shadow Utilities */
 .shadow-strong {
-  box-shadow: 0 2px 32px 6px #36d1fe44, 0 0 18px #00f0ff44;
+  box-shadow:
+    0 2px 32px 6px #36d1fe44,
+    0 0 18px #00f0ff44;
 }
 
 .drop-shadow-xl {
@@ -77,7 +99,9 @@
 /* Ring Utilities */
 .ring-canai-primary {
   --tw-ring-color: #00cfff;
-  box-shadow: 0 0 0 4px rgba(0, 207, 255, 0.4), 0 0 20px rgba(0, 207, 255, 0.3);
+  box-shadow:
+    0 0 0 4px rgba(0, 207, 255, 0.4),
+    0 0 20px rgba(0, 207, 255, 0.3);
 }
 
 /* Backdrop Utilities */
@@ -148,7 +172,10 @@
   );
   transform: translate(-50%, -50%);
   opacity: 0;
-  transition: width 0.4s, height 0.4s, opacity 0.5s;
+  transition:
+    width 0.4s,
+    height 0.4s,
+    opacity 0.5s;
   z-index: 1;
 }
 

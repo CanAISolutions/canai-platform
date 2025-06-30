@@ -4,11 +4,18 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import supabase from './supabase/client';
+import Sentry from './services/instrument.js';
 import emotionalAnalysisRouter from './routes/emotionalAnalysis.js';
 
 dotenv.config();
 
 const app = express();
+
+// ==============================================
+// Sentry Middleware (must be first)
+// ==============================================
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 
 // ==============================================
 // App Settings & Configuration
@@ -93,6 +100,7 @@ app.get('/health', async (req, res) => {
       memory: process.memoryUsage(),
     });
   } catch (err) {
+    Sentry.captureException(err); // Manually capture async errors
     res.status(500).json({
       status: 'unhealthy',
       supabase: 'unhealthy',
@@ -112,8 +120,11 @@ app.use('/v1', emotionalAnalysisRouter);
 // TODO: Add webhook routes
 
 // ==============================================
-// Error Handling
+// Error Handling (Sentry must be before other error handlers)
 // ==============================================
+
+// The Sentry error handler must be before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -124,16 +135,12 @@ app.use('*', (req, res) => {
   });
 });
 
-// Global error handler
+// Optional fallthrough error handler
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(err.status || 500).json({
-    error:
-      process.env.NODE_ENV === 'production'
-        ? 'Internal Server Error'
-        : err.message,
-    timestamp: new Date().toISOString(),
-  });
+  // The error id is attached to `res.sentry` to be returned
+  // and optionally displayed to the user for support.
+  res.statusCode = 500;
+  res.end(res.sentry + '\n');
 });
 
 // ==============================================
@@ -161,4 +168,4 @@ process.on('SIGTERM', () => {
   });
 });
 
-module.exports = app;
+export default app;

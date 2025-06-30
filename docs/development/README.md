@@ -60,14 +60,12 @@ The CanAI platform follows a modern monorepo architecture:
 ## Development Workflow
 
 1. **Feature Development**
-
    - Create feature branch from `main`
    - Follow TaskMaster task specifications
    - Implement with comprehensive tests
    - Ensure accessibility compliance
 
 2. **Code Quality**
-
    - ESLint and Prettier for code formatting
    - TypeScript strict mode for type safety
    - Comprehensive test coverage (>80%)
@@ -91,13 +89,11 @@ The CanAI platform follows a modern monorepo architecture:
 ### Common Issues
 
 1. **Environment Variables**
-
    - Verify all required variables are set
    - Check API key formats and permissions
    - Validate database connection strings
 
 2. **Development Server Issues**
-
    - Clear node_modules and reinstall
    - Check port availability
    - Verify service dependencies
@@ -172,7 +168,6 @@ npm run test:accessibility
 ## Deployment Process
 
 1. **Staging Deployment**
-
    - Automated on `develop` branch pushes
    - Comprehensive testing and validation
    - Performance and security checks

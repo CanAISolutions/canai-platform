@@ -22,7 +22,8 @@ This folder houses the following documents to support Cursor AI in executing the
   integration flows.
 - **API Contract Specification**: Documents all API endpoints, schemas, and integration details.
 - **Data Model and Schema Definition**: Specifies Supabase schemas, relationships, and RLS policies.
-- **Supabase Frontend Integration Guide**: Step-by-step instructions for integrating Supabase with the React/Vite frontend.
+- **Supabase Frontend Integration Guide**: Step-by-step instructions for integrating Supabase with
+  the React/Vite frontend.
 - **Prompt Engineering Templates**: Standardizes GPT-4o prompts for emotionally resonant outputs.
 - **Test Case Specification**: Outlines tests for functionality, performance, and quality assurance.
 - **Coding Standards and Style Guide**: Enforces consistent code conventions for maintainability.
@@ -94,7 +95,7 @@ with no other file types (e.g., code, configs) residing here to maintain clarity
   `deployment-operations-playbook.md`).
 - **TaskMaster Tasks**: Embedded in documents and validated in `.github/workflows/taskmaster.yml`
   (per `change-management-versioning-matrix.md`).
-- **Backend Database Utilities**: 
+- **Backend Database Utilities**:
   - `backend/db.js` — Direct Postgres client for admin/migration scripts (Node.js only).
   - `backend/supabase/client.js` — Supabase client for RLS-safe CRUD (preferred for app/API logic).
 
@@ -106,20 +107,30 @@ Sentry (`backend/services/sentry.js`) and analytics via PostHog (`backend/servic
 
 ## Secret Management
 
-For instructions on securely adding API keys and other secrets to Supabase, see the 'Managing Encrypted Secrets (Supabase Vault)' section in [project-structure-mapping.md](./project-structure-mapping.md).
+For instructions on securely adding API keys and other secrets to Supabase, see the 'Managing
+Encrypted Secrets (Supabase Vault)' section in
+[project-structure-mapping.md](./project-structure-mapping.md).
 
 ## [2025-06-19] Task 5.4 Complete: Prompt Template System
 
-- Implemented modular, PRD-aligned prompt templates for business plans, social media/email campaigns, and website audits.
+- Implemented modular, PRD-aligned prompt templates for business plans, social media/email
+  campaigns, and website audits.
 - Added robust input validation, gold standard schemas, and test harnesses for each template.
 - See `docs/project-structure-mapping.md` for technical details and file locations.
 
 ---
+
 **Update (2025-06-27):**
+
 - Task 5 (GPT-4o Service Integration) and all subtasks (5.1–5.5) are now complete and tested.
-- The main and only relevant test file for GPT-4o is `backend/tests/gpt4o.test.js` (all others obsolete).
+- The main and only relevant test file for GPT-4o is `backend/tests/gpt4o.test.js` (all others
+  obsolete).
 - Task 6 (Hume AI Emotional Resonance Service) is the next major milestone.
+
 ---
 
-- GPT-4o service (`backend/services/gpt4o.js`) now uses ES6 export syntax and pino logger for all logging (no console.log in production).
-- Website audit template (`backend/prompts/websiteAuditTemplate.js`) now validates accessibility by checking for color contrast, alt text, heading structure, focus management, and form labels, not just keywords.
+- GPT-4o service (`backend/services/gpt4o.js`) now uses ES6 export syntax and pino logger for all
+  logging (no console.log in production).
+- Website audit template (`backend/prompts/websiteAuditTemplate.js`) now validates accessibility by
+  checking for color contrast, alt text, heading structure, focus management, and form labels, not
+  just keywords.

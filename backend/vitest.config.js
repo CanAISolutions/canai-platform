@@ -7,4 +7,4 @@ export default defineConfig({
     globals: true,
     setupFiles: ['tests/vitest.setup.js'],
   },
-}); 
+});

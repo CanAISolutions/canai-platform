@@ -1,5 +1,13 @@
+require('../../../testEnvSetup');
+require('dotenv').config();
+console.debug('POSTHOG_API_KEY:', process.env.POSTHOG_API_KEY);
+
 import { describe, it, beforeAll } from 'vitest';
-import { initPosthog, trackFunnelStep, startSession } from '../../services/posthog.js';
+import {
+  initPosthog,
+  trackFunnelStep,
+  startSession,
+} from '../../services/posthog.js';
 
 describe('PostHog Integration', () => {
   beforeAll(() => {
@@ -12,4 +20,4 @@ describe('PostHog Integration', () => {
     // TODO: Add logic to verify event in dashboard (e.g., API query or mock)
     // Example: expect(dashboardApi.getEvents()).toContain({ event: 'funnel_step', ... });
   });
-}); 
+});

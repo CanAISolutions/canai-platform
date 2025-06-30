@@ -12,6 +12,6 @@
       "@backend/*": ["./*"]
     }
   },
-  "include": ["**/*.ts"],
+  "include": ["src/**/*", "tests/**/*", "testEnvSetup.js"],
   "exclude": ["node_modules", "dist", "coverage"]
 }

@@ -15,17 +15,14 @@ The **Intent Mirror** is a conceptual AI-powered **intent validation layer** wit
 ## How It Works (Conceptual 5-Step Process)
 
 1. **Intent Inference**
-
    - Analyzes raw user input (e.g., text, form responses) to identify key elements: business type, primary goal, desired tone, and motivations.
    - Uses AI to assign confidence scores to each interpretation (e.g., 90% sure the tone is “supportive”).
 
 2. **Emotional Clarification**
-
    - If confidence is low (<80%) or emotional context is unclear, prompts the user with a question like, “What would success feel like for this goal?”
    - Captures deeper emotional drivers (e.g., “build confidence” vs. “drive sales”) to enrich intent understanding.
 
 3. **User Confirmation**
-
    - Presents a concise summary: _“You’re a consultant launching an email campaign with a supportive tone. Is this correct?”_
    - Uses confidence-based language to guide the user:
      - ≥90%: “Looks great!”
@@ -33,7 +30,6 @@ The **Intent Mirror** is a conceptual AI-powered **intent validation layer** wit
      - <80%: “Let’s fine-tune this.”
 
 4. **User Feedback**
-
    - Allows one-click confirmation or simple edits (e.g., change tone to “bold”).
    - Collects feedback on user changes to improve future predictions.
 
@@ -70,38 +66,32 @@ When implemented, Intent Mirror should achieve:
 To build Intent Mirror from scratch, the following components are needed:
 
 1. **AI Inference Engine**
-
    - A lightweight AI model to analyze user input and extract structured data (e.g., business type, tone).
    - Must support confidence scoring and emotional driver detection.
    - Priority: High (core to step 1).
 
 2. **Emotional Clarification Module**
-
    - Logic to trigger clarifying questions when confidence is low or emotional context is missing.
    - Predefined question templates (e.g., “What would success feel like?”).
    - Priority: High (core to step 2).
 
 3. **Confirmation Interface**
-
    - A user-friendly UI to display intent summaries and collect feedback (e.g., confirm, edit).
    - Responsive design for web and mobile.
    - Confidence-based microcopy (e.g., “Looks great!” vs. “Let’s fine-tune”).
    - Priority: High (core to steps 3–4).
 
 4. **Feedback Learning System**
-
    - A database to store user edits and feedback.
    - Algorithms to analyze edits and improve default predictions over time.
    - Priority: Medium (enhances step 4, critical for long-term accuracy).
 
 5. **Output Formatter**
-
    - A system to generate structured intent profiles (e.g., JSON with goal, tone, confidence).
    - Integration with downstream AI systems for content generation.
    - Priority: High (core to step 5).
 
 6. **Privacy Protections**
-
    - Data anonymization to comply with regulations (e.g., GDPR, CCPA).
    - Secure storage of user inputs and feedback.
    - Priority: High (non-negotiable for launch).
@@ -116,25 +106,21 @@ To build Intent Mirror from scratch, the following components are needed:
 To ensure proper implementation, follow this phased approach:
 
 1. **Phase 1: Core Inference & Output (3–4 months)**
-
    - Build AI inference engine and output formatter.
    - Develop basic emotional clarification logic (e.g., question triggers).
    - Outcome: System can interpret input and produce structured intent.
 
 2. **Phase 2: User Interface & Feedback (2–3 months)**
-
    - Design and implement confirmation interface.
    - Add feedback collection and basic storage.
    - Outcome: Users can validate intent via UI.
 
 3. **Phase 3: Emotional Intelligence & Learning (2–3 months)**
-
    - Enhance emotional clarification with advanced question templates.
    - Build feedback learning system to improve predictions.
    - Outcome: System adapts to user behavior and prioritizes emotional sovereignty.
 
 4. **Phase 4: Privacy & Metrics (1–2 months)**
-
    - Implement privacy protections and compliance checks.
    - Add metrics tracking and dashboards.
    - Outcome: System is production-ready with monitoring capabilities.
