@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/react';
-import { useLocation } from 'react-router-dom';
 
 export function setSentryContext(user: { id?: string }, tenantId?: string) {
   const location = window.location?.pathname || '';
@@ -9,4 +8,4 @@ export function setSentryContext(user: { id?: string }, tenantId?: string) {
     scope.setTag('route.path', location);
     scope.setTag('tenant.id', tenantId || 'none');
   });
-} 
+}

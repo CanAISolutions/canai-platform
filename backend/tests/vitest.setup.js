@@ -8,4 +8,4 @@ vi.stubEnv('NODE_ENV', 'test');
 vi.stubEnv('DEPLOYMENT_ID', 'test-deploy');
 vi.stubEnv('POSTHOG_FLUSH_AT', '20');
 vi.stubEnv('POSTHOG_FLUSH_INTERVAL', '10000');
-vi.stubEnv('SESSION_TIMEOUT_MINUTES', '30'); 
+vi.stubEnv('SESSION_TIMEOUT_MINUTES', '30');

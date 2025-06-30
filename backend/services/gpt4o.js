@@ -6,8 +6,8 @@ import * as Sentry from '@sentry/node';
 import { PostHog } from 'posthog-node';
 import Joi from 'joi';
 import { encoding_for_model } from '@dqbd/tiktoken';
-import { HumeClient } from 'hume';
-import log from '../api/src/Shared/Logger.js';
+import hume from './hume.js';
+import log from '../api/src/Shared/Logger';
 
 dotenv.config();
 
@@ -17,7 +17,10 @@ const paramSchema = Joi.object({
 });
 
 class GPT4Service {
-  constructor(supabase, posthogInstance = new PostHog(process.env.POSTHOG_API_KEY)) {
+  constructor(
+    supabase,
+    posthogInstance = new PostHog(process.env.POSTHOG_API_KEY)
+  ) {
     this.supabase = supabase;
     this.posthog = posthogInstance;
     this.client = null;
@@ -26,7 +29,9 @@ class GPT4Service {
   async initialize() {
     try {
       log.info('Initializing GPT-4o client');
-      const { data, error } = await this.supabase.rpc('get_secret', { secret_name: 'openai_api_key' });
+      const { data, error } = await this.supabase.rpc('get_secret', {
+        secret_name: 'openai_api_key',
+      });
       log.info('Vault get_secret', { data, error });
       if (error) throw new Error(`Vault error: ${error.message}`);
       let apiKey = '';
@@ -36,9 +41,11 @@ class GPT4Service {
         apiKey = data.openai_api_key.replace(/\s+/g, '');
       }
       if (!apiKey) {
-        apiKey = process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.replace(/\s+/g, '') : '';
+        apiKey = process.env.OPENAI_API_KEY
+          ? process.env.OPENAI_API_KEY.replace(/\s+/g, '')
+          : '';
       }
-      if (!apiKey) throw new Error('No OpenAI API key found.');
+      if (!apiKey) throw new Error('OPENAI_API_KEY is required');
       this.client = new OpenAI({ apiKey });
       await this.client.models.list();
       log.info('GPT-4o client initialized');
@@ -66,7 +73,10 @@ class GPT4Service {
         return response.choices[0].message.content;
       } catch (err) {
         retries++;
-        this.posthog.capture('gpt4o_retry', { retry_count: retries, error: err.message });
+        this.posthog.capture('gpt4o_retry', {
+          retry_count: retries,
+          error: err.message,
+        });
         if (retries > maxRetries) {
           Sentry.captureException(err);
           await this.supabase.from('error_logs').insert({
@@ -76,7 +86,8 @@ class GPT4Service {
           });
           throw new Error(`Max retries exceeded: ${err.message}`);
         }
-        const delay = Math.pow(2, retries) * baseDelay + Math.floor(Math.random() * 100);
+        const delay =
+          Math.pow(2, retries) * baseDelay + Math.floor(Math.random() * 100);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
@@ -129,7 +140,15 @@ class GPT4Service {
     const enc = encoding_for_model('gpt-4o');
     let text = '';
     if (typeof input === 'object' && input !== null) {
-      text = [input.businessDescription, input.revenueModel, ...Object.values(input).filter(v => v !== input.businessDescription && v !== input.revenueModel)].filter(Boolean).join('\n');
+      text = [
+        input.businessDescription,
+        input.revenueModel,
+        ...Object.values(input).filter(
+          v => v !== input.businessDescription && v !== input.revenueModel
+        ),
+      ]
+        .filter(Boolean)
+        .join('\n');
     } else {
       text = String(input);
     }
@@ -138,7 +157,8 @@ class GPT4Service {
     const chunks = [];
     for (let i = 0; i < tokens.length; i += maxTokens) {
       const decoded = enc.decode(tokens.slice(i, i + maxTokens));
-      const chunk = typeof decoded === 'string' ? decoded : String.fromCharCode(...decoded);
+      const chunk =
+        typeof decoded === 'string' ? decoded : String.fromCharCode(...decoded);
       log.debug('chunkInput chunk', { chunk });
       chunks.push(chunk);
     }
@@ -147,7 +167,11 @@ class GPT4Service {
   }
 
   async validateResponse(response, options = {}) {
-    const { promptType = 'business_plan', userId = null, trustDelta = null } = options;
+    const {
+      promptType = 'business_plan',
+      userId = null,
+      trustDelta = null,
+    } = options;
     const issues = [];
     const resonance = { arousal: null, valence: null, score: null };
     let trustScore = 0;
@@ -160,29 +184,37 @@ class GPT4Service {
         .from('error_logs')
         .select('id')
         .eq('error_type', 'hume_circuit')
-        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+        .gte(
+          'created_at',
+          new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        );
       const humeReqsToday = humeLogs ? humeLogs.length : 0;
       if (humeReqsToday > 900) throw new Error('Hume circuit breaker');
-      const hume = new HumeClient({ apiKey: process.env.HUME_API_KEY });
       const result = await hume.language.analyzeText({ texts: [response] });
       log.debug('Hume analyzeText result', { result });
       const pred = result?.predictions?.[0] || {};
       resonance.arousal = pred.arousal ?? null;
       resonance.valence = pred.valence ?? null;
-      resonance.score = (resonance.arousal !== null && resonance.valence !== null)
-        ? ((Number(resonance.arousal) + Number(resonance.valence)) / 2)
-        : null;
+      resonance.score =
+        resonance.arousal !== null && resonance.valence !== null
+          ? (Number(resonance.arousal) + Number(resonance.valence)) / 2
+          : null;
     } catch (err) {
       try {
         const fallbackPrompt = `Estimate emotional resonance (arousal 0-1, valence 0-1) as JSON: { "arousal": <float>, "valence": <float> }\nText: ${response}`;
-        const fallbackRaw = await this.generate(fallbackPrompt, { max_tokens: 60 });
+        const fallbackRaw = await this.generate(fallbackPrompt, {
+          max_tokens: 60,
+        });
         log.debug('Fallback resonance result', { fallbackRaw });
-        const fallbackParsed = JSON.parse(fallbackRaw.match(/\{.*\}/s)?.[0] || '{}');
+        const fallbackParsed = JSON.parse(
+          fallbackRaw.match(/\{.*\}/s)?.[0] || '{}'
+        );
         resonance.arousal = fallbackParsed.arousal ?? null;
         resonance.valence = fallbackParsed.valence ?? null;
-        resonance.score = (resonance.arousal !== null && resonance.valence !== null)
-          ? ((Number(resonance.arousal) + Number(resonance.valence)) / 2)
-          : null;
+        resonance.score =
+          resonance.arousal !== null && resonance.valence !== null
+            ? (Number(resonance.arousal) + Number(resonance.valence)) / 2
+            : null;
       } catch (fallbackErr) {
         issues.push('Hume AI and fallback failed');
         Sentry.captureException(fallbackErr);
@@ -216,23 +248,43 @@ class GPT4Service {
       wcagPassed = false;
       issues.push('Non-descriptive link text ("click here")');
     }
-    if (/<[a-z][\s\S]*>/i.test(response) && !/<(main|nav|header|footer|section|article|aside|h[1-6]|p|ul|ol|li|button|label|form)/i.test(response)) {
+    if (
+      /<[a-z][\s\S]*>/i.test(response) &&
+      !/<(main|nav|header|footer|section|article|aside|h[1-6]|p|ul|ol|li|button|label|form)/i.test(
+        response
+      )
+    ) {
       wcagPassed = false;
       issues.push('Missing semantic HTML structure');
     }
     log.debug('WCAG issues', { issues, wcagPassed });
 
     const resonanceScore = resonance.score || 0;
-    const trustDeltaScore = trustDelta ? Math.min(Math.max(trustDelta, 0), 5) : 0;
+    const trustDeltaScore = trustDelta
+      ? Math.min(Math.max(trustDelta, 0), 5)
+      : 0;
     const completeness = response.length > 100 ? 1 : 0;
-    if (resonanceScore < 0.7) issues.push('Emotional resonance below threshold');
+    if (resonanceScore < 0.7)
+      issues.push('Emotional resonance below threshold');
     if (trustDeltaScore < 4.2) issues.push('TrustDelta below threshold');
     trustScore = Math.round(
-      (resonanceScore >= 0.7 && trustDeltaScore >= 4.2)
-        ? (resonanceScore * 0.5 + (trustDeltaScore / 5) * 0.3 + completeness * 0.2) * 100
-        : (resonanceScore * 0.3 + (trustDeltaScore / 5) * 0.2 + completeness * 0.1) * 100
+      resonanceScore >= 0.7 && trustDeltaScore >= 4.2
+        ? (resonanceScore * 0.5 +
+            (trustDeltaScore / 5) * 0.3 +
+            completeness * 0.2) *
+            100
+        : (resonanceScore * 0.3 +
+            (trustDeltaScore / 5) * 0.2 +
+            completeness * 0.1) *
+            100
     );
-    isValid = resonanceScore > 0.7 && trustDeltaScore >= 4.2 && trustScore >= 50 && !toxicity && wcagPassed && issues.length === 0;
+    isValid =
+      resonanceScore > 0.7 &&
+      trustDeltaScore >= 4.2 &&
+      trustScore >= 50 &&
+      !toxicity &&
+      wcagPassed &&
+      issues.length === 0;
     log.info('Validation result', { isValid, trustScore, issues });
 
     try {
@@ -245,7 +297,12 @@ class GPT4Service {
         issues,
         prompt_type: promptType,
       });
-      this.posthog.capture('gpt4o_quality', { trust_score: trustScore, resonance, isValid, issues });
+      this.posthog.capture('gpt4o_quality', {
+        trust_score: trustScore,
+        resonance,
+        isValid,
+        issues,
+      });
     } catch (logErr) {
       Sentry.captureException(logErr);
     }

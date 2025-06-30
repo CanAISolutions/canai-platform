@@ -26,7 +26,10 @@ const spinnerVariants = cva('absolute rounded-full border-blue-100', {
   },
 });
 
-const spinSVGProps: Record<NonNullable<SpinnerVariants['size']>, SVGProps<never>> = {
+const spinSVGProps: Record<
+  NonNullable<SpinnerVariants['size']>,
+  SVGProps<never>
+> = {
   xsmall: {
     strokeWidth: 2,
     viewBox: '0.5 0 24 24',
@@ -54,37 +57,54 @@ export interface SpinnerVariants {
   size?: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
 }
 
-export interface SpinnerProps extends HTMLAttributes<HTMLDivElement>, SpinnerVariants {
+export interface SpinnerProps
+  extends HTMLAttributes<HTMLDivElement>,
+    SpinnerVariants {
   /** The label of the spinner, displayed on the bottom. */
   label?: string;
   /** Custom label props. */
   labelProps?: HTMLAttributes<HTMLSpanElement>;
 }
 
-export function Spinner({ size = 'medium', className, label, labelProps = {}, ...rest }: SpinnerProps) {
+export function Spinner({
+  size = 'medium',
+  className,
+  label,
+  labelProps = {},
+  ...rest
+}: SpinnerProps) {
   const { className: labelClassName, ...labelRest } = labelProps;
 
   return (
-    <div className='inline-flex flex-col items-center justify-center gap-3'>
+    <div className="inline-flex flex-col items-center justify-center gap-3">
       <div className={clsx(spinnerContainerVariants({ size }))} {...rest}>
         <div className={clsx(spinnerVariants({ size }), className)}></div>
         <svg
-          width='100%'
-          height='100%'
-          fill='none'
-          className='absolute animate-spin stroke-blue-700'
-          xmlns='http://www.w3.org/2000/svg'
+          width="100%"
+          height="100%"
+          fill="none"
+          className="absolute animate-spin stroke-blue-700"
+          xmlns="http://www.w3.org/2000/svg"
           {...spinSVGProps[size]}
         >
-          <path d='M12.5 23c6.075 0 11-4.925 11-11s-4.925-11-11-11-11 4.925-11 11' strokeLinecap='round' />
+          <path
+            d="M12.5 23c6.075 0 11-4.925 11-11s-4.925-11-11-11-11 4.925-11 11"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
       {label && (
-        <span className={clsx('text-xs font-semibold text-blue-700', labelClassName)} {...labelRest}>
+        <span
+          className={clsx(
+            'text-xs font-semibold text-blue-700',
+            labelClassName
+          )}
+          {...labelRest}
+        >
           {label}
         </span>
       )}
-      {!label && <span className='sr-only'>Loading...</span>}
+      {!label && <span className="sr-only">Loading...</span>}
     </div>
   );
 }

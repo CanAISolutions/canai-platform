@@ -1,7 +1,7 @@
 // backend/tests/unit/posthog.test.js
+require('../../../testEnvSetup');
 import * as posthogNode from 'posthog-node';
 
-process.env.POSTHOG_API_KEY = 'test-key';
 process.env.POSTHOG_HOST = 'http://localhost';
 process.env.npm_package_version = '1.2.3';
 process.env.NODE_ENV = 'test';
@@ -24,7 +24,7 @@ import {
   trackApiLatency,
   trackErrorOccurred,
   trackUserAction,
-  posthog
+  posthog,
 } from '../../services/posthog.js';
 
 // Mock posthog-node to prevent real API calls
@@ -71,7 +71,13 @@ describe('posthog.js analytics logic', () => {
 
   describe('PII scrubbing', () => {
     it('removes email, name, phone, userId', () => {
-      const obj = { email: 'a@b.com', name: 'Test', phone: '123', userId: 'u1', keep: 'ok' };
+      const obj = {
+        email: 'a@b.com',
+        name: 'Test',
+        phone: '123',
+        userId: 'u1',
+        keep: 'ok',
+      };
       const scrubbed = scrubPII(obj);
       expect(scrubbed).not.toHaveProperty('email');
       expect(scrubbed).not.toHaveProperty('name');
@@ -120,53 +126,66 @@ describe('posthog.js analytics logic', () => {
     it('tracks funnel_step event correctly', () => {
       const spy = vi.spyOn(posthog, 'capture');
       trackFunnelStep('F1', session, { prop: 'value' });
-      expect(spy).toHaveBeenCalledWith(expect.objectContaining({
-        event: 'funnel_step',
-        properties: expect.objectContaining({
-          stepName: 'F1',
-          sessionId: session.sessionId,
-          properties: { prop: 'value' },
-        }),
-      }));
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'funnel_step',
+          properties: expect.objectContaining({
+            stepName: 'F1',
+            sessionId: session.sessionId,
+            properties: { prop: 'value' },
+          }),
+        })
+      );
     });
 
     it('tracks api_latency event correctly', () => {
       const spy = vi.spyOn(posthog, 'capture');
       trackApiLatency('/api/test', 100, 200, session);
-      expect(spy).toHaveBeenCalledWith(expect.objectContaining({
-        event: 'api_latency',
-        properties: expect.objectContaining({
-          endpoint: '/api/test',
-          duration: 100,
-          status: 200,
-        }),
-      }));
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'api_latency',
+          properties: expect.objectContaining({
+            endpoint: '/api/test',
+            duration: 100,
+            status: 200,
+          }),
+        })
+      );
     });
 
     it('tracks error_occurred event correctly', () => {
       const spy = vi.spyOn(posthog, 'capture');
-      trackErrorOccurred('TypeError', 'stack trace', { context: 'test' }, session);
-      expect(spy).toHaveBeenCalledWith(expect.objectContaining({
-        event: 'error_occurred',
-        properties: expect.objectContaining({
-          errorType: 'TypeError',
-          stackTrace: 'stack trace',
-          context: { context: 'test' },
-        }),
-      }));
+      trackErrorOccurred(
+        'TypeError',
+        'stack trace',
+        { context: 'test' },
+        session
+      );
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'error_occurred',
+          properties: expect.objectContaining({
+            errorType: 'TypeError',
+            stackTrace: 'stack trace',
+            context: { context: 'test' },
+          }),
+        })
+      );
     });
 
     it('tracks user_action event correctly', () => {
       const spy = vi.spyOn(posthog, 'capture');
       trackUserAction('click', 'button', { page: '/home' }, session);
-      expect(spy).toHaveBeenCalledWith(expect.objectContaining({
-        event: 'user_action',
-        properties: expect.objectContaining({
-          actionType: 'click',
-          element: 'button',
-          pageContext: { page: '/home' },
-        }),
-      }));
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'user_action',
+          properties: expect.objectContaining({
+            actionType: 'click',
+            element: 'button',
+            pageContext: { page: '/home' },
+          }),
+        })
+      );
     });
   });
 
@@ -179,8 +198,10 @@ describe('posthog.js analytics logic', () => {
       }
       await new Promise(res => setTimeout(res, 50));
       // Count only funnel_step events
-      const funnelStepCalls = spy.mock.calls.filter(([arg]) => arg && arg.event === 'funnel_step');
+      const funnelStepCalls = spy.mock.calls.filter(
+        ([arg]) => arg && arg.event === 'funnel_step'
+      );
       expect(funnelStepCalls).toHaveLength(20);
     });
   });
-}); 
+});

@@ -17,7 +17,9 @@ for (let i = 0; i < args.length; i++) {
 }
 
 if (!prompt) {
-  console.error('Usage: node backend/scripts/test-gpt4o.js --prompt "Your prompt here"');
+  console.error(
+    'Usage: node backend/scripts/test-gpt4o.js --prompt "Your prompt here"'
+  );
   process.exit(1);
 }
 
@@ -26,7 +28,12 @@ if (!prompt) {
   await service.initialize();
 
   // Test getParameters for each prompt type
-  const types = ['business_plan', 'social_media', 'website_audit', 'unknown_type'];
+  const types = [
+    'business_plan',
+    'social_media',
+    'website_audit',
+    'unknown_type',
+  ];
   for (const type of types) {
     try {
       const params = await service.getParameters(type);
@@ -42,7 +49,7 @@ if (!prompt) {
     const response = await service.client.chat.completions.create({
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 100
+      max_tokens: 100,
     });
     console.log('--- OpenAI GPT-4o Response ---');
     console.log(response.choices[0].message.content);
@@ -51,4 +58,4 @@ if (!prompt) {
     console.error('❌ Error:', err.message);
     process.exit(1);
   }
-})(); 
+})();

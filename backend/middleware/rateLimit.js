@@ -1,18 +1,16 @@
-const rateLimits = new Map();
-const WINDOW = 60 * 1000; // 1 minute
-const LIMIT = 100;
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
-export default function rateLimit(req, res, next) {
+const rateLimiter = new RateLimiterMemory({
+  points: 100, // 100 requests
+  duration: 60, // per 60 seconds
+});
+
+export default async function rateLimit(req, res, next) {
   const ip = req.ip || req.connection.remoteAddress;
-  const now = Date.now();
-  if (!rateLimits.has(ip)) {
-    rateLimits.set(ip, []);
+  try {
+    await rateLimiter.consume(ip);
+    next();
+  } catch (rejRes) {
+    res.status(429).json({ error: 'Rate limit exceeded' });
   }
-  const timestamps = rateLimits.get(ip).filter(ts => now - ts < WINDOW);
-  if (timestamps.length >= LIMIT) {
-    return res.status(429).json({ error: 'Rate limit exceeded' });
-  }
-  timestamps.push(now);
-  rateLimits.set(ip, timestamps);
-  next();
-} 
+}

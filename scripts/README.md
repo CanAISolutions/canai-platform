@@ -584,6 +584,48 @@ echo "2. Run 'npm run dev' to start development servers"
 echo "3. Visit http://localhost:3000 to see the application"
 ```
 
+## 🌱 Test Data Seeding Scripts
+
+### Unified Supabase Test User Seeder (`seed-supabase-users.js`)
+
+This script seeds test users and data into Supabase for integration and development testing. It
+consolidates the functionality of the previous single-user and multi-user seeding scripts.
+
+**Usage:**
+
+```bash
+# Seed the default integration test user (registers user, generates JWT, seeds data)
+node scripts/seed-supabase-users.js --single
+
+# Seed all test users (admin/regular, just data seeding)
+node scripts/seed-supabase-users.js --all
+
+# Seed a specific user by email (registers user, generates JWT, seeds data)
+node scripts/seed-supabase-users.js --email testuser+integration@example.com
+```
+
+**Options:**
+
+- `--single` (default): Seed the default integration test user. Registers the user if needed,
+  generates a JWT, and seeds all required tables.
+- `--all`: Seed all test users (admin/regular) as defined in the script. Only seeds data; does not
+  handle registration or JWT.
+- `--email <email>`: Seed a specific user by email. Registers the user if needed, generates a JWT,
+  and seeds all required tables.
+
+**Environment Variables Required:**
+
+- `SUPABASE_URL`
+- `SUPABASE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (required for admin operations)
+- `SUPABASE_JWT_SECRET`
+
+**What it does:**
+
+- Registers users (if needed) and generates JWTs for integration testing
+- Seeds `prompt_logs`, `comparisons`, and `spark_logs` tables for each user
+- Provides clear logging and error handling
+
 ## 🚀 Usage
 
 ### Running Scripts
@@ -632,6 +674,13 @@ Most scripts require:
 - Validate inputs and environment
 - Provide helpful error messages
 - Include usage examples
+
+## check-secrets.sh: Pre-commit Secret/API Key Scanner
+
+- This script scans staged files for likely API keys, secrets, or tokens before every commit.
+- If any are found, the commit is blocked and you must remove the secret before proceeding.
+- Patterns checked include: \_API_KEY, SECRET, TOKEN, sk-..., JWT, and more.
+- Used automatically by the Husky pre-commit hook.
 
 ---
 

@@ -62,13 +62,16 @@ const TrustIndicators = () => {
     const timeoutIds: NodeJS.Timeout[] = [];
     for (let i = 0; i < 5; i++) {
       timeoutIds.push(
-        setTimeout(() => {
-          setStarVisible(prev => {
-            const arr = [...prev];
-            arr[i] = true;
-            return arr;
-          });
-        }, 200 + i * 160)
+        setTimeout(
+          () => {
+            setStarVisible(prev => {
+              const arr = [...prev];
+              arr[i] = true;
+              return arr;
+            });
+          },
+          200 + i * 160
+        )
       );
     }
     return () => timeoutIds.forEach(clearTimeout);

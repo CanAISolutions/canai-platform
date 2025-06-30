@@ -204,14 +204,12 @@ npm run test:watch
 ### Development Guidelines
 
 1. **Component Development**
-
    - Follow React best practices and hooks patterns
    - Use TypeScript for all new components
    - Implement proper error boundaries
    - Ensure accessibility compliance
 
 2. **Styling Guidelines**
-
    - Use Tailwind CSS utility classes
    - Follow the design system tokens
    - Implement responsive design patterns

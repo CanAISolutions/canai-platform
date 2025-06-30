@@ -67,8 +67,8 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
                 confidenceScore >= 0.8
                   ? 'text-green-400'
                   : confidenceScore >= 0.6
-                  ? 'text-yellow-400'
-                  : 'text-red-400'
+                    ? 'text-yellow-400'
+                    : 'text-red-400'
               }`}
             >
               {(confidenceScore * 100).toFixed(0)}%
@@ -89,15 +89,15 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
               confidenceScore >= 0.8
                 ? 'text-green-300'
                 : confidenceScore >= 0.6
-                ? 'text-yellow-300'
-                : 'text-red-300'
+                  ? 'text-yellow-300'
+                  : 'text-red-300'
             }`}
           >
             {confidenceScore >= 0.8
               ? 'High confidence - ready to proceed!'
               : confidenceScore >= 0.6
-              ? 'Good confidence - minor refinements suggested'
-              : 'Lower confidence - we recommend clarification'}
+                ? 'Good confidence - minor refinements suggested'
+                : 'Lower confidence - we recommend clarification'}
           </p>
           {confidenceScore < 0.8 && (
             <Button

@@ -1,12 +1,14 @@
 /**
  * Integration between Emotional Intelligence Framework and GPT-4o Service
- * 
+ *
  * This file connects the emotionally intelligent prompt templates
  * with the existing GPT-4o service for actual content generation.
  */
 
-const { BusinessPlanTemplate } = require('./businessPlanTemplate');
-const gpt4oService = require('../services/gpt4o');
+import { BusinessPlanTemplate } from './businessPlanTemplate.js';
+import { GPT4Service } from '../services/gpt4o.js';
+
+const gpt4oService = new GPT4Service(/* ... */);
 
 class EmotionalIntelligenceIntegration {
   constructor() {
@@ -19,39 +21,42 @@ class EmotionalIntelligenceIntegration {
   async generateBusinessPlan(inputData, options = {}) {
     try {
       // Generate the prompt using our framework
-      const promptData = await this.businessPlanTemplate.generateBusinessPlan(inputData);
-      
+      const promptData =
+        await this.businessPlanTemplate.generateBusinessPlan(inputData);
+
       // Prepare the request for GPT-4o service
       const gptRequest = {
         messages: [
           {
             role: 'system',
-            content: promptData.systemPrompt
+            content: promptData.systemPrompt,
           },
           {
             role: 'user',
-            content: promptData.userPrompt
-          }
+            content: promptData.userPrompt,
+          },
         ],
         temperature: options.temperature || 0.7,
         max_tokens: options.maxTokens || 4000,
-        response_format: { type: "json_object" }
+        response_format: { type: 'json_object' },
       };
 
       // Call GPT-4o service
       const response = await gpt4oService.generateCompletion(gptRequest);
-      
+
       // Parse and validate the response
       let parsedResponse;
       try {
         parsedResponse = JSON.parse(response.content);
       } catch (parseError) {
-        throw new Error(`Failed to parse GPT-4o response as JSON: ${parseError.message}`);
+        throw new Error(
+          `Failed to parse GPT-4o response as JSON: ${parseError.message}`
+        );
       }
 
       // Validate against our schema
       const validation = promptData.validation(parsedResponse);
-      
+
       return {
         success: true,
         data: parsedResponse,
@@ -62,18 +67,17 @@ class EmotionalIntelligenceIntegration {
           completionTokens: response.usage?.completion_tokens || 0,
           totalTokens: response.usage?.total_tokens || 0,
           model: response.model || 'gpt-4o',
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       };
-
     } catch (error) {
       return {
         success: false,
         error: error.message,
         metadata: {
           inputData: inputData,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       };
     }
   }
@@ -84,29 +88,37 @@ class EmotionalIntelligenceIntegration {
   async testGoldStandardIntegration() {
     console.log('🧪 Testing Gold Standard Integration with GPT-4o\n');
 
-    const goldStandardExample = this.businessPlanTemplate.getGoldStandardExample();
-    
+    const goldStandardExample =
+      this.businessPlanTemplate.getGoldStandardExample();
+
     console.log('📋 Testing with Sprinkle Haven Bakery data...\n');
-    
-    const result = await this.generateBusinessPlan(goldStandardExample.inputData);
-    
+
+    const result = await this.generateBusinessPlan(
+      goldStandardExample.inputData
+    );
+
     if (result.success) {
       console.log('✅ Integration successful!');
-      console.log('📊 Response validation:', result.validation.isValid ? 'PASSED' : 'FAILED');
-      
+      console.log(
+        '📊 Response validation:',
+        result.validation.isValid ? 'PASSED' : 'FAILED'
+      );
+
       if (!result.validation.isValid) {
         console.log('❌ Validation errors:', result.validation.errors);
       }
-      
+
       console.log('📈 Token usage:', {
         prompt: result.metadata.promptTokens,
         completion: result.metadata.completionTokens,
-        total: result.metadata.totalTokens
+        total: result.metadata.totalTokens,
       });
-      
-      console.log('🎯 TrustDelta Score:', result.data.Plan?.TrustDelta || 'N/A');
+
+      console.log(
+        '🎯 TrustDelta Score:',
+        result.data.Plan?.TrustDelta || 'N/A'
+      );
       console.log('📝 Summary:', result.data.Summary?.Summary || 'N/A');
-      
     } else {
       console.log('❌ Integration failed:', result.error);
     }
@@ -119,17 +131,17 @@ class EmotionalIntelligenceIntegration {
    */
   async generateMultipleBusinessPlans(inputDataArray, options = {}) {
     const results = [];
-    
+
     for (const inputData of inputDataArray) {
       const result = await this.generateBusinessPlan(inputData, options);
       results.push(result);
-      
+
       // Add delay between requests to respect rate limits
       if (options.delayMs) {
         await new Promise(resolve => setTimeout(resolve, options.delayMs));
       }
     }
-    
+
     return results;
   }
 
@@ -138,39 +150,56 @@ class EmotionalIntelligenceIntegration {
    */
   validateQualityStandards(generatedContent, inputData) {
     const qualityChecks = {
-      hasBothOutputs: !!(generatedContent.Plan?.CanAI_Output && generatedContent.Plan?.Generic_Output),
+      hasBothOutputs: !!(
+        generatedContent.Plan?.CanAI_Output &&
+        generatedContent.Plan?.Generic_Output
+      ),
       hasEmotionalResonance: generatedContent.Plan?.TrustDelta > 3.0,
-      hasCulturalContext: this.checkCulturalRelevance(generatedContent, inputData),
-      hasBrandVoiceAlignment: this.checkBrandVoiceAlignment(generatedContent, inputData)
+      hasCulturalContext: this.checkCulturalRelevance(
+        generatedContent,
+        inputData
+      ),
+      hasBrandVoiceAlignment: this.checkBrandVoiceAlignment(
+        generatedContent,
+        inputData
+      ),
     };
 
     return {
       passed: Object.values(qualityChecks).every(check => check),
       checks: qualityChecks,
-      score: Object.values(qualityChecks).filter(check => check).length / Object.keys(qualityChecks).length
+      score:
+        Object.values(qualityChecks).filter(check => check).length /
+        Object.keys(qualityChecks).length,
     };
   }
 
   // Quality check helper methods
   checkCulturalRelevance(content, inputData) {
-    const location = this.businessPlanTemplate.extractLocation(inputData.targetAudience);
+    const location = this.businessPlanTemplate.extractLocation(
+      inputData.targetAudience
+    );
     const canaiOutput = content.Plan?.CanAI_Output?.toLowerCase() || '';
-    
+
     if (location === 'Denver, CO') {
-      return canaiOutput.includes('denver') || canaiOutput.includes('colorado') || canaiOutput.includes('mile high');
+      return (
+        canaiOutput.includes('denver') ||
+        canaiOutput.includes('colorado') ||
+        canaiOutput.includes('mile high')
+      );
     }
-    
+
     return true;
   }
 
   checkBrandVoiceAlignment(content, inputData) {
     const brandVoice = inputData.brandVoice?.toLowerCase();
     const canaiOutput = content.Plan?.CanAI_Output?.toLowerCase() || '';
-    
+
     const voiceKeywords = {
       warm: ['warm', 'welcoming', 'community', 'cozy', 'heartfelt'],
       innovative: ['innovative', 'cutting-edge', 'pioneer', 'breakthrough'],
-      professional: ['professional', 'expert', 'reliable', 'proven']
+      professional: ['professional', 'expert', 'reliable', 'proven'],
     };
 
     const keywords = voiceKeywords[brandVoice] || [];
@@ -178,4 +207,4 @@ class EmotionalIntelligenceIntegration {
   }
 }
 
-module.exports = { EmotionalIntelligenceIntegration }; 
+export { EmotionalIntelligenceIntegration };

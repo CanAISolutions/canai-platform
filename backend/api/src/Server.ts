@@ -15,7 +15,7 @@ if (process.env.SENTRY_TEST_ERROR === 'true') {
 startup()
   .then(app => {
     // Add test route for Sentry validation
-    app.get('/test-error', (req, res) => {
+    app.get('/test-error', (_req, _res) => {
       throw new Error('Backend test error');
     });
     const port = 5000;

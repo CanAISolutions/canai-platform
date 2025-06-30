@@ -278,6 +278,15 @@ npm outdated              # Check for updates
 - [Conventional Commits](https://conventionalcommits.org/)
 - [ESLint Rules](https://eslint.org/docs/rules/)
 
+## Environment Variables for Testing
+
+- All tests (unit, integration, frontend) now load environment variables from the project root
+  `.env` file using `dotenv`.
+- Do **not** use `frontend/environment.txt` or any other ad-hoc env files for tests.
+- Ensure `.env` is up to date with all required test variables (see `testEnvSetup.js` for required
+  keys).
+- `.env` must be listed in `.gitignore` and never committed to version control.
+
 ---
 
 **Last Updated**: $(date) **Version**: 2.0.0

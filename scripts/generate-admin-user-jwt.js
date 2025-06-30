@@ -18,4 +18,4 @@ const payload = {
 
 const token = jwt.sign(payload, SUPABASE_JWT_SECRET, { expiresIn: '1h' });
 console.log('Generated JWT for admin user:');
-console.log(token); 
+console.log(token);
