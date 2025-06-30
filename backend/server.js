@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import supabase from './supabase/client';
+import supabase from './supabase/client.js';
 import Sentry from './services/instrument.js';
 import emotionalAnalysisRouter from './routes/emotionalAnalysis.js';
 
