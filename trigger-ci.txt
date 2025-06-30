@@ -1,3 +1,0 @@
-# Temporary file to trigger CI
-This file exists only to trigger a GitHub Actions workflow run on main.
-You can safely delete it after confirming CI is working. 

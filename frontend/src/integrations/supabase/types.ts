@@ -53,7 +53,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'system_configs';
             referencedColumns: ['id'];
-          }
+          },
         ];
       };
       analytics_aggregates: {
@@ -104,7 +104,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'prompt_types_rollups';
             referencedColumns: ['id'];
-          }
+          },
         ];
       };
       competitive_advantage_metrics: {
@@ -160,7 +160,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'sparksplit_comparisons';
             referencedColumns: ['id'];
-          }
+          },
         ];
       };
       emotional_intelligence: {
@@ -241,7 +241,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'user_context_rollups';
             referencedColumns: ['user_id'];
-          }
+          },
         ];
       };
       emotional_states: {
@@ -343,7 +343,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'session_analytics_rollups';
             referencedColumns: ['session_id'];
-          }
+          },
         ];
       };
       goldmine_output: {
@@ -442,7 +442,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'user_context_rollups';
             referencedColumns: ['user_id'];
-          }
+          },
         ];
       };
       performance_metrics: {
@@ -499,7 +499,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'session_analytics_rollups';
             referencedColumns: ['session_id'];
-          }
+          },
         ];
       };
       processing_results: {
@@ -553,7 +553,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'session_analytics_rollups';
             referencedColumns: ['session_id'];
-          }
+          },
         ];
       };
       prompt_logs: {
@@ -690,7 +690,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'user_context_rollups';
             referencedColumns: ['user_id'];
-          }
+          },
         ];
       };
       prompt_types: {
@@ -856,7 +856,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'user_context_rollups';
             referencedColumns: ['user_id'];
-          }
+          },
         ];
       };
       sparksplit_analytics: {
@@ -955,7 +955,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'session_analytics_rollups';
             referencedColumns: ['session_id'];
-          }
+          },
         ];
       };
       sparksplit_comparisons: {
@@ -1170,7 +1170,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'system_configs';
             referencedColumns: ['id'];
-          }
+          },
         ];
       };
       trust_factors: {
@@ -1290,7 +1290,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'user_context_rollups';
             referencedColumns: ['user_id'];
-          }
+          },
         ];
       };
       trust_transparency_metrics: {
@@ -1349,7 +1349,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'sparksplit_comparisons';
             referencedColumns: ['id'];
-          }
+          },
         ];
       };
       user_context: {
@@ -1478,7 +1478,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'session_analytics_rollups';
             referencedColumns: ['session_id'];
-          }
+          },
         ];
       };
     };
@@ -1795,7 +1795,7 @@ export type Tables<
   }
     ? keyof (Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
         Database[DefaultSchemaTableNameOrOptions['schema']]['Views'])
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
   ? (Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
       Database[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
@@ -1804,14 +1804,14 @@ export type Tables<
     ? R
     : never
   : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
-      DefaultSchema['Views'])
-  ? (DefaultSchema['Tables'] &
-      DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
-      Row: infer R;
-    }
-    ? R
-    : never
-  : never;
+        DefaultSchema['Views'])
+    ? (DefaultSchema['Tables'] &
+        DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
+      }
+      ? R
+      : never
+    : never;
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
@@ -1821,7 +1821,7 @@ export type TablesInsert<
     schema: keyof Database;
   }
     ? keyof Database[DefaultSchemaTableNameOrOptions['schema']]['Tables']
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
   ? Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
       Insert: infer I;
@@ -1829,12 +1829,12 @@ export type TablesInsert<
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-  ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
-      Insert: infer I;
-    }
-    ? I
-    : never
-  : never;
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
+      }
+      ? I
+      : never
+    : never;
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
@@ -1844,7 +1844,7 @@ export type TablesUpdate<
     schema: keyof Database;
   }
     ? keyof Database[DefaultSchemaTableNameOrOptions['schema']]['Tables']
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
   ? Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
       Update: infer U;
@@ -1852,12 +1852,12 @@ export type TablesUpdate<
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-  ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
-      Update: infer U;
-    }
-    ? U
-    : never
-  : never;
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
+      }
+      ? U
+      : never
+    : never;
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
@@ -1867,12 +1867,12 @@ export type Enums<
     schema: keyof Database;
   }
     ? keyof Database[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
-    : never = never
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
   ? Database[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-  ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
-  : never;
+    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+    : never;
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
@@ -1882,12 +1882,12 @@ export type CompositeTypes<
     schema: keyof Database;
   }
     ? keyof Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
-    : never = never
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-  ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
-  : never;
+    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+    : never;
 
 export const Constants = {
   public: {

@@ -11,11 +11,14 @@
     "build": "turbo run build",
     "start": "turbo run start",
     "lint": "turbo run lint",
-    "test": "turbo run test",
+    "test": "vitest run --coverage",
+    "test:unit": "vitest run tests/unit/ --coverage",
+    "test:integration": "vitest run tests/integration/ --coverage",
     "typecheck": "tsc --noEmit",
     "migrate:test": "npx supabase db migrate --env test",
     "test:supabase:connection": "vitest run tests/integration/supabase/*.test.ts tests/integration/supabase/*.integration.test.ts",
-    "check:supabase:connection": "node scripts/check-supabase.js"
+    "check:supabase:connection": "node scripts/check-supabase.js",
+    "test:ci": "vitest run --reporter=dot --reporter=junit --outputFile=./test-results.xml --silent"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.0.0",
@@ -32,7 +35,7 @@
     "eslint-plugin-react": "^7.0.0",
     "eslint-plugin-react-hooks": "^4.0.0",
     "husky": "^8.0.0",
-    "jest": "^29.0.0",
+    "jest": "29.7.0",
     "jest-environment-jsdom": "^29.0.0",
     "lint-staged": "^15.0.0",
     "prettier": "^3.0.0",

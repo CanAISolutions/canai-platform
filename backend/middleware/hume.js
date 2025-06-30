@@ -15,7 +15,15 @@ class HumeCircuitBreaker {
   }
 
   shouldAttemptReset() {
-    return Date.now() - this.lastFailureTime > this.RESET_TIMEOUT;
+    if (
+      this.state === 'OPEN' &&
+      Date.now() - this.lastFailureTime > this.RESET_TIMEOUT
+    ) {
+      this.state = 'HALF_OPEN';
+      posthog.capture('circuit_breaker_half_open', { state: this.state });
+      return true;
+    }
+    return false;
   }
 
   onSuccess() {
@@ -27,6 +35,16 @@ class HumeCircuitBreaker {
   }
 
   onFailure() {
+    if (this.state === 'HALF_OPEN') {
+      this.state = 'OPEN';
+      this.lastFailureTime = Date.now();
+      posthog.capture('circuit_breaker_triggered', {
+        failures: this.failures,
+        state: this.state,
+        reason: 'HALF_OPEN failure',
+      });
+      return;
+    }
     this.failures += 1;
     this.lastFailureTime = Date.now();
     if (this.failures >= this.FAILURE_THRESHOLD) {
@@ -36,4 +54,4 @@ class HumeCircuitBreaker {
   }
 }
 
-export default HumeCircuitBreaker; 
+export default HumeCircuitBreaker;

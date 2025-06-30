@@ -110,8 +110,8 @@ export const useFormValidation = (fields: Record<string, ValidationRule>) => {
         const state: ValidationState = error
           ? 'error'
           : value.trim()
-          ? 'success'
-          : 'idle';
+            ? 'success'
+            : 'idle';
 
         return {
           ...prev,

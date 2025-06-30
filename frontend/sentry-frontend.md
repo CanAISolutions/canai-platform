@@ -1,19 +1,31 @@
 # Sentry React SDK Setup Rules for Cursor
 
-This document provides rules and examples to guide Cursor in configuring the Sentry React SDK for a React frontend (TypeScript/JavaScript) in a full-stack application. The setup enables error monitoring, tracing, and session replay, aligning with Task 4: Setup Sentry Error Monitoring (Subtasks 4.1–4.4). Follow these rules to ensure robust error capture, performance monitoring, privacy compliance, and production readiness, as per the project’s PRD goals.
+This document provides rules and examples to guide Cursor in configuring the Sentry React SDK for a
+React frontend (TypeScript/JavaScript) in a full-stack application. The setup enables error
+monitoring, tracing, and session replay, aligning with Task 4: Setup Sentry Error Monitoring
+(Subtasks 4.1–4.4). Follow these rules to ensure robust error capture, performance monitoring,
+privacy compliance, and production readiness, as per the project’s PRD goals.
 
 ## General Guidelines
-- **Project Context**: React frontend (TypeScript/JavaScript) in a SaaS platform with Node.js backend.
+
+- **Project Context**: React frontend (TypeScript/JavaScript) in a SaaS platform with Node.js
+  backend.
 - **Sentry SDK**: Use `@sentry/react` for error monitoring, tracing, and session replay.
-- **Environment Variables**: Store `REACT_APP_SENTRY_DSN` in `.env` for local development and CI/CD secrets (e.g., GitHub Actions) for production.
-- **Privacy**: Disable default PII (e.g., IP addresses) and implement custom scrubbing for GDPR compliance.
-- **Documentation**: Update `docs/project-structure-mapping.md` and `analytics-implementation-log.md` after setup.
-- **TypeScript**: Prefer TypeScript syntax unless JavaScript is explicitly required. Ensure type safety with `@sentry/react` types.
-- **CI/CD**: Automate source map uploads for production debugging using Sentry CLI and GitHub Actions.
+- **Environment Variables**: Store `REACT_APP_SENTRY_DSN` in `.env` for local development and CI/CD
+  secrets (e.g., GitHub Actions) for production.
+- **Privacy**: Disable default PII (e.g., IP addresses) and implement custom scrubbing for GDPR
+  compliance.
+- **Documentation**: Update `docs/project-structure-mapping.md` and
+  `analytics-implementation-log.md` after setup.
+- **TypeScript**: Prefer TypeScript syntax unless JavaScript is explicitly required. Ensure type
+  safety with `@sentry/react` types.
+- **CI/CD**: Automate source map uploads for production debugging using Sentry CLI and GitHub
+  Actions.
 
 ## Rules for Sentry Configuration
 
 ### 1. Installation
+
 - **Rule**: Install `@sentry/react` as a dependency using npm, yarn, or pnpm.
 - **Example**:
   ```bash
@@ -24,7 +36,9 @@ This document provides rules and examples to guide Cursor in configuring the Sen
   - For TypeScript, types are included automatically.
 
 ### 2. SDK Initialization
-- **Rule**: Initialize Sentry in the React entry point (`src/index.tsx` or `src/index.js`) before rendering the app.
+
+- **Rule**: Initialize Sentry in the React entry point (`src/index.tsx` or `src/index.js`) before
+  rendering the app.
 - **Requirements**:
   - Use `process.env.REACT_APP_SENTRY_DSN` for the DSN, loaded from `.env` or CI/CD secrets.
   - Set `sendDefaultPii: false` to prevent sending sensitive data.
@@ -33,6 +47,7 @@ This document provides rules and examples to guide Cursor in configuring the Sen
   - Set `environment` to `process.env.NODE_ENV` to differentiate dev/prod events.
   - Optionally enable session replay with `Sentry.replayIntegration()` and privacy settings.
 - **Example**:
+
   ```typescript
   // src/index.tsx
   import * as Sentry from '@sentry/react';
@@ -63,22 +78,26 @@ This document provides rules and examples to guide Cursor in configuring the Sen
     </BrowserRouter>
   );
   ```
+
 - **Notes**:
   - Ensure `REACT_APP_SENTRY_DSN` is defined in `.env`:
     ```env
     REACT_APP_SENTRY_DSN=https://fd06c4fab52ad2017a0a4d54ab682e7c@o4509561217089536.ingest.us.sentry.io/4509565486039040
     ```
-  - For Create React App, prefix variables with `REACT_APP_`. For Vite, use `VITE_` or check documentation.
+  - For Create React App, prefix variables with `REACT_APP_`. For Vite, use `VITE_` or check
+    documentation.
   - Restart the development server after updating `.env`.
   - Add `release` for production tracking, using a CI/CD variable (e.g., `COMMIT_SHA`).
 
 ### 3. Error Monitoring
+
 - **Rule**: Implement error boundaries and manual error capture to track UI and runtime errors.
 - **Requirements**:
   - Wrap the app or key components in `Sentry.ErrorBoundary` to catch rendering errors.
   - Use `Sentry.captureException` in try-catch blocks or event handlers for custom errors.
 - **Examples**:
   - **Error Boundary**:
+
     ```typescript
     // src/App.tsx
     import * as Sentry from '@sentry/react';
@@ -96,7 +115,9 @@ This document provides rules and examples to guide Cursor in configuring the Sen
 
     export default App;
     ```
+
   - **Custom Error Capture**:
+
     ```typescript
     // src/components/TestComponent.tsx
     import * as Sentry from '@sentry/react';
@@ -115,12 +136,15 @@ This document provides rules and examples to guide Cursor in configuring the Sen
 
     export default TestComponent;
     ```
+
 - **Notes**:
   - Place error boundaries strategically (e.g., at the app level or per major component).
   - Test error capture with intentional errors (see verification below).
 
 ### 4. Tracing
-- **Rule**: Configure tracing for page loads, navigation, and custom actions (e.g., button clicks, API calls).
+
+- **Rule**: Configure tracing for page loads, navigation, and custom actions (e.g., button clicks,
+  API calls).
 - **Requirements**:
   - Use `Sentry.browserTracingIntegration()` for automatic page load/navigation tracing.
   - For React Router, add `reactRouterV6BrowserTracingIntegration` (or v5 equivalent).
@@ -128,6 +152,7 @@ This document provides rules and examples to guide Cursor in configuring the Sen
   - Add attributes to spans for context (e.g., config, metrics).
 - **Examples**:
   - **React Router Tracing**:
+
     ```typescript
     // src/index.tsx
     import * as Sentry from '@sentry/react';
@@ -159,7 +184,9 @@ This document provides rules and examples to guide Cursor in configuring the Sen
       </ReactRouter.BrowserRouter>
     );
     ```
+
   - **Custom Span for Button Click**:
+
     ```typescript
     // src/components/TestComponent.tsx
     import * as Sentry from '@sentry/react';
@@ -188,7 +215,9 @@ This document provides rules and examples to guide Cursor in configuring the Sen
 
     export default TestComponent;
     ```
+
   - **Custom Span for API Call**:
+
     ```typescript
     // src/api.ts
     import * as Sentry from '@sentry/react';
@@ -207,16 +236,19 @@ This document provides rules and examples to guide Cursor in configuring the Sen
       );
     }
     ```
+
 - **Notes**:
   - Use meaningful `op` and `name` values for spans (e.g., `ui.click`, `http.client`).
   - Keep `tracesSampleRate` low in production (e.g., `0.01`) to minimize overhead.
 
 ### 5. Session Replay
+
 - **Rule**: Optionally enable session replay for debugging with privacy safeguards.
 - **Requirements**:
   - Use `Sentry.replayIntegration()` with `maskAllText` and `blockAllMedia` for GDPR compliance.
   - Set `replaysSessionSampleRate` and `replaysOnErrorSampleRate` to control replay frequency.
 - **Example**:
+
   ```typescript
   // src/index.tsx
   import * as Sentry from '@sentry/react';
@@ -237,17 +269,20 @@ This document provides rules and examples to guide Cursor in configuring the Sen
     environment: process.env.NODE_ENV,
   });
   ```
+
 - **Notes**:
   - Adjust sample rates to balance debugging and privacy.
   - Replays appear in Sentry’s **Replays** tab.
 
 ### 6. Logging (Optional)
+
 - **Rule**: Configure Sentry to capture console logs as events for enhanced observability.
 - **Requirements**:
   - Enable logging with `_experiments: { enableLogs: true }`.
   - Use `Sentry.consoleLoggingIntegration` to capture `log`, `error`, and `warn` levels.
   - Use `logger.fmt` for structured logs with variables.
 - **Example**:
+
   ```typescript
   // src/index.tsx
   import * as Sentry from '@sentry/react';
@@ -264,6 +299,7 @@ This document provides rules and examples to guide Cursor in configuring the Sen
     environment: process.env.NODE_ENV,
   });
   ```
+
   ```typescript
   // src/components/TestComponent.tsx
   import * as Sentry from '@sentry/react';
@@ -279,11 +315,13 @@ This document provides rules and examples to guide Cursor in configuring the Sen
     return <div>Test Component</div>;
   }
   ```
+
 - **Notes**:
   - Logs appear in Sentry’s **Issues** or **Logs** tab.
   - Use structured data for better debugging.
 
 ### 7. Source Map Upload
+
 - **Rule**: Automate source map uploads in CI/CD for readable production stack traces.
 - **Requirements**:
   - Install `@sentry/cli` as a dev dependency.
@@ -332,8 +370,10 @@ This document provides rules and examples to guide Cursor in configuring the Sen
     ```
 
 ### 8. Verification
+
 - **Rule**: Test Sentry setup by triggering an intentional error.
 - **Example**:
+
   ```typescript
   // src/components/TestComponent.tsx
   function TestComponent() {
@@ -350,36 +390,49 @@ This document provides rules and examples to guide Cursor in configuring the Sen
 
   export default TestComponent;
   ```
+
 - **Steps**:
   1. Run the app: `npm start`.
   2. Click the button to trigger the error.
   3. Check Sentry dashboard (**Projects** > [Your Project] > **Issues**) for the error.
   4. Verify performance data in **Performance** tab.
 - **Notes**:
-  - If no events appear, check `REACT_APP_SENTRY_DSN`, initialization order, and internet connection.
+  - If no events appear, check `REACT_APP_SENTRY_DSN`, initialization order, and internet
+    connection.
 
 ### 9. Documentation
-- **Rule**: Document the Sentry setup in `docs/project-structure-mapping.md` and `analytics-implementation-log.md`.
+
+- **Rule**: Document the Sentry setup in `docs/project-structure-mapping.md` and
+  `analytics-implementation-log.md`.
 - **Examples**:
   - `docs/project-structure-mapping.md`:
+
     ```markdown
     ## Sentry Frontend Configuration
+
     - **File**: `src/index.tsx`
     - **Purpose**: Initializes Sentry React SDK for error monitoring, tracing, and session replay.
     - **Environment Variables**:
-      - `REACT_APP_SENTRY_DSN`: Stored in `.env` for local dev, GitHub Actions secrets for production.
+      - `REACT_APP_SENTRY_DSN`: Stored in `.env` for local dev, GitHub Actions secrets for
+        production.
     ```
+
   - `analytics-implementation-log.md`:
+
     ```markdown
     ## Sentry Frontend Implementation (Task 4)
+
     - **Date**: 2025-06-26
-    - **Details**: Initialized `@sentry/react` in `src/index.tsx` with DSN, error boundary, tracing, and session replay.
+    - **Details**: Initialized `@sentry/react` in `src/index.tsx` with DSN, error boundary, tracing,
+      and session replay.
     - **Verification**: Test error sent to Sentry dashboard.
     ```
+
 - **Notes**:
   - Ensure documentation reflects all configured features (e.g., tracing, replay).
 
 ## Common Pitfalls to Avoid
+
 - **Incorrect DSN**: Verify `REACT_APP_SENTRY_DSN` matches the Sentry project’s DSN.
 - **PII Exposure**: Always set `sendDefaultPii: false` and configure PII scrubbing in Subtask 4.2.
 - **Performance Overhead**: Use low `tracesSampleRate` and `replaysSessionSampleRate` in production.
@@ -388,6 +441,7 @@ This document provides rules and examples to guide Cursor in configuring the Sen
 - **TypeScript Issues**: Use `import` for ESM and ensure types are resolved.
 
 ## Additional Notes for Cursor
+
 - **Code Suggestions**:
   - Suggest Sentry imports at the top of files: `import * as Sentry from '@sentry/react';`.
   - Autocomplete `Sentry.init` with the baseline configuration above.
@@ -401,4 +455,5 @@ This document provides rules and examples to guide Cursor in configuring the Sen
 - **Privacy**:
   - Flag PII-related code and suggest `beforeSend` for scrubbing (to be implemented in Subtask 4.2).
 - **Documentation**:
-  - Prompt to update `docs/project-structure-mapping.md` and `analytics-implementation-log.md` after changes.
+  - Prompt to update `docs/project-structure-mapping.md` and `analytics-implementation-log.md` after
+    changes.

@@ -323,7 +323,6 @@ graph TD
   - AC-6: Jest tests (`backend/tests/discovery_hook.test.js`, id=`F1-tests`) validate API responses,
     modal interactions, card clicks, sample rendering, and reset link.
 - **Technical Specifications**:
-
   - **Sample Delivery**: PDFs served from Supabase storage (`supabase/storage/samples/`) with public
     read access, authenticated via `backend/services/supabase.js`.
   - **Trust Indicator Stats**: Calculated via Supabase query
@@ -355,7 +354,6 @@ graph TD
     ```
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
-
   - **Supabase Schema** (`databases/migrations/`):
 
     ```sql
@@ -377,7 +375,6 @@ graph TD
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Page load: <1.5s (Webflow, `frontend/public/`).
     - Modal/card/sample load: <1s, cached in `backend/services/cache.js`.
@@ -385,7 +382,6 @@ graph TD
     - API response: <200ms, optimized with Supabase indexes (`databases/`).
     - Reset redirect: <1s, handled by Memberstack.
   - **Edge Case**:
-
     - **F1-E1**: If `/v1/messages` fails, fallback to cached trust indicators in localStorage (key:
       `trust_indicators_cache`, TTL: 5min). Backend retries 3 times (500ms intervals) via
       `backend/middleware/retry.js`.
@@ -556,7 +552,6 @@ tasks:
   - `customTone`: Regex `^[a-zA-Z0-9\s]{1,50}$`.
   - All required fields validated server-side with Joi.
 - **Integration**:
-
   - **Webflow**: Renders form, quiz, and tooltips in `frontend/public/`.
   - **Make.com**: Routes inputs to **Supabase** (`backend/webhooks/save_funnel.js`), triggers
     **GPT-4o** for feedback and contradiction detection.
@@ -584,7 +579,6 @@ tasks:
   - AC-6: Jest tests (`backend/tests/funnel.test.js`, id=`F2-tests`) validate submission, feedback,
     trust score, quiz, tooltips, and contradiction detection.
 - **Technical Specifications**:
-
   - **API Endpoints**:
 
     ```json
@@ -611,7 +605,6 @@ tasks:
     ```
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
-
   - **Supabase Schema** (`databases/migrations/`):
 
     ```sql
@@ -632,7 +625,6 @@ tasks:
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Submission: <500ms, optimized with async Supabase inserts (`backend/services/supabase.js`).
     - Quiz auto-fill: <20s, using `/v1/validate-input`.
@@ -783,7 +775,6 @@ tasks:
   - AC-6: Jest tests (`backend/tests/sparks.test.js`, id=`F3-tests`) validate generation, selection,
     labeling, and regeneration.
 - **Technical Specifications**:
-
   - **API Endpoints**:
 
     ```json
@@ -805,7 +796,6 @@ tasks:
     ```
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
-
   - **Supabase Schema** (`databases/migrations/`):
 
     ```sql
@@ -829,14 +819,12 @@ tasks:
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Spark generation: <1.5s, optimized with caching (`backend/services/cache.js`) and async GPT-4o
       calls (`backend/services/gpt4o.js`).
     - Card render: <200ms (Webflow, `frontend/public/`).
     - Regeneration: <1.5s, enforced by `backend/middleware/rateLimit.js`.
   - **Edge Case**:
-
     - **F3-E1**: If `/v1/generate-sparks` fails, fallback to cached sparks in localStorage (key:
       `sparks_cache`, TTL: 5min). Backend retries 3 times (500ms intervals) via
       `backend/middleware/retry.js`.
@@ -962,7 +950,6 @@ tasks:
   - AC-6: Jest tests (`backend/tests/stripe.test.js`, id=`F4-tests`) validate session creation,
     price rendering, refund, and switch flows.
 - **Technical Specifications**:
-
   - **API Endpoints**:
 
     ```json
@@ -991,7 +978,6 @@ tasks:
     ```
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
-
   - **Supabase Schema** (`databases/migrations/`):
 
     ```sql
@@ -1015,14 +1001,12 @@ tasks:
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Checkout: <1s, optimized with async Stripe calls (`backend/services/stripe.js`).
     - Refund: <5s, handled by `backend/services/stripe.js`.
     - Product switch: <1s, using Stripe refund and new session.
     - Price render: <200ms, cached in `backend/services/cache.js`.
   - **Edge Case**:
-
     - **F4-E1**: On authentication failure, retry 3 times (exponential backoff, 2^i \* 1000ms) via
       `backend/middleware/retry.js`. Log to `databases/error_logs`.
 
@@ -1250,13 +1234,11 @@ validation, 1hr expiry) Service: backend/services/supabase.js (fetch prompt_logs
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Submission: <500ms, optimized with async Supabase inserts (`backend/services/supabase.js`).
     - Auto-save: <200ms, debounced in `backend/routes/inputs.js`.
     - Tooltip load: <100ms, cached in `backend/services/cache.js`.
   - **Edge Case**:
-
     - **F5-E1**: If `/v1/save-progress` fails, display fallback UI
       (`<div class="error-fallback">Save failed, try again.</div>`) and cache inputs in localStorage
       (key: `input_progress_cache`, TTL: 5min). Backend retries 3 times (500ms intervals) via
@@ -1449,7 +1431,6 @@ support_requests_rls ON support_requests FOR ALL TO authenticated USING (auth.ui
     ```
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
-
   - **Supabase Schema** (`databases/migrations/`):
 
     ```sql
@@ -1468,7 +1449,6 @@ support_requests_rls ON support_requests FOR ALL TO authenticated USING (auth.ui
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Response: <300ms, optimized with async GPT-4o calls (`backend/services/gpt4o.js`) and caching
       (`backend/services/cache.js`).
@@ -1616,7 +1596,6 @@ tasks:
   - AC-6: Jest tests (`backend/tests/deliverables.test.js`, id=`F7-tests`) validate output length,
     format, emotional resonance, revision, financials, and branding note.
 - **Technical Specifications**:
-
   - **API Endpoints**:
 
     ```json
@@ -1655,7 +1634,6 @@ tasks:
     ```
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
-
   - **Supabase Schema** (`databases/migrations/`):
 
     ```sql
@@ -1678,13 +1656,11 @@ tasks:
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Generation/revision: <2s, optimized with async GPT-4o/Hume AI calls (`backend/services/`) and
       caching (`backend/services/cache.js`).
     - PDF download: <1s, served via `backend/webhooks/generate_pdf.js`.
   - **Edge Case**:
-
     - **F7-E1**: If generation exceeds 15s, show timeout message (“Finalizing your plan, check back
       soon”) and return partial output (e.g., vision statement). Cache partial output in
       localStorage (key: `deliverable_cache`, TTL: 5min). Backend retries 3 times (500ms intervals)
@@ -1858,7 +1834,6 @@ tasks:
     ```
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
-
   - **Supabase Schema** (`databases/migrations/`):
 
     ```sql
@@ -1883,13 +1858,11 @@ tasks:
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Comparison: <500ms, optimized with async GPT-4o/Hume AI calls (`backend/services/`) and
       caching (`backend/services/cache.js`).
     - Tooltip load: <100ms, reused from `/v1/generate-tooltip` (Section 6.2).
   - **Edge Case**:
-
     - **F8-E1**: Encrypt sensitive fields (`canai_output`, `generic_output`) with `supabase/vault`.
       If `/v1/spark-split` fails, cache response in localStorage (key: `spark_split_cache`, TTL:
       5min). Backend retries 3 times (500ms intervals) via `backend/middleware/retry.js`.
@@ -2029,7 +2002,6 @@ tasks:
   - AC-5: Jest tests (`backend/tests/feedback.test.js`, id=`F9-tests`) validate submission,
     referral, poor-rating follow-up, tips, and upsell flows.
 - **Technical Specifications**:
-
   - **API Endpoints**:
 
     ```json
@@ -2065,7 +2037,6 @@ tasks:
     ```
 
 - **Rate Limiting**: Enforced at 100 req/min per IP via `backend/middleware/rateLimit.js`.
-
   - **Supabase Schema** (`databases/migrations/`):
 
     ```sql
@@ -2094,12 +2065,10 @@ tasks:
     ```
 
 - Data purged after 24 months of inactivity via Supabase `pg_cron` job (`databases/cron/purge.sql`).
-
   - **Performance Targets**:
     - Submission: <300ms, optimized with async Supabase inserts (`backend/services/supabase.js`).
     - Email sending: <5s, handled by `backend/webhooks/send_followup.js`.
   - **Edge Case**:
-
     - **F9-E1**: Purge user data via RLS on request through `/v1/purge-data`, triggered by user
       action (e.g., GDPR/CCPA request). Cache purge status in localStorage (key:
       `purge_status_cache`, TTL: 5min). Backend retries 3 times (500ms intervals) via
@@ -2340,6 +2309,7 @@ The platform manages user data with a clear lifecycle to ensure compliance and e
 
   - Implement `/v1/purge-data` API to delete user data with RLS (`backend/routes/purge.js`).
   - Log purge requests to `databases/error_logs` (`error_type: 'purge'`).
+
 - **Monitoring**:
   - Track purge/anonymization success with PostHog:
     - `posthog.capture('data_purged', { user_id: 'uuid', table: 'string' });`
@@ -2382,6 +2352,7 @@ The platform scales to support 10k monthly users without performance degradation
     GPT-4o).
   - Optimize Supabase queries with indexes (`databases/migrations/`, e.g.,
     `idx_spark_logs_initial_prompt_id`).
+
 - **Monitoring**:
   - Track scalability metrics with PostHog:
     - `posthog.capture('user_load', { active_users: number, response_time_ms: number });`
@@ -2463,6 +2434,7 @@ The platform optimizes costs for GPT-4o and Hume AI while maintaining quality.
 
   - Log cost warnings with PostHog:
     - `posthog.capture('hume_limit_warning', { usage: number });`
+
 - **Monitoring**:
   - Track fallback events and costs with PostHog and Sentry.
   - Log cost overruns to Supabase (`databases/error_logs`, `error_type: 'cost'`).
@@ -3771,7 +3743,6 @@ CO).
 **Journey**:
 
 1. **F1 Discovery Hook**:
-
    - Sarah lands on the Webflow site (`frontend/public/index.html`), sees “Unlock Your Vision with
      CanAI” (id=`hero-headline`), and clicks “Begin Your Journey” (id=`begin-btn`, redirects to
      `/funnel`).
@@ -3782,7 +3753,6 @@ CO).
    - PostHog: `posthog.capture('funnel_step', { stepName: 'discovery_hook', completed: true })`.
 
 2. **F2 2-Step Discovery Funnel**:
-
    - Sarah completes the funnel (<30s, `frontend/public/funnel.html`):
 
      ```json
@@ -3804,7 +3774,6 @@ CO).
    - PostHog: `posthog.capture('funnel_step', { stepName: 'discovery_funnel', completed: true })`.
 
 3. **F3 Spark Layer**:
-
    - Three sparks generated via `POST /v1/generate-sparks` (`backend/routes/sparks.js`):
      - “**Business Plan Builder**: The Community Spark” (tagline: “Unite Denver families with a cozy
        bakery experience”).
@@ -3817,7 +3786,6 @@ CO).
      `posthog.capture('spark_selected', { spark_id: 'community_spark', product: 'business_builder' })`.
 
 4. **F4 Purchase Flow**:
-
    - Sarah clicks “Select **Business Plan Builder**: $99” (id=`purchase-btn`), triggering
      `POST /v1/stripe-session` (`backend/routes/stripe.js`). Stripe checkout modal
      (id=`checkout-modal`, `frontend/public/checkout.html`) processes payment. Confirmation email
@@ -3828,7 +3796,6 @@ CO).
    - PostHog: `posthog.capture('funnel_step', { stepName: 'purchase_flow', completed: true })`.
 
 5. **F5 Detailed Input Collection**:
-
    - Sarah submits 12-field inputs (`frontend/public/inputs.html`):
 
      ```json
@@ -3855,7 +3822,6 @@ CO).
    - PostHog: `posthog.capture('funnel_step', { stepName: 'detailed_input', completed: true })`.
 
 6. **F6 Intent Mirror**:
-
    - Backend: `POST /v1/intent-mirror` (`backend/routes/intent.js`) generates summary: “Launch
      Sprinkle Haven Bakery with a warm, community-centered vision to secure funding in Denver’s LoHi
      neighborhood” (confidence: 0.96). Stored in `databases/prompt_logs` (JSONB field:
@@ -3864,7 +3830,6 @@ CO).
    - PostHog: `posthog.capture('funnel_step', { stepName: 'intent_mirror', completed: true })`.
 
 7. **F7 Deliverable Generation**:
-
    - Backend: `POST /v1/request-revision` (`backend/routes/deliverables.js`) generates a 750-word
      business plan with 4 sections (executive summary, market analysis, financials, team bios).
      Includes financials (e.g., “$150k Year 1 revenue, break-even Month 8”) and bios (e.g., “Sarah,
@@ -3878,7 +3843,6 @@ CO).
      `posthog.capture('deliverable_generated', { product_type: 'business_builder', completion_time_ms: 1800 })`.
 
 8. **F8 SparkSplit**:
-
    - Backend: `POST /v1/spark-split` (`backend/routes/sparkSplit.js`) compares CanAI’s output to a
      generic AI output (e.g., OpenAI baseline). TrustDelta: 4.2; emotional resonance delta: 0.3
      (CanAI: 0.8, generic: 0.5). Stored in `databases/comparisons` (JSONB field: `spark_split`).
@@ -3998,14 +3962,12 @@ emphasizing optimism and inclusivity, achieving TrustDelta ≥4.2 and emotional 
 **Journey**:
 
 1. **F1 Discovery Hook**:
-
    - Jasmine views “View Pricing” (id=`pricing-btn`, `frontend/public/index.html`), opening a modal
      (id=`pricing-modal`) with **Social Media & Email Campaign**: $49. Backend: `GET /v1/pricing`
      (`backend/routes/pricing.js`) fetches from `databases/pricing`.
    - PostHog: `posthog.capture('pricing_modal_viewed', { product_viewed: 'social_email' })`.
 
 2. **F2 2-Step Discovery Funnel**:
-
    - Jasmine submits:
 
      ```json
@@ -4024,7 +3986,6 @@ emphasizing optimism and inclusivity, achieving TrustDelta ≥4.2 and emotional 
      in `databases/initial_prompt_logs`.
 
 3. **F3 Spark Layer**:
-
    - Sparks: “**Social Media & Email Campaign**: The Visibility Glow” (selected), “The Wellness
      Spark”, “The Community Spark”. Backend: `POST /v1/generate-sparks` stores in
      `databases/spark_logs`.
@@ -4032,12 +3993,10 @@ emphasizing optimism and inclusivity, achieving TrustDelta ≥4.2 and emotional 
      `posthog.capture('spark_selected', { spark_id: 'visibility_glow', product: 'social_email' })`.
 
 4. **F4 Purchase Flow**:
-
    - Payment processed via `POST /v1/stripe-session` ($49). Confirmation email sent. Backend:
      `databases/payment_logs`, `add_project.json`.
 
 5. **F5 Detailed Input Collection**:
-
    - Inputs:
 
      ```json
@@ -4061,19 +4020,16 @@ emphasizing optimism and inclusivity, achieving TrustDelta ≥4.2 and emotional 
      driver (`backend/prompts/social_media.js`).
 
 6. **F6 Intent Mirror**:
-
    - Summary: “Grow Serenity Yoga Studio’s online presence with optimistic, inclusive content in
      Austin” (confidence: 0.94). Backend: `POST /v1/intent-mirror`.
 
 7. **F7 Deliverable Generation**:
-
    - Backend: `POST /v1/request-revision` generates 5 Reels scripts (e.g., “30s yoga tip Reel”) and
      3 emails (e.g., “Join our wellness community”). Stored in `databases/comparisons`. Served via
      `supabase/storage/deliverables/social_media.zip`.
    - Hume AI validates resonance >0.7.
 
 8. **F8 SparkSplit**:
-
    - TrustDelta: 4.2. CanAI’s optimistic tone preferred. Backend: `POST /v1/spark-split`.
 
 9. **F9 Feedback Capture**:
@@ -4105,12 +4061,10 @@ resonance >0.7.
 **Journey**:
 
 1. **F1 Discovery Hook**:
-
    - Michael clicks “Try a Free Spark” (id=`preview-btn`), generating a sample audit snippet via
      `POST /v1/generate-preview-spark`. Backend: `backend/routes/sparks.js`.
 
 2. **F2 2-Step Discovery Funnel**:
-
    - Inputs:
 
      ```json
@@ -4127,16 +4081,13 @@ resonance >0.7.
    - Backend: `POST /v1/validate-input`, trust score: 88%.
 
 3. **F3 Spark Layer**:
-
    - Sparks: “**Website Audit & Feedback**: The Performance Edge” (selected), “The UX Spark”, “The
      Conversion Spark”. Backend: `POST /v1/generate-sparks`.
 
 4. **F4 Purchase Flow**:
-
    - Payment ($79) via `POST /v1/stripe-session`. Backend: `databases/payment_logs`.
 
 5. **F5 Detailed Input Collection**:
-
    - Inputs:
 
      ```json
@@ -4159,16 +4110,13 @@ resonance >0.7.
    - Backend: `POST /v1/save-progress`, using `backend/prompts/website_audit.js`.
 
 6. **F6 Intent Mirror**:
-
    - Summary: “Optimize TechTrend Innovations’ website for performance and UX” (confidence: 0.95).
 
 7. **F7 Deliverable Generation**:
-
    - Backend: `POST /v1/request-revision` generates a 350-word audit and 120-word recommendations
      (e.g., “Improve pagespeed to 80+”). Stored in `databases/comparisons`.
 
 8. **F8 SparkSplit**:
-
    - TrustDelta: 4.3. CanAI’s specificity preferred.
 
 9. **F9 Feedback Capture**:
@@ -4321,7 +4269,6 @@ implementation, optimized for Cursor AI.
 ## 11.1 Technical Constraints
 
 - **Restricted Tech Stack**:
-
   - Use only **Webflow** (`frontend/public/`), **MemberStack** (`backend/services/memberstack.js`),
     **Supabase** (`databases/`), **Make.com** (`backend/webhooks/make_scenarios/`), **Stripe**
     (`backend/services/stripe.js`), **GPT-4o** (`backend/services/gpt4o.js`), and **Hume AI**
@@ -4331,7 +4278,6 @@ implementation, optimized for Cursor AI.
   - Example: `POST /v1/request-revision` uses GPT-4o and Hume AI, stored in `databases/comparisons`.
 
 - **Existing Make.com Scenarios**:
-
   - Reuse scenarios (`add_project.json`, `admin_add_project.json`,
     `SAAP Update Project Blueprint.json`, `add_client.json`, `save_funnel.json`, `save_inputs.json`,
     `send_email.json`, `support.json`) for workflows.
@@ -4347,7 +4293,6 @@ implementation, optimized for Cursor AI.
 ## 11.2 Operational Constraints
 
 - **2-Step Discovery Funnel**:
-
   - Complete in ≤30s with minimal fields (`businessType`, `otherType`, `primaryChallenge`,
     `preferredTone`, `customTone`, `desiredOutcome`) via `frontend/public/funnel.html`.
   - `POST /v1/validate-input` (`backend/routes/funnel.js`) validates inputs, stores in
@@ -4355,7 +4300,6 @@ implementation, optimized for Cursor AI.
   - Example: Validates in <500ms with trust score 85%.
 
 - **Output Alignment**:
-
   - Outputs align with `brandVoice` (e.g., warm, optimistic) and emotional drivers (e.g.,
     community).
   - GPT-4o prompts (`backend/prompts/`) use 12-field inputs (`databases/prompt_logs`). Hume AI
@@ -4371,14 +4315,12 @@ implementation, optimized for Cursor AI.
 ## 11.3 Legal and Security Constraints
 
 - **User Ownership**:
-
   - Users own inputs (e.g., `businessDescription`). CanAI uses anonymized data for improvement only.
   - Supabase RLS (`databases/migrations/`) restricts access. Consent modal
     (`frontend/public/consent.html`, `POST /v1/consent`) logs agreement. Data purged after 24 months
     (`databases/cron/purge.sql`).
 
 - **Secure and Accessible Interactions**:
-
   - Interactions use HTTPS, DOMPurify (`backend/middleware/validation.js`), rate limiting (100
     req/min/IP, `backend/middleware/rateLimit.js`), and CSP headers (`backend/server.js`).
   - WCAG 2.2 AA compliance via axe-core (`backend/tests/accessibility.test.js`).
@@ -4535,14 +4477,12 @@ implementation, optimized for Cursor AI.
 ## 12.1 Acquisition Metrics
 
 - **Discovery Hook Click-Through**:
-
   - > 75% of visitors click “Begin Your Journey” (id=`begin-btn`, `frontend/public/index.html`).
   - Tracked via `posthog.capture('funnel_step', { stepName: 'discovery_hook', completed: true })` on
     `GET /v1/messages` (`backend/routes/messages.js`).
   - Stored in `databases/session_logs`.
 
 - **2-Step Discovery Funnel Completion**:
-
   - > 90% of users complete the funnel (<30s, `frontend/public/funnel.html`).
   - Tracked via `posthog.capture('funnel_step', { stepName: 'discovery_funnel', completed: true })`
     on `POST /v1/validate-input` (`backend/routes/funnel.js`).
@@ -4557,7 +4497,6 @@ implementation, optimized for Cursor AI.
 ## 12.2 Engagement Metrics
 
 - **Spark Selection**:
-
   - > 80% of users select a spark (id=`spark-card`, `frontend/public/sparks.html`).
   - Tracked via
     `posthog.capture('spark_selected', { spark_id: 'community_spark', product: 'business_builder' })`
@@ -4565,7 +4504,6 @@ implementation, optimized for Cursor AI.
   - Stored in `databases/spark_logs`.
 
 - **SparkSplit Interaction**:
-
   - > 65% of users engage with SparkSplit (id=`spark-split-toggle`,
     > `frontend/public/spark-split.html`).
   - Tracked via `posthog.capture('plan_compared', { trustDelta: 4.2, selected: 'canai' })` on
@@ -4582,7 +4520,6 @@ implementation, optimized for Cursor AI.
 ## 12.3 Trust Metrics
 
 - **Intent Mirror Confirmation**:
-
   - > 85% of users confirm the Intent Mirror summary (id=`intent-confirm`,
     > `frontend/public/intent.html`).
   - Tracked via `posthog.capture('funnel_step', { stepName: 'intent_mirror', completed: true })` on
@@ -4598,7 +4535,6 @@ implementation, optimized for Cursor AI.
 ## 12.4 Conversion Metrics
 
 - **Checkout Completion**:
-
   - > 90% of users complete checkout (id=`checkout-modal`, `frontend/public/checkout.html`).
   - Tracked via `posthog.capture('funnel_step', { stepName: 'purchase_flow', completed: true })` on
     `POST /v1/stripe-session` (`backend/routes/stripe.js`).
@@ -4614,14 +4550,12 @@ implementation, optimized for Cursor AI.
 ## 12.5 Advocacy Metrics
 
 - **Feedback Response**:
-
   - > 70% of users submit feedback (id=`share-btn`, `frontend/public/feedback.html`).
   - Tracked via `posthog.capture('feedback_submitted', { rating: 5, shared: ['instagram'] })` on
     `POST /v1/feedback` (`backend/routes/feedback.js`).
   - Stored in `databases/feedback_logs`.
 
 - **Social Shares**:
-
   - > 25% of users share deliverables on social platforms.
   - Tracked via `posthog.capture('feedback_submitted', { shared: ['instagram'] })`.
   - Stored in `databases/share_logs`.
@@ -4635,13 +4569,11 @@ implementation, optimized for Cursor AI.
 ## 12.6 Satisfaction Metrics
 
 - **Feedback Scores**:
-
   - Average feedback score >4.0/5.0.
   - Tracked via `posthog.capture('feedback_submitted', { rating: 5 })`.
   - Stored in `databases/feedback_logs`.
 
 - **Emotional Resonance Score**:
-
   - Average resonance >0.7, validated by Hume AI (`backend/services/hume.js`).
   - Tracked via `posthog.capture('output_quality', { emotional_resonance_score: 0.8 })` on
     `POST /v1/spark-split`.
@@ -4656,21 +4588,18 @@ implementation, optimized for Cursor AI.
 ## 12.7 Edge Case Metrics
 
 - **Payment Failure Recovery**:
-
   - > 85% of payment failures recover (Section 9.1).
   - Tracked via `posthog.capture('retry_success', { error_type: 'stripe_failure' })` on
     `POST /v1/stripe-session`.
   - Stored in `databases/error_logs`.
 
 - **Ambiguous Input Resolution**:
-
   - > 80% of low-confidence inputs (<0.8) are resolved (Section 9.1).
   - Tracked via `posthog.capture('input_clarified', { confidence_score: 0.95 })` on
     `POST /v1/intent-mirror`.
   - Stored in `databases/prompt_logs`.
 
 - **Contradiction/NSFW Filtering**:
-
   - > 95% accuracy in filtering contradictions/NSFW inputs (Section 9.1).
   - Tracked via `posthog.capture('input_filtered', { reason: 'contradiction' })` on
     `POST /v1/filter-input` (`backend/routes/filter.js`).
@@ -5048,7 +4977,6 @@ TaskMaster tasks are provided for backend implementation, optimized for Cursor A
 ## 14.1 Security Measures
 
 - **Shift-Left Security**:
-
   - Integrate OWASP ZAP and Semgrep in CI/CD pipelines (`backend/.github/workflows/`) to detect
     vulnerabilities early.
   - Scan APIs (`backend/routes/`) and dependencies (`package.json`) for SQL injection, XSS, and
@@ -5056,28 +4984,24 @@ TaskMaster tasks are provided for backend implementation, optimized for Cursor A
   - Example: Scan `POST /v1/validate-input` (`backend/routes/funnel.js`) for input vulnerabilities.
 
 - **Supabase Row-Level Security (RLS) and Encryption**:
-
   - Enable RLS on Supabase tables (`databases/migrations/`, e.g., `prompt_logs`, `comparisons`) to
     restrict access to `auth.uid() = user_id`.
   - Use `supabase/vault` for encrypting sensitive data (e.g., API keys in `.env`).
   - Example: RLS protects Sarah’s inputs (`databases/prompt_logs`) in Sprinkle Haven scenario.
 
 - **Rate Limiting**:
-
   - Limit API requests to 100/min per IP via Express middleware (`backend/middleware/rateLimit.js`)
     on Render deployment (`https://canai-router.onrender.com`).
   - Apply to endpoints like `/v1/generate-sparks`, `/v1/stripe-session`.
   - Example: Prevents abuse during Serenity Yoga’s funnel submission.
 
 - **Input Sanitization**:
-
   - Sanitize all user inputs using DOMPurify (`backend/middleware/validation.js`) to prevent XSS and
     injection attacks.
   - Validate inputs with Joi in APIs (e.g., `POST /v1/save-progress`, `backend/routes/inputs.js`).
   - Example: Sanitizes TechTrend’s `contentSource` URL in website audit.
 
 - **Content Security Policy (CSP)**:
-
   - Apply CSP headers (`Content-Security-Policy: default-src 'self'`) in `backend/server.js` to
     restrict resource loading.
   - Enforce on Webflow UI (`frontend/public/`) and API responses.
@@ -5239,7 +5163,6 @@ backend deployment implementation, optimized for Cursor AI.
 ## 15.1 Deployment Components
 
 - **Frontend Deployment**:
-
   - Host the Webflow-based frontend (`frontend/public/`, `frontend/src/`) on Render
     (`https://canai-frontend.onrender.com`), integrated with Webflow CMS for dynamic content (e.g.,
     pricing, samples).
@@ -5248,7 +5171,6 @@ backend deployment implementation, optimized for Cursor AI.
   - Example: Deploys `frontend/public/funnel.html` for 2-Step Discovery Funnel.
 
 - **Backend Deployment**:
-
   - Deploy a serverless Node.js/TypeScript backend (`backend/server.js`) on Render
     (`https://canai-router.onrender.com`, port 10000, IPs: 52.41.36.82, 54.191.253.12,
     44.226.122.3`).
@@ -5258,7 +5180,6 @@ backend deployment implementation, optimized for Cursor AI.
   - Example: Serves APIs like `POST /v1/stripe-session` for payments.
 
 - **Admin Dashboard Deployment**:
-
   - Deploy the admin dashboard (`backend/admin/`, `GET /v1/admin-metrics`) on Render
     (`https://canai-admin.onrender.com`), secured with MemberStack auth
     (`backend/middleware/auth.js`).
@@ -5266,7 +5187,6 @@ backend deployment implementation, optimized for Cursor AI.
   - Example: Displays TrustDelta trends for Sprinkle Haven scenario.
 
 - **Rollback Mechanism**:
-
   - Maintain tagged Git releases (`v1.0.0`, `v1.1.0`) in the repository (`.git/`) for rollback.
   - Automate rollback via CI/CD pipelines (`.github/workflows/deploy.yml`) if deployment fails.
   - Example: Reverts failed deployment of `POST /v1/spark-split` update.
@@ -5674,7 +5594,6 @@ implementation, optimized for Cursor AI.
 ## 17.1 Planned Enhancements
 
 - **Dynamic UI Updates**:
-
   - Implement voice mode for interactive input (e.g., 2-Step Discovery Funnel) using Web Speech API
     in `frontend/public/funnel.html`.
   - Enable real-time UI updates (e.g., progress indicators) via WebSocket
@@ -5682,28 +5601,24 @@ implementation, optimized for Cursor AI.
   - Example: Voice input for Sarah’s funnel inputs in Sprinkle Haven scenario.
 
 - **Internationalization (i18n)**:
-
   - Expand i18n to support additional languages (e.g., Spanish, French) using i18next in
     `frontend/src/i18n.js`.
   - Store translations in `frontend/public/locales/` and Supabase (`databases/translations`).
   - Example: Translate Serenity Yoga’s Reels scripts into Spanish for broader reach.
 
 - **Feedback-Driven AI Training**:
-
   - Integrate user feedback (`databases/feedback_logs`) into GPT-4o training for personalized
     outputs.
   - Use anonymized data (`backend/services/anonymize.js`) to fine-tune prompts (`backend/prompts/`).
   - Example: Improve TechTrend’s audit specificity based on feedback scores.
 
 - **Advanced Cultural Intelligence**:
-
   - Enhance Hume AI (`backend/services/hume.js`) to incorporate cultural context (e.g., regional
     norms) in emotional resonance analysis.
   - Update prompts (`backend/prompts/`) to reflect cultural drivers (e.g., Denver’s LoHi culture).
   - Example: Tailor Sprinkle Haven’s plan to reflect local community values.
 
 - **Third-Party Integrations**:
-
   - Integrate QuickBooks (`backend/services/quickbooks.js`) for financial data in business plans and
     Google Analytics (`backend/services/google-analytics.js`) for website audit metrics.
   - Use OAuth2 for secure API access, configured in `.env`.

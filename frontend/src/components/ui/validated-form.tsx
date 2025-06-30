@@ -140,8 +140,8 @@ export const ValidatedField = React.forwardRef<
               helperText
                 ? `${name}-helper`
                 : fieldProps.error
-                ? `${name}-error`
-                : undefined
+                  ? `${name}-error`
+                  : undefined
             }
             aria-invalid={!!fieldProps.error}
           />
@@ -159,8 +159,8 @@ export const ValidatedField = React.forwardRef<
               helperText
                 ? `${name}-helper`
                 : fieldProps.error
-                ? `${name}-error`
-                : undefined
+                  ? `${name}-error`
+                  : undefined
             }
             aria-invalid={!!fieldProps.error}
           />

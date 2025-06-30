@@ -569,7 +569,8 @@ FOR ALL TO authenticated
 USING (auth.uid() = user_id);
 ```
 
-**Frontend Integration**: For React/Vite client integration patterns, see `docs/supabase-frontend-integration.md`.
+**Frontend Integration**: For React/Vite client integration patterns, see
+`docs/supabase-frontend-integration.md`.
 
 ### Make.com Webhook Integration
 

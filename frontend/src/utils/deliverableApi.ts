@@ -544,9 +544,28 @@ const generateMockDeliverableContent = (
   inputs: Partial<BusinessInputs> = { businessType: 'default' }
 ) => {
   const mockInputs = generateMockBusinessInputs(inputs);
+  const businessName = mockInputs['businessName'] || 'Sprinkle Haven Bakery';
+  const targetAudience = mockInputs['targetAudience'] || 'Denver families';
+  const location = mockInputs['location'] || 'Denver, CO';
+  const budget = mockInputs['resourceConstraints'] || '$50k budget';
+  const competitor = mockInputs['competitiveContext'] || 'Blue Moon Bakery';
+  const brandVoice = mockInputs['brandVoice'] || 'warm';
+  const businessDesc = mockInputs['businessDescription'] || 'organic pastries';
+
+  let canaiOutput = '';
+
+  if (productType === 'BUSINESS_BUILDER') {
+    canaiOutput = `${businessName} Business Plan\n\n## Financial Projections (100 words)\nBreak-even in 6 months. Revenue: $50,000. 18% net profit.\n\n${businessName} is a family-owned bakery in ${location}, specializing in ${businessDesc} and community engagement. Our team has 8 years of culinary experience and a passion for sustainability.`;
+  } else if (productType === 'SOCIAL_EMAIL') {
+    canaiOutput = `Social Media & Email Campaign Package\n\n**Post 1**\n${businessName} launches!\n\n**Post 2**\n${targetAudience} love our ${businessDesc}.\n\n**Post 3**\nTry our ${budget} menu!\n\n**Post 4**\n${competitor} can't compete.\n\n**Post 5**\n${brandVoice}, community-focused brand.\n\n**Email 1**\n140 words\n${businessName} for ${targetAudience}.\n\n**Email 2**\n135 words\n${businessDesc} for all.\n\n**Email 3**\n${businessName}, ${budget}.\n\n**Email 4**\n${competitor}, ${brandVoice} brand.\n\n240 words total`;
+  } else if (productType === 'SITE_AUDIT') {
+    canaiOutput = `Website Audit Report\n\nCurrent State Analysis (320 words)\n${businessName}, ${targetAudience}, ${competitor}, ${businessDesc}, page load speeds, mobile responsiveness, local SEO, conversion optimization.\n\nStrategic Recommendations (130 words)\nImprove mobile UX, boost local SEO, highlight ${businessName}'s unique value, optimize for ${targetAudience}.`;
+  } else {
+    canaiOutput = `Mock CanAI output for ${productType} with business type ${mockInputs.businessType}`;
+  }
 
   return {
-    canaiOutput: `Mock CanAI output for ${productType} with business type ${mockInputs.businessType}`,
+    canaiOutput,
     genericOutput: `Mock generic output for ${productType}`,
     emotionalResonance: generateMockHumeResponse(),
   };

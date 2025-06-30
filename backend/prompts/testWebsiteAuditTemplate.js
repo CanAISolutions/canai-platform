@@ -9,7 +9,10 @@ async function testWebsiteAudit() {
 
     console.log('System Prompt:', result.systemPrompt);
     console.log('User Prompt:', result.userPrompt);
-    console.log('Expected Schema:', JSON.stringify(result.expectedSchema, null, 2));
+    console.log(
+      'Expected Schema:',
+      JSON.stringify(result.expectedSchema, null, 2)
+    );
 
     const validation = result.validation(expectedOutput);
     console.log('Validation:', validation);
@@ -26,4 +29,4 @@ async function testWebsiteAudit() {
 
 export { testWebsiteAudit };
 
-testWebsiteAudit(); 
+testWebsiteAudit();
