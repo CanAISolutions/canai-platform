@@ -11,7 +11,7 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nodejs
 
 # Copy backend package files first for better Docker layer caching
-COPY backend/package-backend.json ./package.json
+COPY backend/package.json ./package.json
 
 # Install dependencies
 RUN npm install --only=production && npm cache clean --force
