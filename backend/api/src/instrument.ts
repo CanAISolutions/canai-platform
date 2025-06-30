@@ -19,7 +19,8 @@ Sentry.init({
     }
     if (event.contexts?.profile) {
       ['email', 'password'].forEach(key => {
-        if (event.contexts.profile[key]) event.contexts.profile[key] = '[REDACTED]';
+        if (event.contexts.profile[key])
+          event.contexts.profile[key] = '[REDACTED]';
       });
     }
     return event;
@@ -27,18 +28,22 @@ Sentry.init({
 });
 
 // Global error handlers for uncaught exceptions and unhandled rejections
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
   Sentry.captureException(err);
   console.error('Uncaught Exception:', err.message);
 });
 
-process.on('unhandledRejection', (reason) => {
+process.on('unhandledRejection', reason => {
   Sentry.captureException(reason);
   console.error('Unhandled Rejection:', reason);
 });
 
 // Sentry context enrichment helper
-export function setSentryContext(req: Request, res: Response, next: NextFunction) {
+export function setSentryContext(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   Sentry.withScope(scope => {
     // Use real user/session/tenant data if available
     scope.setUser({ id: req.user?.id || 'anonymous' });
@@ -50,4 +55,4 @@ export function setSentryContext(req: Request, res: Response, next: NextFunction
   });
 }
 
-export default Sentry; 
+export default Sentry;

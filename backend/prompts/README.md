@@ -2,16 +2,19 @@
 
 ## 🎯 Gold Standard Implementation
 
-This framework implements the exact gold standard specification provided for emotionally intelligent prompt templates. It ensures consistent quality, emotional resonance, and cultural awareness across all CanAI outputs.
+This framework implements the exact gold standard specification provided for emotionally intelligent
+prompt templates. It ensures consistent quality, emotional resonance, and cultural awareness across
+all CanAI outputs.
 
 ## 📋 Core Specifications
 
 ### Input Data Schema
+
 ```json
 {
   "businessName": "string",
   "targetAudience": "string (with location)",
-  "primaryGoal": "string", 
+  "primaryGoal": "string",
   "brandVoice": "string (warm|innovative|professional|playful|bold|caring)",
   "businessDescription": "string",
   "competitiveContext": "string (optional)",
@@ -23,6 +26,7 @@ This framework implements the exact gold standard specification provided for emo
 ```
 
 ### Output Schema (Gold Standard)
+
 ```json
 {
   "Summary": {
@@ -32,7 +36,7 @@ This framework implements the exact gold standard specification provided for emo
   },
   "Plan": {
     "CanAI_Output": "string (emotionally resonant, culturally aware)",
-    "Generic_Output": "string (neutral, formulaic)", 
+    "Generic_Output": "string (neutral, formulaic)",
     "TrustDelta": "number (0.0-5.0)"
   },
   "PostPurchase": {
@@ -48,6 +52,7 @@ This framework implements the exact gold standard specification provided for emo
 ## 🧠 Emotional Intelligence Engine
 
 ### Brand Voice Mapping
+
 - **warm**: heartfelt connection, community-focused, nurturing, welcoming, authentic
 - **innovative**: forward-thinking, pioneering, disruptive, cutting-edge, visionary
 - **professional**: trustworthy, reliable, expert-driven, authoritative, polished
@@ -56,7 +61,9 @@ This framework implements the exact gold standard specification provided for emo
 - **caring**: empathetic, supportive, understanding, compassionate, healing
 
 ### Cultural Context Intelligence
+
 Currently supports:
+
 - **Denver, CO**: outdoor lifestyle, craft culture, community-minded, environmentally conscious
 - **Austin, TX**: keep it weird, music culture, entrepreneurial spirit, food scene
 - **Default**: quality, community, innovation, growth, authenticity
@@ -64,17 +71,19 @@ Currently supports:
 ## 🚀 Quick Start
 
 ### 1. Business Plan Generation
+
 ```javascript
 const { BusinessPlanTemplate } = require('./businessPlanTemplate');
 
 const businessPlan = new BusinessPlanTemplate();
 
 const inputData = {
-  businessName: "Sprinkle Haven Bakery",
-  targetAudience: "Local families and young professionals in Denver, CO",
-  primaryGoal: "Secure $75,000 funding to open a flagship store",
-  brandVoice: "warm",
-  businessDescription: "A cozy bakery offering artisan pastries, custom cakes, and coffee, fostering community through events"
+  businessName: 'Sprinkle Haven Bakery',
+  targetAudience: 'Local families and young professionals in Denver, CO',
+  primaryGoal: 'Secure $75,000 funding to open a flagship store',
+  brandVoice: 'warm',
+  businessDescription:
+    'A cozy bakery offering artisan pastries, custom cakes, and coffee, fostering community through events',
 };
 
 const result = await businessPlan.generateBusinessPlan(inputData);
@@ -97,7 +106,9 @@ backend/prompts/
 **Input**: Sprinkle Haven Bakery (Denver, CO, warm brand voice)
 
 **Expected Output**:
-- **Summary**: "Launch Sprinkle Haven Bakery with warm tone to unite Denver families via cozy artisan experiences."
+
+- **Summary**: "Launch Sprinkle Haven Bakery with warm tone to unite Denver families via cozy
+  artisan experiences."
 - **ConfidenceScore**: 0.97
 - **TrustDelta**: 4.8
 - **CanAI_Output**: Emotionally intelligent, culturally aware business plan
@@ -106,24 +117,34 @@ backend/prompts/
 
 ## 💡 Philosophy
 
-**Quality > Cost**: Prioritize exceptional customer experience and emotional resonance while being responsible with resource usage.
+**Quality > Cost**: Prioritize exceptional customer experience and emotional resonance while being
+responsible with resource usage.
 
-**Cultural Intelligence**: Every output should demonstrate deep understanding of local culture, values, and context.
+**Cultural Intelligence**: Every output should demonstrate deep understanding of local culture,
+values, and context.
 
 **Brand Voice Authenticity**: Maintain unwavering consistency with the customer's brand voice.
 
-**Measurable Emotional Impact**: Use TrustDelta scores to quantify the emotional advantage of CanAI outputs. 
+**Measurable Emotional Impact**: Use TrustDelta scores to quantify the emotional advantage of CanAI
+outputs.
 
 # Prompt Templates (Task 5.4)
 
-Implements prompt templates for CanAI's three product tracks per PRD Sections 6.2, 6.7, 6.8, 10.2, 10.3:
-- **businessPlanTemplate.js**: Generates 700–800-word business plans (PRD Section 10.1, Sprinkle Haven).
-- **socialMediaTemplate.js**: Generates 3–7 social posts, 3–5 emails (PRD Section 10.2, Serenity Yoga).
+Implements prompt templates for CanAI's three product tracks per PRD Sections 6.2, 6.7, 6.8, 10.2,
+10.3:
+
+- **businessPlanTemplate.js**: Generates 700–800-word business plans (PRD Section 10.1, Sprinkle
+  Haven).
+- **socialMediaTemplate.js**: Generates 3–7 social posts, 3–5 emails (PRD Section 10.2, Serenity
+  Yoga).
 - **websiteAuditTemplate.js**: Generates 300–400-word website audits (PRD Section 10.3, TechTrend).
-  - Accessibility validation now checks for color contrast, alt text, heading structure, focus management, and form labels, not just keywords like WCAG/accessibility.
-- **framework.js**: Provides emotional/cultural context, versioning, and regex validation (PRD Section 6.2).
+  - Accessibility validation now checks for color contrast, alt text, heading structure, focus
+    management, and form labels, not just keywords like WCAG/accessibility.
+- **framework.js**: Provides emotional/cultural context, versioning, and regex validation (PRD
+  Section 6.2).
 
 **Usage**:
+
 ```javascript
 const socialMediaTemplate = new SocialMediaTemplate();
 const campaign = await socialMediaTemplate.generateSocialMediaCampaign({
@@ -147,3 +168,4 @@ Uses GPT-4o only (Section 1.5).
 
 
 Stores templates in prompt_templates (Section 6.2).
+```

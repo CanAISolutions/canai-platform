@@ -13,4 +13,4 @@ function SentryTest() {
   return <button onClick={handleClick}>Trigger Error</button>;
 }
 
-export default SentryTest; 
+export default SentryTest;

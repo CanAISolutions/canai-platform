@@ -2,34 +2,37 @@
 
 ## GPT-4o Token Counting & Cost Tracking (PRD Section 1.5, Task 5.5)
 
-- **Token Counting:** Uses tiktoken to count tokens for GPT-4o inputs, supporting up to 128K tokens per request.
-- **Cost Tracking:** Calculates cost at $5 per 1M tokens, logs usage and cost to `prompt_logs` (fields: user_id, token_usage, cost, prompt_version).
-- **Chunking:** Automatically splits inputs >128K tokens using MapReduce, prioritizing `businessDescription`.
+- **Token Counting:** Uses tiktoken to count tokens for GPT-4o inputs, supporting up to 128K tokens
+  per request.
+- **Cost Tracking:** Calculates cost at $5 per 1M tokens, logs usage and cost to `prompt_logs`
+  (fields: user_id, token_usage, cost, prompt_version).
+- **Chunking:** Automatically splits inputs >128K tokens using MapReduce, prioritizing
+  `businessDescription`.
 - **High Cost Alerts:** Logs to `support_requests` and PostHog if daily cost exceeds $50.
 - **PostHog Events:** Emits `gpt4o_request` and `cost_threshold_exceeded` for observability.
-- **Unit Tests:** >80% coverage for token counting, cost calculation, and chunking in `backend/tests/gpt4o.test.js`.
+- **Unit Tests:** >80% coverage for token counting, cost calculation, and chunking in
+  `backend/tests/gpt4o.test.js`.
 
 **Usage:**
-- See `GPT4Service` in `backend/services/gpt4o.js` for methods: `countTokens`, `calculateCost`, `chunkInput`.
-- Fully aligned with PRD Section 1.5 and TaskMaster Task 5.5. No scope creep or non-PRD features included.
 
-<div align="center">
+- See `GPT4Service` in `backend/services/gpt4o.js` for methods: `countTokens`, `calculateCost`,
+  `chunkInput`.
+- Fully aligned with PRD Section 1.5 and TaskMaster Task 5.5. No scope creep or non-PRD features
+  included.
 
-![CanAI Logo](https://via.placeholder.com/200x80/1E40AF/FFFFFF?text=CanAI)
-
-**Empowering Small Businesses Through AI-Driven Emotional Intelligence**
-
-[![Build Status](https://github.com/canai-platform/canai-platform/workflows/CI/badge.svg)](https://github.com/canai-platform/canai-platform/actions)
-[![Coverage](https://img.shields.io/badge/coverage-80%25-green.svg)](./coverage)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node.js-18.0%2B-brightgreen.svg)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/typescript-5.5-blue.svg)](https://www.typescriptlang.org/)
-
-[🚀 Live Demo](https://canai-frontend.onrender.com) | [📖 Documentation](./docs) |
-[🎯 API Docs](./docs/api-contract-specification.md) |
-[🏗️ Architecture](<./docs/technical-architecture-document-(TAD).md>)
-
-</div>
+> ![CanAI Logo](https://via.placeholder.com/200x80/1E40AF/FFFFFF?text=CanAI)
+>
+> **Empowering Small Businesses Through AI-Driven Emotional Intelligence**
+>
+> [![Build Status](https://github.com/canai-platform/canai-platform/workflows/CI/badge.svg)](https://github.com/canai-platform/canai-platform/actions)
+> [![Coverage](https://img.shields.io/badge/coverage-80%25-green.svg)](./coverage)
+> [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+> [![Node.js](https://img.shields.io/badge/node.js-18.0%2B-brightgreen.svg)](https://nodejs.org/)
+> [![TypeScript](https://img.shields.io/badge/typescript-5.5-blue.svg)](https://www.typescriptlang.org/)
+>
+> [🚀 Live Demo](https://canai-frontend.onrender.com) | [📖 Documentation](./docs) |
+> [🎯 API Docs](./docs/api-contract-specification.md) |
+> [🏗️ Architecture](<./docs/technical-architecture-document-(TAD).md>)
 
 ## 🌟 Overview
 
@@ -191,10 +194,7 @@ graph TB
 
 ## 📁 Project Structure
 
-This project follows a **monorepo architecture** with workspaces for maximum efficiency and
-maintainability:
-
-```
+```plaintext
 canai-platform/
 ├── 🎨 frontend/                    # React frontend application
 │   ├── src/
@@ -533,14 +533,25 @@ Special thanks to:
 
 ---
 
-<div align="center">
-
-**Built with ❤️ by the CanAI Team**
-
-[🌟 Star us on GitHub](https://github.com/canai-platform/canai-platform) |
-[🐦 Follow us on Twitter](https://twitter.com/canai_platform) |
-[💼 Connect on LinkedIn](https://linkedin.com/company/canai-platform)
-
-</div>
+> **Built with ❤️ by the CanAI Team**
+>
+> [🌟 Star us on GitHub](https://github.com/canai-platform/canai-platform) |
+> [🐦 Follow us on Twitter](https://twitter.com/canai_platform) |
+> [💼 Connect on LinkedIn](https://linkedin.com/company/canai-platform)
 
 <!-- Trigger CI: Node.js 20 workflow update validation -->
+
+## Security Update: Memberstack Authentication Middleware
+
+- All production API requests now require a valid Memberstack JWT in the `Authorization` header.
+- See [docs/api/endpoints.md](docs/api/endpoints.md) for authentication requirements and error
+  handling.
+- Dependencies: `jsonwebtoken`, `jwks-rsa`.
+- In non-production, authentication is bypassed for testing.
+
+## Security: Secret/API Key Hygiene
+
+- All API keys, secrets, and tokens must be loaded from environment variables, never hardcoded in
+  code or logs.
+- Pre-commit and CI checks will block any commit or push containing likely secrets.
+- See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for full guidelines.

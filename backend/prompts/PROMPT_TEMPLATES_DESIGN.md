@@ -1,13 +1,18 @@
 # CanAI Prompt Templates Design Document
 
 ## Overview
-This document defines the emotionally intelligent prompt template system for the CanAI Emotional Sovereignty Platform. The system generates dual outputs (CanAI vs Generic) with cultural context, emotional resonance, and structured responses across three core use cases: Business Plans, Social Media Campaigns, and Website Audits.
+
+This document defines the emotionally intelligent prompt template system for the CanAI Emotional
+Sovereignty Platform. The system generates dual outputs (CanAI vs Generic) with cultural context,
+emotional resonance, and structured responses across three core use cases: Business Plans, Social
+Media Campaigns, and Website Audits.
 
 ---
 
 ## Gold Standard: Business Plan Template
 
 ### 1. Prompt Specification
+
 ```json
 {
   "Prompt": [
@@ -22,6 +27,7 @@ This document defines the emotionally intelligent prompt template system for the
 ```
 
 ### 2. Example Input Data
+
 ```json
 {
   "businessName": "Sprinkle Haven Bakery",
@@ -38,6 +44,7 @@ This document defines the emotionally intelligent prompt template system for the
 ```
 
 ### 3. Expected Output Structure
+
 ```json
 {
   "Summary": {
@@ -65,49 +72,58 @@ This document defines the emotionally intelligent prompt template system for the
 ## Framework Architecture
 
 ### Core Principles
-1. **Dual Output Strategy**: Always generate both CanAI (emotionally resonant) and Generic (neutral) outputs
-2. **Structured Response**: Return Summary, Core Content, and PostPurchase objects with specific fields
-3. **Emotional Intelligence**: Infer emotional drivers, incorporate cultural context, maintain brand voice
+
+1. **Dual Output Strategy**: Always generate both CanAI (emotionally resonant) and Generic (neutral)
+   outputs
+2. **Structured Response**: Return Summary, Core Content, and PostPurchase objects with specific
+   fields
+3. **Emotional Intelligence**: Infer emotional drivers, incorporate cultural context, maintain brand
+   voice
 4. **Quality Over Cost**: Prioritize exceptional customer experience while being cost-conscious
 5. **Comprehensive Context**: Use rich input data for personalization
 
 ### Template Structure
+
 ```javascript
 const templateStructure = {
-  systemPrompt: ["Role definition", "Quality standards", "Context awareness"],
-  userPrompt: "Structured prompt with {placeholders}",
+  systemPrompt: ['Role definition', 'Quality standards', 'Context awareness'],
+  userPrompt: 'Structured prompt with {placeholders}',
   outputSchema: {
-    Summary: { Summary: "string", ConfidenceScore: "number", ClarifyingQuestions: "array" },
-    CoreContent: { CanAI_Output: "string", Generic_Output: "string", TrustDelta: "number" },
-    PostPurchase: { /* Tailored to use case */ }
-  }
+    Summary: { Summary: 'string', ConfidenceScore: 'number', ClarifyingQuestions: 'array' },
+    CoreContent: { CanAI_Output: 'string', Generic_Output: 'string', TrustDelta: 'number' },
+    PostPurchase: {
+      /* Tailored to use case */
+    },
+  },
 };
 ```
 
 ### Emotional Driver Intelligence
+
 ```javascript
 const emotionalDriverMap = {
   // Brand Voice → Emotional Drivers
-  warm: ["heartfelt connection", "community-focused", "nurturing"],
-  innovative: ["forward-thinking", "pioneering", "disruptive"],
-  professional: ["trustworthy", "reliable", "expert-driven"],
-  playful: ["joyful", "creative", "engaging"],
-  
+  warm: ['heartfelt connection', 'community-focused', 'nurturing'],
+  innovative: ['forward-thinking', 'pioneering', 'disruptive'],
+  professional: ['trustworthy', 'reliable', 'expert-driven'],
+  playful: ['joyful', 'creative', 'engaging'],
+
   // Context-Based Drivers
-  family_business: ["generational", "legacy-building", "family values"],
-  tech_startup: ["scalable", "data-driven", "user-centric"],
-  local_business: ["community-rooted", "neighborhood-focused", "locally-sourced"]
+  family_business: ['generational', 'legacy-building', 'family values'],
+  tech_startup: ['scalable', 'data-driven', 'user-centric'],
+  local_business: ['community-rooted', 'neighborhood-focused', 'locally-sourced'],
 };
 ```
 
 ### Cultural Context Engine
+
 ```javascript
 const culturalContextMap = {
-  "Denver, CO": {
-    values: ["outdoor lifestyle", "craft culture", "community-minded"],
-    businessContext: ["local sourcing", "sustainability", "work-life balance"],
-    demographicInsights: ["health-conscious", "environmentally aware", "tech-savvy"]
-  }
+  'Denver, CO': {
+    values: ['outdoor lifestyle', 'craft culture', 'community-minded'],
+    businessContext: ['local sourcing', 'sustainability', 'work-life balance'],
+    demographicInsights: ['health-conscious', 'environmentally aware', 'tech-savvy'],
+  },
 };
 ```
 
@@ -116,6 +132,7 @@ const culturalContextMap = {
 ## Social Media & Email Campaign Template
 
 ### 1. Prompt Specification
+
 ```json
 {
   "Prompt": [
@@ -130,6 +147,7 @@ const culturalContextMap = {
 ```
 
 ### 2. Example Input Data
+
 ```json
 {
   "businessName": "Sprinkle Haven Bakery",
@@ -146,6 +164,7 @@ const culturalContextMap = {
 ```
 
 ### 3. Expected Output Structure
+
 ```json
 {
   "Summary": {
@@ -185,6 +204,7 @@ const culturalContextMap = {
 ## Website Audit & Feedback Template
 
 ### 1. Prompt Specification
+
 ```json
 {
   "Prompt": [
@@ -199,6 +219,7 @@ const culturalContextMap = {
 ```
 
 ### 2. Example Input Data
+
 ```json
 {
   "businessName": "Sprinkle Haven Bakery",
@@ -215,6 +236,7 @@ const culturalContextMap = {
 ```
 
 ### 3. Expected Output Structure
+
 ```json
 {
   "Summary": {
@@ -256,6 +278,7 @@ const culturalContextMap = {
 ## Implementation Strategy
 
 ### File Structure
+
 ```
 backend/prompts/
 ├── templates.js          # Main template engine
@@ -270,6 +293,7 @@ backend/prompts/
 ### Quality vs Cost Balance
 
 #### Tier-Based Approach
+
 1. **Premium Tier (Gold Standard)**:
    - Full word count outputs (700-800 words for business plans)
    - Rich cultural context and emotional intelligence
@@ -281,6 +305,7 @@ backend/prompts/
    - Essential PostPurchase elements
 
 #### Smart Optimization
+
 ```javascript
 const getOptimalParams = (inputComplexity, userTier) => {
   if (userTier === 'premium') {
@@ -293,11 +318,13 @@ const getOptimalParams = (inputComplexity, userTier) => {
 ### Testing Strategy
 
 #### Gold Standard Validation
+
 - Use Sprinkle Haven examples as benchmarks for each template
 - Validate output structure matches expected format
 - Ensure emotional resonance and cultural relevance
 
 #### Quality Metrics
+
 - TrustDelta score consistency (target: >4.0)
 - Word count adherence
 - Emotional driver integration
@@ -316,4 +343,5 @@ const getOptimalParams = (inputComplexity, userTier) => {
 
 ---
 
-*This document serves as the foundational design for CanAI's emotionally intelligent prompt system, ensuring consistent quality and user experience across all content generation use cases.* 
+_This document serves as the foundational design for CanAI's emotionally intelligent prompt system,
+ensuring consistent quality and user experience across all content generation use cases._

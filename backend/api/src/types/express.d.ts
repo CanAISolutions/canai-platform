@@ -6,4 +6,4 @@ declare module 'express-serve-static-core' {
     session?: { id?: string };
     tenant?: { id?: string };
   }
-} 
+}

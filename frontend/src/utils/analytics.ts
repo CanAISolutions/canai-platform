@@ -3,6 +3,7 @@
  */
 
 import { generateCorrelationId } from './tracing';
+import posthog from 'posthog-js';
 
 // TypeScript interfaces for analytics properties
 interface BaseAnalyticsProperties {
@@ -126,6 +127,27 @@ const APP_VERSION = import.meta.env['VITE_APP_VERSION'] || '0.0.0';
 const APP_ENV = import.meta.env.MODE || 'development';
 const DEPLOYMENT_ID = import.meta.env['VITE_DEPLOYMENT_ID'] || 'unknown';
 
+// --- PostHog Initialization ---
+// Privacy: Do not send PII. See canai-analytics-rules.
+// Use VITE_POSTHOG_API_KEY for frontend analytics. Backend uses POSTHOG_API_KEY.
+const POSTHOG_API_KEY = import.meta.env['VITE_POSTHOG_API_KEY'];
+const POSTHOG_HOST =
+  import.meta.env['VITE_POSTHOG_HOST'] || 'https://app.posthog.com';
+
+let analyticsClient;
+if (POSTHOG_API_KEY) {
+  // Real PostHog client
+  posthog.init(POSTHOG_API_KEY, { api_host: POSTHOG_HOST });
+  analyticsClient = posthog;
+  console.log('[Analytics] Using real PostHog client');
+} else {
+  // Fallback mock
+  analyticsClient = mockPostHog;
+  console.log(
+    '[Analytics] Using mock analytics client (no VITE_POSTHOG_API_KEY)'
+  );
+}
+
 // Page view tracking
 export const trackPageView = (
   page: string,
@@ -150,7 +172,7 @@ export const trackEvent = (
   properties?: AnalyticsProperties
 ) => {
   try {
-    mockPostHog.capture(eventName, {
+    analyticsClient.capture(eventName, {
       timestamp: new Date().toISOString(),
       correlation_id: generateCorrelationId(),
       ...properties,
@@ -357,7 +379,10 @@ export const trackError = (error: Error, context?: ErrorProperties) => {
 };
 
 // Log interaction to backend /v1/log-interaction endpoint
-export async function logInteraction({ interaction_type, interaction_details }: {
+export async function logInteraction({
+  interaction_type,
+  interaction_details,
+}: {
   interaction_type: string;
   interaction_details?: Record<string, string | number | boolean | null>;
 }) {

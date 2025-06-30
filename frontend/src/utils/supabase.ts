@@ -7,8 +7,8 @@ import { createClient } from '@supabase/supabase-js';
 // Supabase configuration using Vite environment variables
 const SUPABASE_URL =
   import.meta.env['VITE_SUPABASE_URL'] || 'https://your-project.supabase.co';
-const SUPABASE_ANON_KEY =
-  import.meta.env['VITE_SUPABASE_ANON_KEY'] || 'your-anon-key';
+const SUPABASE_ANON_KEY = import.meta.env['VITE_SUPABASE_ANON_KEY'];
+if (!SUPABASE_ANON_KEY) throw new Error('VITE_SUPABASE_ANON_KEY is required');
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

@@ -71,6 +71,7 @@ backend/
 ├── config/                   # Configurations
 │   └── quizRules.json
 ├── middleware/               # Express middleware
+│   └── auth.js               # PRD-compliant authentication middleware
 ├── routes/                   # API routes
 ├── services/                 # Business logic
 ├── supabase/client.js        # Supabase client for RLS-safe CRUD (preferred for app logic)
@@ -93,7 +94,13 @@ backend/
 - **Environment**: Production deployment with graceful shutdown
 - **Docker**: Containerized with Alpine Node.js 18, non-root user
 
-- **db.js**: Provides a direct Postgres connection using the `postgres` library. Use only for backend admin scripts, migrations, or advanced analytics that require raw SQL. Always use environment variable `DATABASE_URL` for credentials. Do **not** use in frontend or expose to client code.
+- **db.js**: Provides a direct Postgres connection using the `postgres` library. Use only for
+  backend admin scripts, migrations, or advanced analytics that require raw SQL. Always use
+  environment variable `DATABASE_URL` for credentials. Do **not** use in frontend or expose to
+  client code.
+- **auth.js**: PRD-compliant authentication middleware. Enforces Memberstack JWT authentication in
+  production using `jsonwebtoken` and `jwks-rsa`. Bypasses auth in non-production for testing. See
+  [docs/api/endpoints.md](api/endpoints.md) for details and usage.
 
 ### 3. Frontend (Workspace)
 
@@ -195,23 +202,26 @@ packages/
 The platform implements a **tiered intelligence architecture** for sustainable scaling:
 
 ### Pricing Tiers
+
 - **Basic** ($49/mo): GPT-3.5 + cultural awareness
-- **Growth** ($199/mo): GPT-4o-mini + full emotional intelligence  
+- **Growth** ($199/mo): GPT-4o-mini + full emotional intelligence
 - **Scale** ($499/mo): GPT-4o + premium features
 
 ### Technical Implementation
+
 - **Smart Model Selection**: Automatic tier-based routing
 - **Multi-level Caching**: Cultural context (24hr), templates (1hr), responses (30min)
 - **Progressive Enhancement**: Tier-specific feature scaling
 - **Cost Control**: 60-75% reduction target through optimization
 
 ### Expected Outcomes
+
 - **API Cost Reduction**: $0.30 → $0.05-0.25 per request
 - **Cache Hit Rate**: 40-70% API call reduction
 - **Quality Maintenance**: TrustDelta ≥4.2, emotional resonance ≥0.7
 - **Business Impact**: $124/month blended ARPU, >85% gross margins
 
-*Full details in `docs/cost-optimization-blueprint.md`*
+_Full details in `docs/cost-optimization-blueprint.md`_
 
 ## Development Status
 
@@ -362,34 +372,48 @@ All work is aligned with PRD.md (see Section 7.2 Security Requirements and relat
 
 ## Analytics & Event Tracking Milestones
 
-- **2025-06-25**: All analytics events (backend and frontend) are now automatically enriched with `appVersion`, `environment`, and `deploymentId` for every event. This applies to:
-  - `backend/services/posthog.js` (Node: uses process.env.npm_package_version, NODE_ENV, DEPLOYMENT_ID)
-  - `frontend/src/utils/analytics.ts` (Vite: uses import.meta.env['VITE_APP_VERSION'], MODE, VITE_DEPLOYMENT_ID)
-- This fulfills TaskMaster subtask 3.6 and aligns with PRD analytics enrichment requirements and canai-analytics-rules.
+- **2025-06-25**: All analytics events (backend and frontend) are now automatically enriched with
+  `appVersion`, `environment`, and `deploymentId` for every event. This applies to:
+  - `backend/services/posthog.js` (Node: uses process.env.npm_package_version, NODE_ENV,
+    DEPLOYMENT_ID)
+  - `frontend/src/utils/analytics.ts` (Vite: uses import.meta.env['VITE_APP_VERSION'], MODE,
+    VITE_DEPLOYMENT_ID)
+- This fulfills TaskMaster subtask 3.6 and aligns with PRD analytics enrichment requirements and
+  canai-analytics-rules.
 
 ## [2024-06-20] PostHog Analytics Integration Updates
-- Updated `backend/services/posthog.js` for PRD compliance: connection validation, SIGTERM shutdown, improved retry logic, batching config.
+
+- Updated `backend/services/posthog.js` for PRD compliance: connection validation, SIGTERM shutdown,
+  improved retry logic, batching config.
 - Updated/expanded unit tests in `backend/tests/unit/posthog.test.js`.
 - Added `backend/tests/vitest.setup.js` for test environment setup.
 - Updated `backend/vitest.config.js` to include setup file.
 - Cleaned up `package.json` and `tsconfig.json` duplicates.
 - All changes align with TaskMaster Task 3 and PRD analytics requirements.
 
-- See [docs/analytics-implementation-log.md](analytics-implementation-log.md) for analytics milestone history and technical audit trail.
+- See [docs/analytics-implementation-log.md](analytics-implementation-log.md) for analytics
+  milestone history and technical audit trail.
 
 ## Analytics Implementation (PostHog)
-- **Service:** `backend/services/posthog.js` — Handles PostHog client initialization, event batching, user/session tracking, event enrichment, and privacy compliance.
-- **Unit Tests:** `backend/tests/unit/posthog.test.js` — Covers event validation, PII scrubbing, session management, event enrichment, all event tracking functions, and batching logic.
-- **Integration Test Skeleton:** `backend/tests/integration/posthog.integration.test.js` — Placeholder for dashboard verification logic.
-- **Setup:** `backend/tests/vitest.setup.js` — Ensures all analytics-related environment variables are set for tests.
+
+- **Service:** `backend/services/posthog.js` — Handles PostHog client initialization, event
+  batching, user/session tracking, event enrichment, and privacy compliance.
+- **Unit Tests:** `backend/tests/unit/posthog.test.js` — Covers event validation, PII scrubbing,
+  session management, event enrichment, all event tracking functions, and batching logic.
+- **Integration Test Skeleton:** `backend/tests/integration/posthog.integration.test.js` —
+  Placeholder for dashboard verification logic.
+- **Setup:** `backend/tests/vitest.setup.js` — Ensures all analytics-related environment variables
+  are set for tests.
 - **Config:** `vitest.config.js` — Includes setup file and integration test path.
 
 ## Test Coverage
+
 - All analytics logic is unit tested, including error and user action events.
 - Batching logic is tested for flushAt compliance.
 - Integration test placeholder exists for future dashboard/API verification.
 
 ## Next Steps
+
 - Implement integration test logic for dashboard verification.
 - Migrate sessionStore to Redis/DB for production scalability.
 - Update documentation as analytics evolves.
@@ -397,22 +421,26 @@ All work is aligned with PRD.md (see Section 7.2 Security Requirements and relat
 ## Sentry Error Monitoring Setup
 
 ### Backend (Node.js)
+
 - Sentry initialized in `backend/api/src/Server.ts` using `@sentry/node` and `@sentry/tracing`.
 - DSN and environment set via `SENTRY_DSN` and `SENTRY_ENV` in `backend/api/.env`.
 - Profiling and release tagging enabled.
 - Test error can be triggered with `SENTRY_TEST_ERROR=true`.
 
 ### Frontend (React)
+
 - Sentry initialized in `frontend/src/main.tsx` using `@sentry/react` and `@sentry/tracing`.
 - DSN and environment set via `SENTRY_DSN` and `SENTRY_ENV` in `frontend/.env`.
 - Release tagging and BrowserTracing enabled.
 - Test error can be triggered with `VITE_SENTRY_TEST_ERROR=true`.
 
 ## Sentry Frontend Configuration (Task 4)
+
 - **File**: `frontend/src/main.tsx`
 - **Purpose**: Initializes Sentry React SDK for error monitoring and release tracking.
 - **Environment Variables**:
-  - `VITE_SENTRY_DSN` (or `SENTRY_DSN`): Sentry DSN for error reporting, stored in `.env` and CI/CD secrets.
+  - `VITE_SENTRY_DSN` (or `SENTRY_DSN`): Sentry DSN for error reporting, stored in `.env` and CI/CD
+    secrets.
   - `VITE_SENTRY_ENV` (or `SENTRY_ENV`): Environment name (development, production).
 - **Integration Details**:
   - Uses `@sentry/react` v7+ only (no `@sentry/tracing` or `BrowserTracing`).
@@ -425,46 +453,62 @@ All work is aligned with PRD.md (see Section 7.2 Security Requirements and relat
 - **Documentation Updated**: 2025-06-26
 
 ## Sentry Error Capture (Task 4.2)
-- **Backend**: Configured PII scrubbing, context tags, and error handlers in `backend/api/src/instrument.ts` and middleware in `backend/api/src/Shared/Logger.ts`.
-- **Frontend**: Added error boundary, context enrichment, and test route in `frontend/src/App.tsx` and `frontend/src/components/SentryTest.tsx`.
+
+- **Backend**: Configured PII scrubbing, context tags, and error handlers in
+  `backend/api/src/instrument.ts` and middleware in `backend/api/src/Shared/Logger.ts`.
+- **Frontend**: Added error boundary, context enrichment, and test route in `frontend/src/App.tsx`
+  and `frontend/src/components/SentryTest.tsx`.
 - **Validation**: Errors captured with tags and breadcrumbs in Sentry dashboard.
 
-- [ ] Backend: Triggered /test-error, confirmed error with tags (user.id, session.id, tenant.id) and [REDACTED] PII in Sentry.
-- [ ] Frontend: Visited /sentry-test, clicked button, confirmed error with tags and ui.click breadcrumb.
+- [ ] Backend: Triggered /test-error, confirmed error with tags (user.id, session.id, tenant.id) and
+      [REDACTED] PII in Sentry.
+- [ ] Frontend: Visited /sentry-test, clicked button, confirmed error with tags and ui.click
+      breadcrumb.
 
 ### Sentry Performance Monitoring & Release Tracking (Task 4.3)
-- **Backend**:  
-  - Sentry initialized in `backend/api/src/instrument.ts` with `tracesSampleRate`, `profilesSampleRate`, and release tagging.
-  - API endpoints instrumented with Sentry transactions and spans (see `/test-sentry` in `App.ts` for template).
-  - Source maps are generated via TypeScript build (`tsc --sourceMap true --outDir dist`) and uploaded to Sentry in CI/CD (`.github/workflows/ci.yml`).
+
+- **Backend**:
+  - Sentry initialized in `backend/api/src/instrument.ts` with `tracesSampleRate`,
+    `profilesSampleRate`, and release tagging.
+  - API endpoints instrumented with Sentry transactions and spans (see `/test-sentry` in `App.ts`
+    for template).
+  - Source maps are generated via TypeScript build (`tsc --sourceMap true --outDir dist`) and
+    uploaded to Sentry in CI/CD (`.github/workflows/ci.yml`).
   - Release version is set from `process.env.npm_package_version` (injected by CI).
-- **Frontend**:  
+- **Frontend**:
   - Sentry initialized in `frontend/src/main.tsx` with `tracesSampleRate` and release tagging.
   - Vite build outputs source maps to `dist/`, which are uploaded to Sentry in CI/CD.
   - Release version is set from `import.meta.env.VITE_APP_VERSION` (injected by CI).
-- **CI/CD**:  
-  - Both backend and frontend jobs in `.github/workflows/ci.yml` include steps to build with source maps and upload them to Sentry using `@sentry/cli`.
+- **CI/CD**:
+  - Both backend and frontend jobs in `.github/workflows/ci.yml` include steps to build with source
+    maps and upload them to Sentry using `@sentry/cli`.
   - Sentry release version is set to `${{ github.sha }}` for traceability.
-- **Validation**:  
+- **Validation**:
   - Test errors and transactions are visible in Sentry dashboard.
   - Source maps resolve stack traces to original TypeScript/React code.
   - Release tracking is visible in Sentry for both backend and frontend.
 
 ### Sentry User Identification & Alerting (Task 4.4)
-- **Backend**:  
-  - Sentry context enrichment now uses real user, session, and tenant data from the request object (see `setSentryContext` in `instrument.ts`).
+
+- **Backend**:
+  - Sentry context enrichment now uses real user, session, and tenant data from the request object
+    (see `setSentryContext` in `instrument.ts`).
   - All Sentry events are tagged with the actual user ID, session ID, and tenant ID when available.
-- **Frontend**:  
-  - Sentry context enrichment is ready to use real user and tenant data from the authentication system (see `setSentryContext` in `utils/sentry.ts` and usage in `App.tsx`).
-  - Update the call to `setSentryContext` to use real user/session/tenant data as soon as available from Memberstack or your auth provider.
-- **Alerting**:  
+- **Frontend**:
+  - Sentry context enrichment is ready to use real user and tenant data from the authentication
+    system (see `setSentryContext` in `utils/sentry.ts` and usage in `App.tsx`).
+  - Update the call to `setSentryContext` to use real user/session/tenant data as soon as available
+    from Memberstack or your auth provider.
+- **Alerting**:
   - Both email and Slack alerting are enabled in Sentry for critical errors and performance issues.
   - Alert rules are configured for high error frequency and performance degradation.
   - Notifications are routed to project members via email and to the designated Slack channel.
 
 ## Managing Encrypted Secrets (Supabase Vault)
 
-To securely store API keys and other sensitive secrets in Supabase, always use the built-in `vault.create_secret` SQL function. This ensures proper encryption, UUID generation, and avoids permission errors.
+To securely store API keys and other sensitive secrets in Supabase, always use the built-in
+`vault.create_secret` SQL function. This ensures proper encryption, UUID generation, and avoids
+permission errors.
 
 **How to add a new secret:**
 
@@ -477,17 +521,21 @@ SELECT vault.create_secret('your_secret_value', 'unique_name', 'description');
 - `description`: A human-readable description for context
 
 **Example:**
+
 ```sql
 SELECT vault.create_secret('sk-XXXXXXXXXXXXXXXXXXXXXXXX', 'openai_api_key', 'OpenAI API key for GPT-4o integration');
 ```
 
 **To verify the secret was added:**
+
 ```sql
 SELECT name, description FROM vault.secrets WHERE name = 'openai_api_key';
 ```
 
 **Important:**
-- Do NOT use direct `INSERT` statements or the table editor for `vault.secrets`—these will fail due to permissions and UUID requirements.
+
+- Do NOT use direct `INSERT` statements or the table editor for `vault.secrets`—these will fail due
+  to permissions and UUID requirements.
 - The `secret` value is encrypted and not visible in query results.
 
 **Reference:** See Supabase Vault documentation: https://supabase.com/docs/guides/database/vault
@@ -498,14 +546,24 @@ SELECT name, description FROM vault.secrets WHERE name = 'openai_api_key';
   - Business Plans (`backend/prompts/businessPlanTemplate.js`)
   - Social Media & Email Campaigns (`backend/prompts/socialMediaTemplate.js`)
   - Website Audit & Feedback (`backend/prompts/websiteAuditTemplate.js`)
-- All templates inherit from `backend/prompts/framework.js` (emotional/cultural context, validation, versioning).
-- Each template has a dedicated test harness (see `backend/prompts/testGoldStandard.js`, `testSocialMediaTemplate.js`, `testWebsiteAuditTemplate.js`).
+- All templates inherit from `backend/prompts/framework.js` (emotional/cultural context, validation,
+  versioning).
+- Each template has a dedicated test harness (see `backend/prompts/testGoldStandard.js`,
+  `testSocialMediaTemplate.js`, `testWebsiteAuditTemplate.js`).
 - Input validation (Joi), gold standard output schemas, and robust validation functions implemented.
 - Fully extensible for future prompt types and PRD changes.
 - All tests pass with real-world, PRD-aligned data.
 
 ## GPT-4o Service Integration (Task 5)
+
 - Status: Complete and production-ready.
 - All subtasks (5.1–5.5) are done and tested.
 - The only relevant test file for GPT-4o is `backend/tests/gpt4o.test.js`.
 - Next: Task 6 (Hume AI Emotional Resonance Service).
+
+### Security & Secret Hygiene Controls
+
+- **Pre-commit secret scanner**: `scripts/check-secrets.sh` blocks commits with likely secrets/API
+  keys.
+- **CI secret scan**: `.github/workflows/secret-scan.yml` blocks pushes/PRs with likely secrets.
+- **Contributor documentation**: See `docs/CONTRIBUTING.md` for secret/API key hygiene rules.

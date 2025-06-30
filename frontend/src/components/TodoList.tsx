@@ -10,19 +10,19 @@ const TodoList = () => {
   const getPrompts = async () => {
     setLoading(true);
     setError(null);
-    
+
     const { data: prompts, error } = await supabase
       .from('prompt_logs')
       .select('id, payload, created_at, user_id, trust_score')
       .order('created_at', { ascending: false }); // Show newest first
-    
+
     if (error) {
       console.error('[Supabase] Error fetching prompt logs:', error);
       setError('Failed to load prompt logs');
       setLoading(false);
       return;
     }
-    
+
     if (prompts && prompts.length > 0) {
       setPrompts(prompts);
     }
@@ -32,12 +32,14 @@ const TodoList = () => {
   const addPrompt = async (description: string) => {
     if (!description.trim()) return;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('prompt_logs')
-      .insert([{ 
-        payload: { description },
-        user_id: null, // Will be set by RLS if user is authenticated
-      }])
+      .insert([
+        {
+          payload: { description },
+          user_id: null, // Will be set by RLS if user is authenticated
+        },
+      ])
       .select();
 
     if (error) {
@@ -52,10 +54,7 @@ const TodoList = () => {
   };
 
   const deletePrompt = async (id: string) => {
-    const { error } = await supabase
-      .from('prompt_logs')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('prompt_logs').delete().eq('id', id);
 
     if (error) {
       console.error('[Supabase] Error deleting prompt:', error);
@@ -73,8 +72,9 @@ const TodoList = () => {
     // Set up real-time subscription
     const subscription = supabase
       .channel('prompt_logs_changes')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'prompt_logs' }, 
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'prompt_logs' },
         () => {
           console.log('[Supabase] Real-time update received');
           getPrompts();
@@ -107,7 +107,7 @@ const TodoList = () => {
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Prompt Logs (Todos)</h2>
-      
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           Error: {error}
@@ -120,7 +120,7 @@ const TodoList = () => {
           <input
             type="text"
             value={newPrompt}
-            onChange={(e) => setNewPrompt(e.target.value)}
+            onChange={e => setNewPrompt(e.target.value)}
             placeholder="Enter a new prompt description..."
             className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -141,9 +141,9 @@ const TodoList = () => {
         </div>
       ) : (
         <ul className="space-y-3">
-          {prompts.map((prompt) => (
-            <li 
-              key={prompt.id} 
+          {prompts.map(prompt => (
+            <li
+              key={prompt.id}
               className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex-1">
@@ -170,11 +170,12 @@ const TodoList = () => {
 
       {/* Debug info */}
       <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">Debug Info:</h3>
+        <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          Debug Info:
+        </h3>
         <p className="text-xs text-gray-600">
-          Total prompts: {prompts.length} | 
-          Real-time updates: Active | 
-          Table: prompt_logs
+          Total prompts: {prompts.length} | Real-time updates: Active | Table:
+          prompt_logs
         </p>
       </div>
     </div>

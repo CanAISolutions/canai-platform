@@ -43,6 +43,7 @@ const IntentMirror = () => {
   const [intentData, setIntentData] = useState<IntentMirrorData | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editField, setEditField] = useState<string>('');
+  const [isValid] = useState(false);
 
   // Get prompt_id from URL params
   const urlParams = new URLSearchParams(window.location.search);
@@ -215,6 +216,10 @@ const IntentMirror = () => {
     });
   };
 
+  useEffect(() => {
+    console.debug('Confirm button state:', isValid);
+  }, [isValid]);
+
   if (isLoading) {
     return (
       <StandardBackground className="items-center justify-center">
@@ -252,6 +257,12 @@ const IntentMirror = () => {
 
   const showLowConfidenceHelp = intentData.confidenceScore < 0.8;
   const showSupportLink = lowConfidenceAttempts >= 2;
+
+  console.debug('Confirm button props:', {
+    id: 'confirm-btn',
+    disabled: !isValid,
+    text: 'Confirm',
+  });
 
   return (
     <StandardBackground className="items-center justify-center">
@@ -292,6 +303,18 @@ const IntentMirror = () => {
               Back to Edit Details
             </Button>
           </div>
+        </div>
+
+        <div className="text-center mt-8 animate-fade-in">
+          <Button
+            id="confirm-btn"
+            aria-label="Confirm"
+            disabled={!isValid}
+            onClick={handleConfirm}
+            className="inline-flex items-center justify-center rounded-md text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            Confirm
+          </Button>
         </div>
       </div>
 

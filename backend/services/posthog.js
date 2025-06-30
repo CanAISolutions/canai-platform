@@ -23,7 +23,7 @@ let DEPLOYMENT_ID = 'unknown';
 // --- Session State Management ---
 const sessionStore = {};
 
-const getSession = (sessionId) => {
+const getSession = sessionId => {
   const session = sessionStore[sessionId];
   if (!session) return null;
   if (session.ended) return null;
@@ -35,7 +35,7 @@ const getSession = (sessionId) => {
   return session;
 };
 
-const startSession = (user) => {
+const startSession = user => {
   const sessionId = uuidv4();
   const now = Date.now();
   sessionStore[sessionId] = {
@@ -52,7 +52,7 @@ const startSession = (user) => {
   return sessionStore[sessionId];
 };
 
-const endSession = (sessionId) => {
+const endSession = sessionId => {
   const session = sessionStore[sessionId];
   if (session && !session.ended) {
     session.ended = true;
@@ -61,7 +61,9 @@ const endSession = (sessionId) => {
     // Track session_end event
     trackSessionEvent('session_end', session);
     // Optionally: clean up sessionStore[sessionId] after a delay
-    setTimeout(() => { delete sessionStore[sessionId]; }, 60 * 1000);
+    setTimeout(() => {
+      delete sessionStore[sessionId];
+    }, 60 * 1000);
   }
 };
 
@@ -80,7 +82,9 @@ function trackSessionEvent(eventType, session) {
     isAnonymous: session.isAnonymous,
     deviceInfo: scrubPII ? scrubPII(session.deviceInfo) : {},
     timestamp: new Date().toISOString(),
-    ...(eventType === 'session_end' && session.duration ? { duration: session.duration } : {}),
+    ...(eventType === 'session_end' && session.duration
+      ? { duration: session.duration }
+      : {}),
   };
   if (safeCapture) safeCapture(event);
 }
@@ -156,25 +160,33 @@ export function initPosthog() {
     SESSION_TIMEOUT_MINUTES: Joi.number().integer().min(1).default(30),
     DEPLOYMENT_ID: Joi.string().optional(),
   }).unknown();
-  const { error: envError, value: envVars } = envSchema.validate(process.env, { abortEarly: false });
+  const { error: envError, value: envVars } = envSchema.validate(process.env, {
+    abortEarly: false,
+  });
   if (envError) {
     console.error('[PostHog] Environment variable validation failed:');
-    envError.details.forEach((d) => {
+    envError.details.forEach(d => {
       if (d.path[0] === 'POSTHOG_API_KEY') {
-        console.error(`  - ${d.message.replace(/"POSTHOG_API_KEY".*/, 'POSTHOG_API_KEY is required and must be a non-empty string.')}`);
+        console.error(
+          `  - ${d.message.replace(/"POSTHOG_API_KEY".*/, 'POSTHOG_API_KEY is required and must be a non-empty string.')}`
+        );
       } else {
         console.error(`  - ${d.message}`);
       }
     });
-    console.error('[PostHog] Analytics will be disabled due to invalid configuration.');
+    console.error(
+      '[PostHog] Analytics will be disabled due to invalid configuration.'
+    );
     throw new Error('Invalid PostHog configuration');
   }
   const POSTHOG_API_KEY = envVars.POSTHOG_API_KEY;
+  if (!POSTHOG_API_KEY) throw new Error('POSTHOG_API_KEY is required');
   const POSTHOG_HOST = envVars.POSTHOG_HOST;
   const FLUSH_AT = envVars.POSTHOG_FLUSH_AT;
   const FLUSH_INTERVAL = envVars.POSTHOG_FLUSH_INTERVAL || 30000;
   SESSION_TIMEOUT_MINUTES = envVars.SESSION_TIMEOUT_MINUTES;
-  DEPLOYMENT_ID = envVars.DEPLOYMENT_ID || process.env.DEPLOYMENT_ID || 'unknown';
+  DEPLOYMENT_ID =
+    envVars.DEPLOYMENT_ID || process.env.DEPLOYMENT_ID || 'unknown';
   APP_VERSION = process.env.npm_package_version || '0.0.0';
   APP_ENV = process.env.NODE_ENV || 'development';
   posthog = new PostHog(POSTHOG_API_KEY, {
@@ -220,7 +232,7 @@ export function initPosthog() {
       }
     }
   };
-  scrubPII = (obj) => {
+  scrubPII = obj => {
     if (!obj) return obj;
     const scrubbed = { ...obj };
     delete scrubbed.email;
@@ -245,13 +257,15 @@ export function initPosthog() {
     const session = getSession(sessionId);
     return {
       ...event,
-      ...(session ? {
-        sessionStart: new Date(session.startTime).toISOString(),
-        lastActive: new Date(session.lastActive).toISOString(),
-        ...(session.duration ? { sessionDuration: session.duration } : {}),
-        isAnonymous: session.isAnonymous,
-        userId: session.userId,
-      } : {}),
+      ...(session
+        ? {
+            sessionStart: new Date(session.startTime).toISOString(),
+            lastActive: new Date(session.lastActive).toISOString(),
+            ...(session.duration ? { sessionDuration: session.duration } : {}),
+            isAnonymous: session.isAnonymous,
+            userId: session.userId,
+          }
+        : {}),
       appVersion: APP_VERSION,
       environment: APP_ENV,
       deploymentId: DEPLOYMENT_ID,
@@ -259,13 +273,16 @@ export function initPosthog() {
   };
   trackFunnelStep = (stepName, session, properties = {}) => {
     updateSessionActivity(session.sessionId);
-    const event = enrichWithSession({
-      stepName,
-      sessionId: session.sessionId,
-      timestamp: new Date().toISOString(),
-      deviceInfo: scrubPII(session.deviceInfo),
-      properties: scrubPII(properties),
-    }, session.sessionId);
+    const event = enrichWithSession(
+      {
+        stepName,
+        sessionId: session.sessionId,
+        timestamp: new Date().toISOString(),
+        deviceInfo: scrubPII(session.deviceInfo),
+        properties: scrubPII(properties),
+      },
+      session.sessionId
+    );
     const { error } = validateEvent('funnel_step', event);
     if (error) {
       console.error('[PostHog] Invalid funnel_step event:', error.message);
@@ -275,14 +292,17 @@ export function initPosthog() {
   };
   trackApiLatency = (endpoint, duration, status, session) => {
     updateSessionActivity(session.sessionId);
-    const event = enrichWithSession({
-      endpoint,
-      duration,
-      status,
-      sessionId: session.sessionId,
-      timestamp: new Date().toISOString(),
-      deviceInfo: scrubPII(session.deviceInfo),
-    }, session.sessionId);
+    const event = enrichWithSession(
+      {
+        endpoint,
+        duration,
+        status,
+        sessionId: session.sessionId,
+        timestamp: new Date().toISOString(),
+        deviceInfo: scrubPII(session.deviceInfo),
+      },
+      session.sessionId
+    );
     const { error } = validateEvent('api_latency', event);
     if (error) {
       console.error('[PostHog] Invalid api_latency event:', error.message);
@@ -292,14 +312,17 @@ export function initPosthog() {
   };
   trackErrorOccurred = (errorType, stackTrace, context, session) => {
     updateSessionActivity(session.sessionId);
-    const event = enrichWithSession({
-      errorType,
-      stackTrace,
-      context: scrubPII(context),
-      sessionId: session.sessionId,
-      timestamp: new Date().toISOString(),
-      deviceInfo: scrubPII(session.deviceInfo),
-    }, session.sessionId);
+    const event = enrichWithSession(
+      {
+        errorType,
+        stackTrace,
+        context: scrubPII(context),
+        sessionId: session.sessionId,
+        timestamp: new Date().toISOString(),
+        deviceInfo: scrubPII(session.deviceInfo),
+      },
+      session.sessionId
+    );
     const { error } = validateEvent('error_occurred', event);
     if (error) {
       console.error('[PostHog] Invalid error_occurred event:', error.message);
@@ -309,14 +332,17 @@ export function initPosthog() {
   };
   trackUserAction = (actionType, element, pageContext, session) => {
     updateSessionActivity(session.sessionId);
-    const event = enrichWithSession({
-      actionType,
-      element,
-      pageContext: scrubPII(pageContext),
-      sessionId: session.sessionId,
-      timestamp: new Date().toISOString(),
-      deviceInfo: scrubPII(session.deviceInfo),
-    }, session.sessionId);
+    const event = enrichWithSession(
+      {
+        actionType,
+        element,
+        pageContext: scrubPII(pageContext),
+        sessionId: session.sessionId,
+        timestamp: new Date().toISOString(),
+        deviceInfo: scrubPII(session.deviceInfo),
+      },
+      session.sessionId
+    );
     const { error } = validateEvent('user_action', event);
     if (error) {
       console.error('[PostHog] Invalid user_action event:', error.message);
@@ -327,7 +353,7 @@ export function initPosthog() {
 }
 
 const posthogDefault = {
-  capture: (...args) => safeCapture && safeCapture(...args)
+  capture: (...args) => safeCapture && safeCapture(...args),
 };
 export default posthogDefault;
 
@@ -344,5 +370,5 @@ export {
   scrubPII,
   enrichWithSession,
   safeCapture,
-  sessionStore
-}; 
+  sessionStore,
+};

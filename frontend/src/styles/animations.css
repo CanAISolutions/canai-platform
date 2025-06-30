@@ -149,7 +149,9 @@
 
 .animate-text-glow {
   animation: text-glow 1.7s cubic-bezier(0.4, 0, 0.2, 1) 1 both;
-  text-shadow: 0 0 18px #36d1fecc, 0 0 8px #00cfff99;
+  text-shadow:
+    0 0 18px #36d1fecc,
+    0 0 8px #00cfff99;
   color: #e6f6ff;
 }
 

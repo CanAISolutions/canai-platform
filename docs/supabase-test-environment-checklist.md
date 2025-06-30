@@ -18,7 +18,7 @@
 - [x] 2.1 Store schema migrations and RLS policies in `backend/supabase/migrations/`
 - [x] 2.2 Apply migrations and RLS policies to the test project using Supabase CLI or dashboard
 - [x] 2.3 Automate in CI/CD with `supabase db reset && supabase db migrate`
-- [X] 2.4 Add tests to validate RLS policy parity programmatically
+- [x] 2.4 Add tests to validate RLS policy parity programmatically
 
 ## 3. Test Data Management & Tagging
 
