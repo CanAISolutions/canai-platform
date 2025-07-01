@@ -131,6 +131,7 @@ app.get('/health', async (req, res) => {
 console.log('Registering /v1 emotionalAnalysisRouter');
 app.use('/v1', emotionalAnalysisRouter);
 app.use('/v1/stripe', stripeRouter);
+console.log('Registering /v1/stripe stripeRouter');
 
 // TODO: Add API routes
 // TODO: Add authentication routes
