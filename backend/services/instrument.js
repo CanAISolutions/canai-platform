@@ -8,3 +8,5 @@ Sentry.init({
   // For example, automatic IP address collection on events
   sendDefaultPii: true,
 });
+
+export default Sentry;
