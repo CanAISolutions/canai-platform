@@ -51,7 +51,9 @@ async function withRetry(fn, maxRetries = 3, baseDelay = 1000) {
 function isRetryableError(error) {
   // Stripe API errors that are retryable
   if (error.type === 'StripeAPIError') {
-    return ['rate_limit', 'api_connection_error', 'api_error'].includes(error.code);
+    return ['rate_limit', 'api_connection_error', 'api_error'].includes(
+      error.code
+    );
   }
 
   // Network errors
@@ -99,7 +101,11 @@ async function logPaymentEvent(logData) {
  * @param {Object} params.metadata - Additional metadata (optional)
  * @returns {Promise<Object>} Stripe session object
  */
-export async function createCheckoutSession({ productTrack, userId, metadata = {} }) {
+export async function createCheckoutSession({
+  productTrack,
+  userId,
+  metadata = {},
+}) {
   let pricingData;
   let sessionId;
   const startTime = Date.now();
@@ -129,49 +135,61 @@ export async function createCheckoutSession({ productTrack, userId, metadata = {
     const currency = (pricingData.currency || 'USD').toLowerCase();
 
     // Use environment-based URLs
-    const success_url = process.env.STRIPE_SUCCESS_URL || `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancel_url = process.env.STRIPE_CANCEL_URL || `${process.env.CLIENT_URL}/cancel`;
+    const success_url =
+      process.env.STRIPE_SUCCESS_URL ||
+      `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancel_url =
+      process.env.STRIPE_CANCEL_URL || `${process.env.CLIENT_URL}/cancel`;
 
     // Generate idempotency key (user+track+timestamp or provided)
-    const idempotencyKey = metadata.idempotency_key ||
-      crypto.createHash('sha256').update(`${userId}-${productTrack}-${Date.now()}`).digest('hex');
+    const idempotencyKey =
+      metadata.idempotency_key ||
+      crypto
+        .createHash('sha256')
+        .update(`${userId}-${productTrack}-${Date.now()}`)
+        .digest('hex');
 
     // Create checkout session with retry logic
     const session = await withRetry(async () => {
-      return await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency,
-              product_data: {
-                name,
-                description: pricingData.features ? pricingData.features.join(', ') : undefined,
+      return await stripe.checkout.sessions.create(
+        {
+          payment_method_types: ['card'],
+          line_items: [
+            {
+              price_data: {
+                currency,
+                product_data: {
+                  name,
+                  description: pricingData.features
+                    ? pricingData.features.join(', ')
+                    : undefined,
+                },
+                unit_amount: amount,
               },
-              unit_amount: amount,
+              quantity: 1,
             },
-            quantity: 1,
+          ],
+          mode: 'payment',
+          success_url,
+          cancel_url,
+          metadata: {
+            user_id: userId,
+            product_track: productTrack,
+            pricing_version: 'v1.0',
+            ...metadata,
           },
-        ],
-        mode: 'payment',
-        success_url,
-        cancel_url,
-        metadata: {
-          user_id: userId,
-          product_track: productTrack,
-          pricing_version: 'v1.0',
-          ...metadata,
+          automatic_tax: {
+            enabled: true,
+          },
+          billing_address_collection: 'required',
+          phone_number_collection: {
+            enabled: false,
+          },
         },
-        automatic_tax: {
-          enabled: true,
-        },
-        billing_address_collection: 'required',
-        phone_number_collection: {
-          enabled: false,
-        },
-      }, {
-        idempotencyKey,
-      });
+        {
+          idempotencyKey,
+        }
+      );
     });
 
     sessionId = session.id;
@@ -194,7 +212,6 @@ export async function createCheckoutSession({ productTrack, userId, metadata = {
     });
 
     return session;
-
   } catch (error) {
     // Enhanced error context for debugging
     const errorContext = {
@@ -210,7 +227,9 @@ export async function createCheckoutSession({ productTrack, userId, metadata = {
     await logPaymentEvent({
       event_type: 'checkout_session_failed',
       user_id: userId,
-      amount: pricingData ? Math.round(Number(pricingData.price) * 100) / 100 : null,
+      amount: pricingData
+        ? Math.round(Number(pricingData.price) * 100) / 100
+        : null,
       status: 'failed',
       session_id: sessionId,
       metadata: {
@@ -238,7 +257,9 @@ export async function createCheckoutSession({ productTrack, userId, metadata = {
     } else if (error.message.includes('Invalid or inactive product track')) {
       throw error; // Already has good error message
     } else {
-      throw new Error('Stripe checkout session creation failed: ' + error.message);
+      throw new Error(
+        'Stripe checkout session creation failed: ' + error.message
+      );
     }
   }
 }
@@ -271,7 +292,12 @@ export async function retrieveCheckoutSession(sessionId) {
  * @param {string} params.userId - User ID for logging
  * @returns {Promise<Object>} Stripe refund object
  */
-export async function createRefund({ paymentIntentId, amount, reason, userId }) {
+export async function createRefund({
+  paymentIntentId,
+  amount,
+  reason,
+  userId,
+}) {
   try {
     const refund = await withRetry(async () => {
       const refundData = {
@@ -302,7 +328,6 @@ export async function createRefund({ paymentIntentId, amount, reason, userId }) 
     });
 
     return refund;
-
   } catch (error) {
     // Log failed refund attempt
     await logPaymentEvent({

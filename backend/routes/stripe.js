@@ -1,17 +1,56 @@
 import express from 'express';
 import stripe from '../services/stripe.js';
 import supabase from '../supabase/client.js';
-import { createCheckoutSession, retrieveCheckoutSession, createRefund } from '../services/stripeCheckout.js';
+import {
+  createCheckoutSession,
+  retrieveCheckoutSession,
+  createRefund,
+} from '../services/stripeCheckout.js';
+
+// Import withRetry function for reliable external API calls
+async function withRetry(fn, maxRetries = 3, baseDelay = 1000) {
+  let lastError;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+
+      // Don't retry on non-retryable errors (4xx errors except rate limits)
+      if (error.status && error.status >= 400 && error.status < 500 && error.status !== 429) {
+        throw error;
+      }
+
+      // Don't retry on last attempt
+      if (attempt === maxRetries) {
+        break;
+      }
+
+      // Exponential backoff: 2^attempt * baseDelay
+      const delay = Math.pow(2, attempt) * baseDelay;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError;
+}
 import { captureException } from '@sentry/node';
 import Joi from 'joi';
 
 const router = express.Router();
 
-const allowedTracks = ['business-plan-builder', 'social-media-campaign', 'website-audit-feedback'];
+const allowedTracks = [
+  'business-plan-builder',
+  'social-media-campaign',
+  'website-audit-feedback',
+];
 
 // Validation schemas
 const checkoutSessionSchema = Joi.object({
-  productTrack: Joi.string().valid(...allowedTracks).required(),
+  productTrack: Joi.string()
+    .valid(...allowedTracks)
+    .required(),
   user_id: Joi.string().min(1).max(255).required(),
   metadata: Joi.object().optional(),
 });
@@ -19,7 +58,9 @@ const checkoutSessionSchema = Joi.object({
 const refundSchema = Joi.object({
   session_id: Joi.string().required(),
   amount: Joi.number().positive().optional(),
-  reason: Joi.string().valid('duplicate', 'fraudulent', 'requested_by_customer').default('requested_by_customer'),
+  reason: Joi.string()
+    .valid('duplicate', 'fraudulent', 'requested_by_customer')
+    .default('requested_by_customer'),
   user_id: Joi.string().required(),
 });
 
@@ -45,7 +86,7 @@ router.post('/stripe-session', async (req, res) => {
         error: {
           message: `Input validation failed: ${error.details.map(d => d.message).join(', ')}`,
           code: 'VALIDATION_ERROR',
-        }
+        },
       });
     }
 
@@ -79,7 +120,6 @@ router.post('/stripe-session', async (req, res) => {
       },
       processing_time_ms: Date.now() - startTime,
     });
-
   } catch (error) {
     const processingTime = Date.now() - startTime;
 
@@ -104,28 +144,29 @@ router.post('/stripe-session', async (req, res) => {
         error: {
           message: error.message,
           code: 'VALIDATION_ERROR',
-        }
+        },
       });
     } else if (error.message.includes('Invalid or inactive product track')) {
       res.status(400).json({
         error: {
           message: 'The requested product is not available',
           code: 'INVALID_PRODUCT',
-        }
+        },
       });
     } else if (error.message.includes('Rate limit')) {
       res.status(429).json({
         error: {
           message: 'Too many requests. Please try again later.',
           code: 'RATE_LIMIT_EXCEEDED',
-        }
+        },
       });
     } else {
       res.status(500).json({
         error: {
-          message: 'Payment processing temporarily unavailable. Please try again.',
+          message:
+            'Payment processing temporarily unavailable. Please try again.',
           code: 'PAYMENT_SERVICE_ERROR',
-        }
+        },
       });
     }
   }
@@ -144,7 +185,7 @@ router.get('/session/:sessionId', async (req, res) => {
         error: {
           message: 'Invalid session ID format',
           code: 'INVALID_SESSION_ID',
-        }
+        },
       });
     }
 
@@ -159,9 +200,8 @@ router.get('/session/:sessionId', async (req, res) => {
         payment_status: session.payment_status,
         created: session.created,
         expires_at: session.expires_at,
-      }
+      },
     });
-
   } catch (error) {
     captureException(error, {
       tags: { component: 'stripe_routes', operation: 'retrieve_session' },
@@ -173,14 +213,14 @@ router.get('/session/:sessionId', async (req, res) => {
         error: {
           message: 'Session not found',
           code: 'SESSION_NOT_FOUND',
-        }
+        },
       });
     } else {
       res.status(500).json({
         error: {
           message: 'Failed to retrieve session',
           code: 'SESSION_RETRIEVAL_ERROR',
-        }
+        },
       });
     }
   }
@@ -199,7 +239,7 @@ router.post('/refund', async (req, res) => {
         error: {
           message: `Input validation failed: ${error.details.map(d => d.message).join(', ')}`,
           code: 'VALIDATION_ERROR',
-        }
+        },
       });
     }
 
@@ -213,7 +253,7 @@ router.post('/refund', async (req, res) => {
         error: {
           message: 'No payment found for this session',
           code: 'NO_PAYMENT_FOUND',
-        }
+        },
       });
     }
 
@@ -222,7 +262,7 @@ router.post('/refund', async (req, res) => {
         error: {
           message: 'Payment has not been completed yet',
           code: 'PAYMENT_NOT_COMPLETED',
-        }
+        },
       });
     }
 
@@ -244,7 +284,7 @@ router.post('/refund', async (req, res) => {
           refund_status: refund.status,
           refund_reason: reason,
           refund_amount: refund.amount / 100,
-        }
+        },
       })
       .eq('session_id', session_id);
 
@@ -255,9 +295,8 @@ router.post('/refund', async (req, res) => {
         currency: refund.currency,
         status: refund.status,
         reason: refund.reason,
-      }
+      },
     });
-
   } catch (error) {
     captureException(error, {
       tags: { component: 'stripe_routes', operation: 'create_refund' },
@@ -270,21 +309,21 @@ router.post('/refund', async (req, res) => {
         error: {
           message: 'This payment has already been refunded',
           code: 'ALREADY_REFUNDED',
-        }
+        },
       });
     } else if (error.message.includes('not found')) {
       res.status(404).json({
         error: {
           message: 'Payment not found',
           code: 'PAYMENT_NOT_FOUND',
-        }
+        },
       });
     } else {
       res.status(500).json({
         error: {
           message: 'Refund processing failed. Please try again.',
           code: 'REFUND_ERROR',
-        }
+        },
       });
     }
   }
@@ -294,67 +333,72 @@ router.post('/refund', async (req, res) => {
  * POST /webhook
  * Handles Stripe webhooks for payment events
  */
-router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+router.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  if (!endpointSecret) {
-    captureException(new Error('Stripe webhook secret not configured'), {
-      tags: { component: 'stripe_routes', operation: 'webhook' },
-    });
-    return res.status(500).json({ error: 'Webhook not configured' });
-  }
-
-  let event;
-
-  try {
-    // Verify webhook signature
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-  } catch (err) {
-    captureException(err, {
-      tags: { component: 'stripe_routes', operation: 'webhook_verification' },
-      extra: { signature: sig },
-    });
-    return res.status(400).json({ error: 'Webhook signature verification failed' });
-  }
-
-  try {
-    // Handle the event
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object;
-        await handleCheckoutSessionCompleted(session);
-        break;
-      }
-      case 'payment_intent.succeeded': {
-        const paymentIntent = event.data.object;
-        await handlePaymentIntentSucceeded(paymentIntent);
-        break;
-      }
-      case 'payment_intent.payment_failed': {
-        const paymentIntent = event.data.object;
-        await handlePaymentIntentFailed(paymentIntent);
-        break;
-      }
-      case 'charge.dispute.created': {
-        const dispute = event.data.object;
-        await handleChargeDisputeCreated(dispute);
-        break;
-      }
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
+    if (!endpointSecret) {
+      captureException(new Error('Stripe webhook secret not configured'), {
+        tags: { component: 'stripe_routes', operation: 'webhook' },
+      });
+      return res.status(500).json({ error: 'Webhook not configured' });
     }
 
-    res.json({ received: true });
+    let event;
 
-  } catch (error) {
-    captureException(error, {
-      tags: { component: 'stripe_routes', operation: 'webhook_handling' },
-      extra: { event_type: event.type, event_id: event.id },
-    });
-    res.status(500).json({ error: 'Webhook processing failed' });
+    try {
+      // Verify webhook signature
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+      captureException(err, {
+        tags: { component: 'stripe_routes', operation: 'webhook_verification' },
+        extra: { signature: sig },
+      });
+      return res
+        .status(400)
+        .json({ error: 'Webhook signature verification failed' });
+    }
+
+    try {
+      // Handle the event
+      switch (event.type) {
+        case 'checkout.session.completed': {
+          const session = event.data.object;
+          await handleCheckoutSessionCompleted(session);
+          break;
+        }
+        case 'payment_intent.succeeded': {
+          const paymentIntent = event.data.object;
+          await handlePaymentIntentSucceeded(paymentIntent);
+          break;
+        }
+        case 'payment_intent.payment_failed': {
+          const paymentIntent = event.data.object;
+          await handlePaymentIntentFailed(paymentIntent);
+          break;
+        }
+        case 'charge.dispute.created': {
+          const dispute = event.data.object;
+          await handleChargeDisputeCreated(dispute);
+          break;
+        }
+        default:
+          console.log(`Unhandled event type: ${event.type}`);
+      }
+
+      res.json({ received: true });
+    } catch (error) {
+      captureException(error, {
+        tags: { component: 'stripe_routes', operation: 'webhook_handling' },
+        extra: { event_type: event.type, event_id: event.id },
+      });
+      res.status(500).json({ error: 'Webhook processing failed' });
+    }
   }
-});
+);
 
 /**
  * Webhook event handlers
@@ -368,21 +412,29 @@ async function handleCheckoutSessionCompleted(session) {
     .update({ status: 'completed' })
     .eq('session_id', session.id);
 
-  // Trigger Make.com workflow for project setup
+  // Trigger Make.com workflow for project setup with retry logic
   if (process.env.MAKECOM_WEBHOOK_URL) {
     try {
-      await fetch(process.env.MAKECOM_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          event: 'checkout.session.completed',
-          session_id: session.id,
-          user_id: metadata.user_id,
-          product_track: metadata.product_track,
-          amount: session.amount_total / 100,
-          currency: session.currency,
-        }),
-      });
+      await withRetry(async () => {
+        const response = await fetch(process.env.MAKECOM_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'checkout.session.completed',
+            session_id: session.id,
+            user_id: metadata?.user_id,
+            product_track: metadata?.product_track,
+            amount: session.amount_total / 100,
+            currency: session.currency,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Make.com webhook failed: ${response.status} ${response.statusText}`);
+        }
+
+        return response;
+      }, 3, 1000);
     } catch (error) {
       captureException(error, {
         tags: { component: 'makecom_integration' },
@@ -396,7 +448,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   // Log successful payment
   await supabase.from('payment_logs').insert({
     event_type: 'payment_succeeded',
-    user_id: paymentIntent.metadata.user_id,
+    user_id: paymentIntent.metadata?.user_id || null,
     amount: paymentIntent.amount / 100,
     status: 'success',
     metadata: {
@@ -410,7 +462,7 @@ async function handlePaymentIntentFailed(paymentIntent) {
   // Log failed payment
   await supabase.from('payment_logs').insert({
     event_type: 'payment_failed',
-    user_id: paymentIntent.metadata.user_id,
+    user_id: paymentIntent.metadata?.user_id || null,
     amount: paymentIntent.amount / 100,
     status: 'failed',
     metadata: {
@@ -425,7 +477,7 @@ async function handleChargeDisputeCreated(dispute) {
   // Log dispute creation
   await supabase.from('payment_logs').insert({
     event_type: 'dispute_created',
-    user_id: dispute.metadata?.user_id,
+    user_id: dispute.metadata?.user_id || null,
     amount: dispute.amount / 100,
     status: 'disputed',
     metadata: {

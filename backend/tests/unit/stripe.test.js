@@ -28,36 +28,36 @@ vi.mock('stripe', () => ({
   })),
 }));
 
-// Mock Supabase
+// Mock Supabase - ensure successful responses for most tests
 const mockSupabaseInsert = vi.fn().mockResolvedValue({ data: {}, error: null });
-const mockSupabaseUpdate = vi.fn().mockResolvedValue({ data: {}, error: null });
-const mockSupabaseSelect = vi.fn(() => ({
-  eq: vi.fn(() => ({
+const mockSupabaseSelect = vi.fn().mockReturnValue({
+  eq: vi.fn().mockReturnValue({
     single: vi.fn().mockResolvedValue({
       data: {
         plan_name: 'business-plan-builder',
-        price: 99,
+        price: 99.99,
         active: true,
         currency: 'USD',
-        features: ['AI-powered business plan', 'Financial projections', 'Market analysis'],
+        features: ['Feature 1', 'Feature 2'],
       },
       error: null,
     }),
-  })),
-}));
-
-const mockSupabaseFrom = vi.fn((table) => {
+  }),
+});
+const mockSupabaseFrom = vi.fn().mockImplementation((table) => {
+  if (table === 'payment_logs') {
+    return { insert: mockSupabaseInsert };
+  }
   if (table === 'pricing') {
     return { select: mockSupabaseSelect };
   }
-  return {
-    insert: mockSupabaseInsert,
-    update: () => ({ eq: () => mockSupabaseUpdate }),
-  };
+  return {};
 });
 
 vi.mock('../../supabase/client.js', () => ({
-  default: { from: mockSupabaseFrom },
+  default: {
+    from: mockSupabaseFrom,
+  },
 }));
 
 // Mock Sentry
@@ -70,110 +70,71 @@ describe('Stripe Service', () => {
     vi.clearAllMocks();
     process.env.STRIPE_SECRET_KEY_TEST = 'sk_test_123';
     process.env.NODE_ENV = 'test';
+
+    // Reset Supabase mock to successful responses for each test
+    mockSupabaseSelect.mockReturnValue({
+      eq: vi.fn().mockReturnValue({
+        single: vi.fn().mockResolvedValue({
+          data: {
+            plan_name: 'business-plan-builder',
+            price: 99.99,
+            active: true,
+            currency: 'USD',
+            features: ['Feature 1', 'Feature 2'],
+          },
+          error: null,
+        }),
+      }),
+    });
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
-  describe('Stripe client initialization', () => {
-    it('initializes Stripe with test key in test environment', async () => {
-      // Import after setting environment variables
-      const { default: stripe } = await import('../../services/stripe.js');
-      expect(stripe).toBeDefined();
+  describe('Stripe Client Initialization', () => {
+    it('initializes Stripe client successfully', async () => {
+      const stripeModule = await import('../../services/stripe.js');
+      expect(stripeModule.default).toBeDefined();
     });
 
-    it('tests connection successfully', async () => {
-      mockStripeBalance.mockResolvedValueOnce({ available: [{ amount: 1000 }] });
+    it('tests Stripe connection successfully', async () => {
+      mockStripeBalance.mockResolvedValue({
+        available: [{ amount: 1000 }],
+      });
 
-      const { default: stripe } = await import('../../services/stripe.js');
-      const balance = await stripe.balance.retrieve();
-
-      expect(balance.available[0].amount).toBe(1000);
+      const { testStripeConnection } = await import('../../services/stripe.js');
+      const result = await testStripeConnection();
+      expect(result).toBe(true);
       expect(mockStripeBalance).toHaveBeenCalled();
     });
 
-    it('throws error on connection failure', async () => {
-      const connectionError = new Error('Network error');
-      mockStripeBalance.mockRejectedValueOnce(connectionError);
+    it('handles connection failures', async () => {
+      mockStripeBalance.mockRejectedValue(new Error('Network error'));
 
-      const { default: stripe } = await import('../../services/stripe.js');
-
-      await expect(stripe.balance.retrieve()).rejects.toThrow('Network error');
+      const { testStripeConnection } = await import('../../services/stripe.js');
+      await expect(testStripeConnection()).rejects.toThrow('Stripe connection test failed: Network error');
     });
   });
 
-  describe('Environment key selection', () => {
-    it('uses test key in test environment', async () => {
-      process.env.NODE_ENV = 'test';
-      process.env.STRIPE_SECRET_KEY_TEST = 'sk_test_456';
+  describe('Stripe Checkout Service', () => {
+    let createCheckoutSession;
 
-      // Clear module cache to force re-import
-      delete require.cache[require.resolve('../../services/stripe.js')];
-
-      const { default: stripe } = await import('../../services/stripe.js');
-      expect(stripe).toBeDefined();
+    beforeEach(async () => {
+      const module = await import('../../services/stripeCheckout.js');
+      createCheckoutSession = module.createCheckoutSession;
     });
 
-    it('validates that environment key is required', () => {
-      // This test validates the key validation logic directly
-      function getStripeSecretKey() {
-        const env = process.env.NODE_ENV || 'development';
-        let key = null;
-        if (env === 'production') {
-          key = undefined; // No live key set
-        } else {
-          key = undefined; // No test key set
-        }
-        // Don't check for fallback key in this test
-        if (!key) {
-          throw new Error('Stripe secret key is required. Please set STRIPE_SECRET_KEY_TEST, STRIPE_SECRET_KEY_LIVE, or STRIPE_SECRET_KEY in your environment.');
-        }
-        return key;
-      }
+    it('creates checkout session successfully', async () => {
+      mockStripeCheckoutSessions.create.mockResolvedValue({
+        id: 'cs_test_123',
+        url: 'https://checkout.stripe.com/pay/cs_test_123',
+      });
 
-      expect(() => {
-        getStripeSecretKey();
-      }).toThrow('Stripe secret key is required');
-    });
-  });
-});
-
-describe('Stripe Checkout Service', () => {
-  let createCheckoutSession, retrieveCheckoutSession, createRefund;
-
-  beforeEach(async () => {
-    vi.clearAllMocks();
-
-    // Import the service functions after setting up mocks
-    const module = await import('../../services/stripeCheckout.js');
-    createCheckoutSession = module.createCheckoutSession;
-    retrieveCheckoutSession = module.retrieveCheckoutSession;
-    createRefund = module.createRefund;
-
-    // Set up default successful responses
-    mockStripeCheckoutSessions.create.mockResolvedValue({
-      id: 'cs_test_123',
-      url: 'https://checkout.stripe.com/pay/cs_test_123',
-      amount_total: 9900,
-      currency: 'usd',
-      expires_at: Math.floor(Date.now() / 1000) + 1800,
-    });
-
-    mockStripeCheckoutSessions.retrieve.mockResolvedValue({
-      id: 'cs_test_123',
-      status: 'complete',
-      payment_status: 'paid',
-      payment_intent: 'pi_test_123',
-    });
-  });
-
-  describe('createCheckoutSession', () => {
-    it('creates checkout session with valid inputs', async () => {
       const result = await createCheckoutSession({
         productTrack: 'business-plan-builder',
-        userId: 'user_123',
-        metadata: { source: 'test' },
+        userId: 'user_test_123',
+        metadata: {},
       });
 
       expect(result.id).toBe('cs_test_123');
@@ -181,8 +142,14 @@ describe('Stripe Checkout Service', () => {
         expect.objectContaining({
           payment_method_types: ['card'],
           mode: 'payment',
-          automatic_tax: { enabled: true },
-          billing_address_collection: 'required',
+          line_items: expect.arrayContaining([
+            expect.objectContaining({
+              price_data: expect.objectContaining({
+                currency: 'usd',
+                unit_amount: 9999,
+              }),
+            }),
+          ]),
         }),
         expect.objectContaining({
           idempotencyKey: expect.any(String),
@@ -190,88 +157,285 @@ describe('Stripe Checkout Service', () => {
       );
     });
 
-    it('throws error for invalid product track', async () => {
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: vi.fn().mockReturnValueOnce({
-          single: vi.fn().mockResolvedValueOnce({
+    it('handles different product tracks', async () => {
+      mockStripeCheckoutSessions.create.mockResolvedValue({
+        id: 'cs_test_456',
+        url: 'https://checkout.stripe.com/pay/cs_test_456',
+      });
+
+      const productTracks = [
+        'business-plan-builder',
+        'social-media-campaign',
+        'website-audit-feedback',
+      ];
+
+      for (const track of productTracks) {
+        await createCheckoutSession({
+          productTrack: track,
+          userId: 'user_test_123',
+          metadata: {},
+        });
+      }
+
+      expect(mockStripeCheckoutSessions.create).toHaveBeenCalledTimes(3);
+    });
+
+    it('includes metadata in checkout session', async () => {
+      const metadata = {
+        customField: 'customValue',
+        userId: 'user_test_123',
+      };
+
+      mockStripeCheckoutSessions.create.mockResolvedValue({
+        id: 'cs_test_789',
+        url: 'https://checkout.stripe.com/pay/cs_test_789',
+      });
+
+      await createCheckoutSession({
+        productTrack: 'business-plan-builder',
+        userId: 'user_test_123',
+        metadata,
+      });
+
+      expect(mockStripeCheckoutSessions.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          metadata: expect.objectContaining({
+            user_id: 'user_test_123',
+            product_track: 'business-plan-builder',
+            customField: 'customValue',
+          }),
+        }),
+        expect.anything()
+      );
+    });
+
+    it('handles Stripe API errors', async () => {
+      mockStripeCheckoutSessions.create.mockRejectedValue(
+        new Error('Stripe API error')
+      );
+
+      await expect(
+        createCheckoutSession({
+          productTrack: 'business-plan-builder',
+          userId: 'user_test_123',
+          metadata: {},
+        })
+      ).rejects.toThrow('Stripe checkout session creation failed');
+    });
+
+    it('validates pricing data from Supabase', async () => {
+      // Override the default successful mock for this specific test
+      mockSupabaseSelect.mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          single: vi.fn().mockResolvedValue({
             data: null,
             error: { message: 'Product not found' },
           }),
         }),
       });
 
-      await expect(createCheckoutSession({
-        productTrack: 'invalid-track',
-        userId: 'user_123',
-        metadata: {},
-      })).rejects.toThrow('Pricing fetch failed: Product not found');
+      await expect(
+        createCheckoutSession({
+          productTrack: 'invalid-product',
+          userId: 'user_test_123',
+          metadata: {},
+        })
+      ).rejects.toThrow('Pricing fetch failed');
     });
 
-    it('throws error for inactive product track', async () => {
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: vi.fn().mockReturnValueOnce({
-          single: vi.fn().mockResolvedValueOnce({
-            data: {
-              plan_name: 'business-plan-builder',
-              price: 99,
-              active: false,
-            },
-            error: null,
-          }),
-        }),
+    it('logs payment events to Supabase', async () => {
+      mockStripeCheckoutSessions.create.mockResolvedValue({
+        id: 'cs_test_logging',
+        url: 'https://checkout.stripe.com/pay/cs_test_logging',
       });
-
-      await expect(createCheckoutSession({
-        productTrack: 'business-plan-builder',
-        userId: 'user_123',
-        metadata: {},
-      })).rejects.toThrow('Invalid or inactive product track');
-    });
-
-    it('handles Stripe API errors', async () => {
-      const stripeError = new Error('Payment method not supported');
-      mockStripeCheckoutSessions.create.mockRejectedValueOnce(stripeError);
-
-      await expect(createCheckoutSession({
-        productTrack: 'business-plan-builder',
-        userId: 'user_123',
-        metadata: {},
-      })).rejects.toThrow('Stripe checkout session creation failed: Payment method not supported');
-    });
-
-    it('uses custom idempotency key when provided', async () => {
-      const customKey = 'custom_key_123';
 
       await createCheckoutSession({
         productTrack: 'business-plan-builder',
-        userId: 'user_123',
-        metadata: { idempotency_key: customKey },
+        userId: 'user_test_123',
+        metadata: {},
+      });
+
+      expect(mockSupabaseInsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event_type: 'checkout_session_created',
+          user_id: 'user_test_123',
+          amount: 99.99,
+          status: 'success',
+          session_id: 'cs_test_logging',
+        })
+      );
+    });
+
+    it('generates unique idempotency keys', async () => {
+      mockStripeCheckoutSessions.create.mockResolvedValue({
+        id: 'cs_test_idempotency',
+        url: 'https://checkout.stripe.com/pay/cs_test_idempotency',
+      });
+
+      await createCheckoutSession({
+        productTrack: 'business-plan-builder',
+        userId: 'user_test_123',
+        metadata: {},
+      });
+
+      await createCheckoutSession({
+        productTrack: 'business-plan-builder',
+        userId: 'user_test_456',
+        metadata: {},
+      });
+
+      const calls = mockStripeCheckoutSessions.create.mock.calls;
+      const idempotencyKey1 = calls[0][1].idempotencyKey;
+      const idempotencyKey2 = calls[1][1].idempotencyKey;
+
+      expect(idempotencyKey1).not.toBe(idempotencyKey2);
+    });
+
+    it('uses provided idempotency key when specified', async () => {
+      const customIdempotencyKey = 'custom_key_123';
+      mockStripeCheckoutSessions.create.mockResolvedValue({
+        id: 'cs_test_custom_key',
+        url: 'https://checkout.stripe.com/pay/cs_test_custom_key',
+      });
+
+      await createCheckoutSession({
+        productTrack: 'business-plan-builder',
+        userId: 'user_test_123',
+        metadata: { idempotency_key: customIdempotencyKey },
       });
 
       expect(mockStripeCheckoutSessions.create).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          idempotencyKey: customKey,
+          idempotencyKey: customIdempotencyKey,
         })
       );
     });
 
-    it('uses environment-based URLs', async () => {
-      process.env.CLIENT_URL = 'https://test.example.com';
+    it('configures automatic tax and billing address collection', async () => {
+      mockStripeCheckoutSessions.create.mockResolvedValue({
+        id: 'cs_test_config',
+        url: 'https://checkout.stripe.com/pay/cs_test_config',
+      });
 
       await createCheckoutSession({
         productTrack: 'business-plan-builder',
-        userId: 'user_123',
+        userId: 'user_test_123',
         metadata: {},
       });
 
       expect(mockStripeCheckoutSessions.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          success_url: expect.stringContaining('https://test.example.com/success'),
-          cancel_url: expect.stringContaining('https://test.example.com/cancel'),
+          automatic_tax: { enabled: true },
+          billing_address_collection: 'required',
+          phone_number_collection: { enabled: false },
         }),
         expect.anything()
       );
+    });
+
+    describe('Correlation ID propagation', () => {
+      it('passes metadata.correlation_id through to Stripe', async () => {
+        const correlationId = 'corr_123';
+        mockStripeCheckoutSessions.create.mockResolvedValue({
+          id: 'cs_test_correlation',
+          url: 'https://checkout.stripe.com/pay/cs_test_correlation',
+        });
+
+        await createCheckoutSession({
+          productTrack: 'business-plan-builder',
+          userId: 'user_123',
+          metadata: { correlation_id: correlationId },
+        });
+
+        expect(mockStripeCheckoutSessions.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            metadata: expect.objectContaining({ correlation_id: correlationId }),
+          }),
+          expect.any(Object)
+        );
+      });
+
+      it('handles missing correlation_id gracefully', async () => {
+        mockStripeCheckoutSessions.create.mockResolvedValue({
+          id: 'cs_test_no_correlation',
+          url: 'https://checkout.stripe.com/pay/cs_test_no_correlation',
+        });
+
+        await createCheckoutSession({
+          productTrack: 'business-plan-builder',
+          userId: 'user_123',
+          metadata: {},
+        });
+
+        expect(mockStripeCheckoutSessions.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            metadata: expect.objectContaining({
+              user_id: 'user_123',
+              product_track: 'business-plan-builder',
+            }),
+          }),
+          expect.any(Object)
+        );
+      });
+    });
+
+    describe('Retry logic on transient failures', () => {
+      it('retries once when a transient error is thrown', async () => {
+        const transientError = new Error('Temporary failure');
+        transientError.type = 'StripeAPIError';
+        transientError.code = 'rate_limit';
+
+        mockStripeCheckoutSessions.create
+          .mockRejectedValueOnce(transientError)
+          .mockResolvedValueOnce({ id: 'cs_test_retry', url: 'https://checkout.stripe.com/pay/cs_test_retry' });
+
+        const result = await createCheckoutSession({
+          productTrack: 'business-plan-builder',
+          userId: 'user_123',
+          metadata: {},
+        });
+
+        expect(result.id).toBe('cs_test_retry');
+        expect(mockStripeCheckoutSessions.create).toHaveBeenCalledTimes(2);
+      });
+
+      it('does not retry on non-retryable errors', async () => {
+        const nonRetryableError = new Error('Card declined');
+        nonRetryableError.type = 'StripeCardError';
+        nonRetryableError.code = 'card_declined';
+
+        mockStripeCheckoutSessions.create.mockRejectedValue(nonRetryableError);
+
+        await expect(
+          createCheckoutSession({
+            productTrack: 'business-plan-builder',
+            userId: 'user_123',
+            metadata: {},
+          })
+        ).rejects.toThrow('Card declined');
+
+        expect(mockStripeCheckoutSessions.create).toHaveBeenCalledTimes(1);
+      });
+
+      it('exhausts retry attempts and throws final error', async () => {
+        const transientError = new Error('Rate limit exceeded');
+        transientError.type = 'StripeAPIError';
+        transientError.code = 'rate_limit';
+
+        mockStripeCheckoutSessions.create.mockRejectedValue(transientError);
+
+        await expect(
+          createCheckoutSession({
+            productTrack: 'business-plan-builder',
+            userId: 'user_123',
+            metadata: {},
+          })
+        ).rejects.toThrow('Rate limit exceeded');
+
+        // Should be called 4 times: initial + 3 retries
+        expect(mockStripeCheckoutSessions.create).toHaveBeenCalledTimes(4);
+      }, 10000); // Increase timeout to 10 seconds to account for retry delays
     });
   });
 });

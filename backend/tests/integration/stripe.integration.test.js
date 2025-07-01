@@ -2,7 +2,8 @@ require('../../testEnvSetup');
 require('dotenv').config();
 
 // Set required environment variables before any imports
-process.env.STRIPE_SECRET_KEY_TEST = process.env.STRIPE_SECRET_KEY_TEST || 'sk_test_123';
+process.env.STRIPE_SECRET_KEY_TEST =
+  process.env.STRIPE_SECRET_KEY_TEST || 'sk_test_123';
 process.env.NODE_ENV = 'test';
 process.env.CLIENT_URL = 'https://test.example.com';
 
@@ -33,7 +34,7 @@ vi.mock('stripe', () => {
 // Mock Supabase
 vi.mock('../../supabase/client.js', () => ({
   default: {
-    from: vi.fn((table) => {
+    from: vi.fn(table => {
       if (table === 'pricing') {
         return {
           select: vi.fn(() => ({
@@ -44,7 +45,11 @@ vi.mock('../../supabase/client.js', () => ({
                   price: 99,
                   active: true,
                   currency: 'USD',
-                  features: ['AI-powered business plan', 'Financial projections', 'Market analysis'],
+                  features: [
+                    'AI-powered business plan',
+                    'Financial projections',
+                    'Market analysis',
+                  ],
                 },
                 error: null,
               }),
@@ -54,7 +59,9 @@ vi.mock('../../supabase/client.js', () => ({
       }
       return {
         insert: vi.fn().mockResolvedValue({ data: {}, error: null }),
-        update: vi.fn(() => ({ eq: vi.fn(() => vi.fn().mockResolvedValue({ data: {}, error: null })) })),
+        update: vi.fn(() => ({
+          eq: vi.fn(() => vi.fn().mockResolvedValue({ data: {}, error: null })),
+        })),
       };
     }),
   },
@@ -91,7 +98,9 @@ describe('Stripe Payment Integration', () => {
 
     // Set up default responses
     mockStripe.checkout.sessions.create.mockResolvedValue(mockSession);
-    mockStripe.balance.retrieve.mockResolvedValue({ available: [{ amount: 1000 }] });
+    mockStripe.balance.retrieve.mockResolvedValue({
+      available: [{ amount: 1000 }],
+    });
   });
 
   afterEach(() => {
@@ -117,7 +126,8 @@ describe('Stripe Payment Integration', () => {
                 currency: 'usd',
                 product_data: expect.objectContaining({
                   name: 'business-plan-builder',
-                  description: 'AI-powered business plan, Financial projections, Market analysis',
+                  description:
+                    'AI-powered business plan, Financial projections, Market analysis',
                 }),
                 unit_amount: 9900,
               }),
@@ -152,7 +162,11 @@ describe('Stripe Payment Integration', () => {
     });
 
     it('handles all supported product tracks correctly', async () => {
-      const productTracks = ['business-plan-builder', 'social-media-campaign', 'website-audit-feedback'];
+      const productTracks = [
+        'business-plan-builder',
+        'social-media-campaign',
+        'website-audit-feedback',
+      ];
 
       for (const track of productTracks) {
         // Reset and configure mock for this specific product track
@@ -197,11 +211,13 @@ describe('Stripe Payment Integration', () => {
         })),
       });
 
-      await expect(createCheckoutSession({
-        productTrack: 'business-plan-builder',
-        userId: 'user_test_123',
-        metadata: {},
-      })).rejects.toThrow('Pricing fetch failed: Database connection failed');
+      await expect(
+        createCheckoutSession({
+          productTrack: 'business-plan-builder',
+          userId: 'user_test_123',
+          metadata: {},
+        })
+      ).rejects.toThrow('Pricing fetch failed: Database connection failed');
     }, 10000);
 
     it('handles Stripe API errors', async () => {
@@ -212,11 +228,15 @@ describe('Stripe Payment Integration', () => {
 
       mockStripe.checkout.sessions.create.mockRejectedValueOnce(stripeError);
 
-      await expect(createCheckoutSession({
-        productTrack: 'business-plan-builder',
-        userId: 'user_test_123',
-        metadata: {},
-      })).rejects.toThrow('Stripe checkout session creation failed: Your card was declined.');
+      await expect(
+        createCheckoutSession({
+          productTrack: 'business-plan-builder',
+          userId: 'user_test_123',
+          metadata: {},
+        })
+      ).rejects.toThrow(
+        'Stripe checkout session creation failed: Your card was declined.'
+      );
     });
 
     it('handles invalid or inactive product configurations', async () => {
@@ -235,11 +255,13 @@ describe('Stripe Payment Integration', () => {
         })),
       });
 
-      await expect(createCheckoutSession({
-        productTrack: 'business-plan-builder',
-        userId: 'user_test_123',
-        metadata: {},
-      })).rejects.toThrow('Invalid or inactive product track');
+      await expect(
+        createCheckoutSession({
+          productTrack: 'business-plan-builder',
+          userId: 'user_test_123',
+          metadata: {},
+        })
+      ).rejects.toThrow('Invalid or inactive product track');
     });
   });
 
@@ -334,7 +356,8 @@ describe('Stripe Payment Integration', () => {
 
       expect(mockStripe.checkout.sessions.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          success_url: 'https://test.example.com/success?session_id={CHECKOUT_SESSION_ID}',
+          success_url:
+            'https://test.example.com/success?session_id={CHECKOUT_SESSION_ID}',
           cancel_url: 'https://test.example.com/cancel',
         }),
         expect.anything()
@@ -354,8 +377,12 @@ describe('Stripe Payment Integration', () => {
 
       expect(mockStripe.checkout.sessions.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          success_url: expect.stringContaining('https://test.example.com/success'),
-          cancel_url: expect.stringContaining('https://test.example.com/cancel'),
+          success_url: expect.stringContaining(
+            'https://test.example.com/success'
+          ),
+          cancel_url: expect.stringContaining(
+            'https://test.example.com/cancel'
+          ),
         }),
         expect.anything()
       );
