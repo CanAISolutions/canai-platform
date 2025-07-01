@@ -6,6 +6,35 @@ import {
   retrieveCheckoutSession,
   createRefund,
 } from '../services/stripeCheckout.js';
+
+// Import withRetry function for reliable external API calls
+async function withRetry(fn, maxRetries = 3, baseDelay = 1000) {
+  let lastError;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+
+      // Don't retry on non-retryable errors (4xx errors except rate limits)
+      if (error.status && error.status >= 400 && error.status < 500 && error.status !== 429) {
+        throw error;
+      }
+
+      // Don't retry on last attempt
+      if (attempt === maxRetries) {
+        break;
+      }
+
+      // Exponential backoff: 2^attempt * baseDelay
+      const delay = Math.pow(2, attempt) * baseDelay;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError;
+}
 import { captureException } from '@sentry/node';
 import Joi from 'joi';
 
@@ -383,21 +412,29 @@ async function handleCheckoutSessionCompleted(session) {
     .update({ status: 'completed' })
     .eq('session_id', session.id);
 
-  // Trigger Make.com workflow for project setup
+  // Trigger Make.com workflow for project setup with retry logic
   if (process.env.MAKECOM_WEBHOOK_URL) {
     try {
-      await fetch(process.env.MAKECOM_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          event: 'checkout.session.completed',
-          session_id: session.id,
-          user_id: metadata.user_id,
-          product_track: metadata.product_track,
-          amount: session.amount_total / 100,
-          currency: session.currency,
-        }),
-      });
+      await withRetry(async () => {
+        const response = await fetch(process.env.MAKECOM_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'checkout.session.completed',
+            session_id: session.id,
+            user_id: metadata?.user_id,
+            product_track: metadata?.product_track,
+            amount: session.amount_total / 100,
+            currency: session.currency,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Make.com webhook failed: ${response.status} ${response.statusText}`);
+        }
+
+        return response;
+      }, 3, 1000);
     } catch (error) {
       captureException(error, {
         tags: { component: 'makecom_integration' },
@@ -411,7 +448,7 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
   // Log successful payment
   await supabase.from('payment_logs').insert({
     event_type: 'payment_succeeded',
-    user_id: paymentIntent.metadata.user_id,
+    user_id: paymentIntent.metadata?.user_id || null,
     amount: paymentIntent.amount / 100,
     status: 'success',
     metadata: {
@@ -425,7 +462,7 @@ async function handlePaymentIntentFailed(paymentIntent) {
   // Log failed payment
   await supabase.from('payment_logs').insert({
     event_type: 'payment_failed',
-    user_id: paymentIntent.metadata.user_id,
+    user_id: paymentIntent.metadata?.user_id || null,
     amount: paymentIntent.amount / 100,
     status: 'failed',
     metadata: {
@@ -440,7 +477,7 @@ async function handleChargeDisputeCreated(dispute) {
   // Log dispute creation
   await supabase.from('payment_logs').insert({
     event_type: 'dispute_created',
-    user_id: dispute.metadata?.user_id,
+    user_id: dispute.metadata?.user_id || null,
     amount: dispute.amount / 100,
     status: 'disputed',
     metadata: {
