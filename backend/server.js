@@ -14,8 +14,10 @@ const app = express();
 // ==============================================
 // Sentry Middleware (must be first)
 // ==============================================
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
+// console.log('Registering Sentry requestHandler at: / (global middleware)');
+// app.use(Sentry.Handlers.requestHandler());
+// console.log('Registering Sentry tracingHandler at: / (global middleware)');
+// app.use(Sentry.Handlers.tracingHandler());
 
 // ==============================================
 // App Settings & Configuration
@@ -34,6 +36,7 @@ app.set('strict routing', true);
 // ==============================================
 
 // Security headers middleware (helmet)
+console.log('Registering helmet at: / (global middleware)');
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -53,6 +56,7 @@ app.use(
 );
 
 // CORS configuration
+console.log('Registering CORS at: / (global middleware)');
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || [
@@ -66,10 +70,13 @@ app.use(
 );
 
 // Request logging middleware (morgan)
+console.log('Registering morgan at: / (global middleware)');
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // Body parsing middleware
+console.log('Registering express.json at: / (global middleware)');
 app.use(express.json({ limit: '10mb' }));
+console.log('Registering express.urlencoded at: / (global middleware)');
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ==============================================
@@ -77,6 +84,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // ==============================================
 
 // Health check endpoint
+console.log('Registering GET /');
 app.get('/', (req, res) => {
   res.status(200).json({
     status: 'ok',
@@ -87,6 +95,7 @@ app.get('/', (req, res) => {
 });
 
 // Dedicated health endpoint for monitoring
+console.log('Registering GET /health');
 app.get('/health', async (req, res) => {
   try {
     // Attempt a simple Supabase query (adjust table name as needed)
@@ -100,7 +109,7 @@ app.get('/health', async (req, res) => {
       memory: process.memoryUsage(),
     });
   } catch (err) {
-    Sentry.captureException(err); // Manually capture async errors
+    // Sentry.captureException(err); // Manually capture async errors
     res.status(500).json({
       status: 'unhealthy',
       supabase: 'unhealthy',
@@ -113,6 +122,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Mount emotional analysis API
+console.log('Registering /v1 emotionalAnalysisRouter');
 app.use('/v1', emotionalAnalysisRouter);
 
 // TODO: Add API routes
@@ -124,10 +134,12 @@ app.use('/v1', emotionalAnalysisRouter);
 // ==============================================
 
 // The Sentry error handler must be before any other error middleware and after all controllers
-app.use(Sentry.Handlers.errorHandler());
+// console.log('Registering Sentry errorHandler at: / (global error middleware)');
+// app.use(Sentry.Handlers.errorHandler());
 
 // 404 handler
-app.use('*', (req, res) => {
+console.log('Registering 404 handler at: *');
+app.all('*', (req, res) => {
   res.status(404).json({
     error: 'Not Found',
     message: `Route ${req.originalUrl} not found`,
@@ -136,6 +148,7 @@ app.use('*', (req, res) => {
 });
 
 // Optional fallthrough error handler
+console.log('Registering global error handler at: /');
 app.use((err, req, res, next) => {
   // The error id is attached to `res.sentry` to be returned
   // and optionally displayed to the user for support.
