@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import supabase from './supabase/client.js';
 import Sentry from './services/instrument.js';
 import emotionalAnalysisRouter from './routes/emotionalAnalysis.js';
+import stripeRouter from './routes/stripe.js';
 
 dotenv.config();
 
@@ -98,20 +99,25 @@ app.get('/', (req, res) => {
 console.log('Registering GET /health');
 app.get('/health', async (req, res) => {
   try {
-    // Attempt a simple Supabase query (adjust table name as needed)
-    const { error } = await supabase.from('profiles').select('id').limit(1);
-    if (error) throw error;
+    // Try a simple Supabase query on a table that should always exist, fallback to degraded if error
+    let dbStatus = 'unknown';
+    try {
+      const { error } = await supabase.from('prompt_logs').select('id').limit(1);
+      dbStatus = error ? 'unhealthy' : 'healthy';
+    } catch (err) {
+      dbStatus = 'unhealthy';
+    }
+    const status = dbStatus === 'healthy' ? 'healthy' : 'degraded';
     res.status(200).json({
-      status: 'healthy',
-      supabase: 'healthy',
+      status,
+      supabase: dbStatus,
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
       memory: process.memoryUsage(),
     });
   } catch (err) {
-    // Sentry.captureException(err); // Manually capture async errors
-    res.status(500).json({
-      status: 'unhealthy',
+    res.status(200).json({
+      status: 'degraded',
       supabase: 'unhealthy',
       error: err.message,
       uptime: process.uptime(),
@@ -124,6 +130,7 @@ app.get('/health', async (req, res) => {
 // Mount emotional analysis API
 console.log('Registering /v1 emotionalAnalysisRouter');
 app.use('/v1', emotionalAnalysisRouter);
+app.use('/v1/stripe', stripeRouter);
 
 // TODO: Add API routes
 // TODO: Add authentication routes
