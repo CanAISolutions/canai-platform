@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="121" failures="0" errors="0" time="7.5624122">
-    <testsuite name="backend/tests/app.test.ts" timestamp="2025-07-01T01:15:15.862Z" hostname="DESKTOP-BGMEO6L" tests="10" failures="0" errors="0" skipped="0" time="0.0251729">
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Basic Functionality &gt; should run a basic test" time="0.0027599">
+<testsuites name="vitest tests" tests="121" failures="0" errors="0" time="8.1243869">
+    <testsuite name="backend/tests/app.test.ts" timestamp="2025-07-01T14:55:07.071Z" hostname="DESKTOP-BGMEO6L" tests="10" failures="0" errors="0" skipped="0" time="0.0222701">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Basic Functionality &gt; should run a basic test" time="0.0027278">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Basic Functionality &gt; should handle async operations" time="0.0005146">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Basic Functionality &gt; should handle async operations" time="0.0005395">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; API Validation Logic &gt; should validate business name input" time="0.0021024">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; API Validation Logic &gt; should validate business name input" time="0.0022949">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; API Validation Logic &gt; should validate trust score calculation" time="0.0007234">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; API Validation Logic &gt; should validate trust score calculation" time="0.0006757">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; PRD Journey Stage Logic &gt; should validate F1 Discovery Hook requirements" time="0.0030123">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; PRD Journey Stage Logic &gt; should validate F1 Discovery Hook requirements" time="0.0027333">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; PRD Journey Stage Logic &gt; should validate F2 Discovery Funnel data structure" time="0.000865">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; PRD Journey Stage Logic &gt; should validate F2 Discovery Funnel data structure" time="0.0007627">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; PRD Journey Stage Logic &gt; should validate F3 Spark generation limits" time="0.0006179">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; PRD Journey Stage Logic &gt; should validate F3 Spark generation limits" time="0.0005787">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Performance Requirements &gt; should meet PRD performance targets" time="0.0005128">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Performance Requirements &gt; should meet PRD performance targets" time="0.000482">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Security and Validation &gt; should sanitize user inputs" time="0.0013451">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Security and Validation &gt; should sanitize user inputs" time="0.0011992">
         </testcase>
-        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Security and Validation &gt; should validate rate limiting logic" time="0.0083565">
+        <testcase classname="backend/tests/app.test.ts" name="CanAI Backend Tests &gt; Security and Validation &gt; should validate rate limiting logic" time="0.0054503">
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/gpt4o.test.js" timestamp="2025-07-01T01:15:15.868Z" hostname="DESKTOP-BGMEO6L" tests="12" failures="0" errors="0" skipped="1" time="0.7649889">
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; Basic functionality &gt; countTokens returns correct token count for string" time="0.2326347">
+    <testsuite name="backend/tests/gpt4o.test.js" timestamp="2025-07-01T14:55:07.081Z" hostname="DESKTOP-BGMEO6L" tests="12" failures="0" errors="0" skipped="1" time="2.4684866">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; Basic functionality &gt; countTokens returns correct token count for string" time="1.9598804">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -53,7 +53,7 @@ mockEncode called with: hello world
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; Basic functionality &gt; chunkInput handles small input correctly" time="0.0390081">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; Basic functionality &gt; chunkInput handles small input correctly" time="0.0820565">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -89,7 +89,7 @@ mockDecode called with: [
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; Basic functionality &gt; chunkInput prioritizes businessDescription and revenueModel" time="0.0530808">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; Basic functionality &gt; chunkInput prioritizes businessDescription and revenueModel" time="0.0560574">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -130,7 +130,7 @@ mockDecode called with: [
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; calculateCost &gt; logs to prompt_logs and triggers support_requests when cost exceeds $50" time="0.0765777">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; calculateCost &gt; logs to prompt_logs and triggers support_requests when cost exceeds $50" time="0.0529298">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -157,7 +157,7 @@ hume at module load: {
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; calculateCost &gt; does not trigger support_requests when cost is under $50" time="0.0821021">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; calculateCost &gt; does not trigger support_requests when cost is under $50" time="0.0376411">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -187,7 +187,7 @@ hume at module load: {
         <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; validates response with high resonance and trustDelta" time="0">
             <skipped/>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; invalidates response with low resonance" time="0.0501409">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; invalidates response with low resonance" time="0.0587932">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -214,7 +214,7 @@ hume at module load: {
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; invalidates response with low trustDelta" time="0.0476164">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; invalidates response with low trustDelta" time="0.0436741">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -241,7 +241,7 @@ hume at module load: {
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; detects toxic content" time="0.0727205">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; detects toxic content" time="0.0335582">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -268,7 +268,7 @@ hume at module load: {
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; detects WCAG accessibility issues" time="0.0418777">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; detects WCAG accessibility issues" time="0.0402159">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -295,7 +295,7 @@ hume at module load: {
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; falls back to GPT-4o when Hume AI fails" time="0.0342517">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; falls back to GPT-4o when Hume AI fails" time="0.0572775">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -325,7 +325,7 @@ Text: Fallback test with over 100 characters.
 
             </system-out>
         </testcase>
-        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; logs validation results to comparisons table" time="0.0301506">
+        <testcase classname="backend/tests/gpt4o.test.js" name="GPT4Service &gt; validateResponse &gt; logs validation results to comparisons table" time="0.0416753">
             <system-out>
 HUME_API_KEY: test_hume_key
 hume at module load: {
@@ -353,11 +353,11 @@ hume at module load: {
             </system-out>
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/keySafety.test.js" timestamp="2025-07-01T01:15:15.881Z" hostname="DESKTOP-BGMEO6L" tests="1" failures="0" errors="0" skipped="0" time="0.0059179">
-        <testcase classname="backend/tests/keySafety.test.js" name="API Key Safety &gt; should use only dummy keys in test environment" time="0.0029245">
+    <testsuite name="backend/tests/keySafety.test.js" timestamp="2025-07-01T14:55:07.097Z" hostname="DESKTOP-BGMEO6L" tests="1" failures="0" errors="0" skipped="0" time="0.0103001">
+        <testcase classname="backend/tests/keySafety.test.js" name="API Key Safety &gt; should use only dummy keys in test environment" time="0.004952">
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/prompts.test.js" timestamp="2025-07-01T01:15:15.882Z" hostname="DESKTOP-BGMEO6L" tests="4" failures="0" errors="0" skipped="4" time="0">
+    <testsuite name="backend/tests/prompts.test.js" timestamp="2025-07-01T14:55:07.098Z" hostname="DESKTOP-BGMEO6L" tests="4" failures="0" errors="0" skipped="4" time="0">
         <testcase classname="backend/tests/prompts.test.js" name="Prompt Templates &gt; Social Media Template generates valid campaign" time="0">
             <skipped/>
         </testcase>
@@ -371,170 +371,170 @@ hume at module load: {
             <skipped/>
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/integration/emotionalAnalysis.api.test.js" timestamp="2025-07-01T01:15:15.887Z" hostname="DESKTOP-BGMEO6L" tests="16" failures="0" errors="0" skipped="0" time="0.0467275">
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Service Layer Tests &gt; should have the emotional analysis service available" time="0.0059813">
+    <testsuite name="backend/tests/integration/emotionalAnalysis.api.test.js" timestamp="2025-07-01T14:55:07.101Z" hostname="DESKTOP-BGMEO6L" tests="16" failures="0" errors="0" skipped="0" time="0.0663547">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Service Layer Tests &gt; should have the emotional analysis service available" time="0.0073892">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Service Layer Tests &gt; should be able to create HumeService instance" time="0.0020661">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Service Layer Tests &gt; should be able to create HumeService instance" time="0.002751">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Service Layer Tests &gt; should handle emotion analysis request structure" time="0.0083002">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Service Layer Tests &gt; should handle emotion analysis request structure" time="0.0075517">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Authentication Logic (PRD Section 7.2, 8.3) &gt; should validate JWT tokens properly" time="0.0056283">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Authentication Logic (PRD Section 7.2, 8.3) &gt; should validate JWT tokens properly" time="0.0070631">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Authentication Logic (PRD Section 7.2, 8.3) &gt; should reject invalid JWT tokens" time="0.0012145">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Authentication Logic (PRD Section 7.2, 8.3) &gt; should reject invalid JWT tokens" time="0.0013696">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Authentication Logic (PRD Section 7.2, 8.3) &gt; should handle production vs non-production auth modes" time="0.0007293">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Authentication Logic (PRD Section 7.2, 8.3) &gt; should handle production vs non-production auth modes" time="0.0009532">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Input Validation (PRD Section 7.2) &gt; should validate required fields for emotion analysis" time="0.0008277">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Input Validation (PRD Section 7.2) &gt; should validate required fields for emotion analysis" time="0.0014204">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Input Validation (PRD Section 7.2) &gt; should validate UUID format for comparisonId" time="0.0007615">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Input Validation (PRD Section 7.2) &gt; should validate UUID format for comparisonId" time="0.0035338">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Input Validation (PRD Section 7.2) &gt; should validate text length constraints" time="0.001076">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Input Validation (PRD Section 7.2) &gt; should validate text length constraints" time="0.0014219">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Error Handling &amp; Fallbacks (PRD Section 9, 7.6, 8.3) &gt; should handle service failures gracefully" time="0.0020863">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Error Handling &amp; Fallbacks (PRD Section 9, 7.6, 8.3) &gt; should handle service failures gracefully" time="0.0027249">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Error Handling &amp; Fallbacks (PRD Section 9, 7.6, 8.3) &gt; should have fallback to GPT-4o when Hume fails" time="0.0016307">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Error Handling &amp; Fallbacks (PRD Section 9, 7.6, 8.3) &gt; should have fallback to GPT-4o when Hume fails" time="0.0017378">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Error Handling &amp; Fallbacks (PRD Section 9, 7.6, 8.3) &gt; should handle timeout scenarios" time="0.0012785">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Error Handling &amp; Fallbacks (PRD Section 9, 7.6, 8.3) &gt; should handle timeout scenarios" time="0.0020579">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Circuit Breaker Logic (PRD Section 9) &gt; should check circuit breaker state" time="0.0011692">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Circuit Breaker Logic (PRD Section 9) &gt; should check circuit breaker state" time="0.0060403">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Circuit Breaker Logic (PRD Section 9) &gt; should handle circuit breaker open state" time="0.0012505">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Circuit Breaker Logic (PRD Section 9) &gt; should handle circuit breaker open state" time="0.0013124">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Hume AI Integration (PRD Section 6.2, 7.6, 8.3) &gt; should call analyzeEmotion with correct parameters" time="0.0038091">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Hume AI Integration (PRD Section 6.2, 7.6, 8.3) &gt; should call analyzeEmotion with correct parameters" time="0.0047819">
         </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Hume AI Integration (PRD Section 6.2, 7.6, 8.3) &gt; should return proper emotional analysis structure" time="0.0037973">
-        </testcase>
-    </testsuite>
-    <testsuite name="backend/tests/integration/emotionalAnalysis.integration.test.js" timestamp="2025-07-01T01:15:15.892Z" hostname="DESKTOP-BGMEO6L" tests="3" failures="0" errors="0" skipped="0" time="0.0182959">
-        <testcase classname="backend/tests/integration/emotionalAnalysis.integration.test.js" name="Emotional Analysis Integration &gt; returns consistent output format across providers" time="0.0066082">
-        </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.integration.test.js" name="Emotional Analysis Integration &gt; activates fallback on circuit breaker open" time="0.0042487">
-        </testcase>
-        <testcase classname="backend/tests/integration/emotionalAnalysis.integration.test.js" name="Emotional Analysis Integration &gt; enforces rate limiting and triggers fallback or error after limit" time="0.0014394">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.api.test.js" name="Emotional Analysis API Logic &gt; Hume AI Integration (PRD Section 6.2, 7.6, 8.3) &gt; should return proper emotional analysis structure" time="0.0042306">
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/integration/posthog.integration.test.js" timestamp="2025-07-01T01:15:15.894Z" hostname="DESKTOP-BGMEO6L" tests="1" failures="0" errors="0" skipped="0" time="0.0247731">
-        <testcase classname="backend/tests/integration/posthog.integration.test.js" name="PostHog Integration &gt; sends funnel_step event to PostHog dashboard (placeholder)" time="0.0071816">
+    <testsuite name="backend/tests/integration/emotionalAnalysis.integration.test.js" timestamp="2025-07-01T14:55:07.110Z" hostname="DESKTOP-BGMEO6L" tests="3" failures="0" errors="0" skipped="0" time="0.0149737">
+        <testcase classname="backend/tests/integration/emotionalAnalysis.integration.test.js" name="Emotional Analysis Integration &gt; returns consistent output format across providers" time="0.0062721">
+        </testcase>
+        <testcase classname="backend/tests/integration/emotionalAnalysis.integration.test.js" name="Emotional Analysis Integration &gt; activates fallback on circuit breaker open" time="0.0039829">
+        </testcase>
+        <testcase classname="backend/tests/integration/emotionalAnalysis.integration.test.js" name="Emotional Analysis Integration &gt; enforces rate limiting and triggers fallback or error after limit" time="0.0009781">
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/integration/rls-policies.test.js" timestamp="2025-07-01T01:15:15.895Z" hostname="DESKTOP-BGMEO6L" tests="2" failures="0" errors="0" skipped="1" time="0.0062192">
-        <testcase classname="backend/tests/integration/rls-policies.test.js" name="JWT Regression &gt; should have TEST_ADMIN_JWT set in env" time="0.0027871">
+    <testsuite name="backend/tests/integration/posthog.integration.test.js" timestamp="2025-07-01T14:55:07.112Z" hostname="DESKTOP-BGMEO6L" tests="1" failures="0" errors="0" skipped="0" time="0.0373603">
+        <testcase classname="backend/tests/integration/posthog.integration.test.js" name="PostHog Integration &gt; sends funnel_step event to PostHog dashboard (placeholder)" time="0.01234">
+        </testcase>
+    </testsuite>
+    <testsuite name="backend/tests/integration/rls-policies.test.js" timestamp="2025-07-01T14:55:07.113Z" hostname="DESKTOP-BGMEO6L" tests="2" failures="0" errors="0" skipped="1" time="0.0073631">
+        <testcase classname="backend/tests/integration/rls-policies.test.js" name="JWT Regression &gt; should have TEST_ADMIN_JWT set in env" time="0.0028096">
         </testcase>
         <testcase classname="backend/tests/integration/rls-policies.test.js" name="Supabase RLS Policies - Core Tables &gt; Supabase RLS Policies - Core Tables &gt; skipped: TEST_ADMIN_JWT is expired or invalid (see PRD.md section 6.1)" time="0">
             <skipped/>
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/unit/hume.test.js" timestamp="2025-07-01T01:15:15.897Z" hostname="DESKTOP-BGMEO6L" tests="18" failures="0" errors="0" skipped="0" time="0.0610045">
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService &gt; throws if HUME_API_KEY is missing" time="0.0135067">
+    <testsuite name="backend/tests/unit/hume.test.js" timestamp="2025-07-01T14:55:07.115Z" hostname="DESKTOP-BGMEO6L" tests="18" failures="0" errors="0" skipped="0" time="0.0607248">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService &gt; throws if HUME_API_KEY is missing" time="0.0128814">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService &gt; initializes and stores key in Supabase" time="0.0031444">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService &gt; initializes and stores key in Supabase" time="0.0039172">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService &gt; enforces rate limiting" time="0.0021181">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService &gt; enforces rate limiting" time="0.0028091">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="KeyManagementService &gt; rotates Hume API key and stores in Supabase" time="0.0019609">
+        <testcase classname="backend/tests/unit/hume.test.js" name="KeyManagementService &gt; rotates Hume API key and stores in Supabase" time="0.0043889">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="KeyManagementService &gt; returns null if Supabase upsert fails" time="0.0115787">
+        <testcase classname="backend/tests/unit/hume.test.js" name="KeyManagementService &gt; returns null if Supabase upsert fails" time="0.0088654">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="KeyManagementService &gt; throws if generated key is invalid" time="0.0009757">
+        <testcase classname="backend/tests/unit/hume.test.js" name="KeyManagementService &gt; throws if generated key is invalid" time="0.0011712">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="KeyManagementService &gt; calls Supabase.from and upsert with correct arguments" time="0.0036445">
+        <testcase classname="backend/tests/unit/hume.test.js" name="KeyManagementService &gt; calls Supabase.from and upsert with correct arguments" time="0.0042949">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeCircuitBreaker &gt; starts in CLOSED state" time="0.0004893">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeCircuitBreaker &gt; starts in CLOSED state" time="0.0006064">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeCircuitBreaker &gt; transitions to OPEN after threshold failures" time="0.0039979">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeCircuitBreaker &gt; transitions to OPEN after threshold failures" time="0.0009948">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeCircuitBreaker &gt; transitions to HALF_OPEN after reset timeout" time="0.0018812">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeCircuitBreaker &gt; transitions to HALF_OPEN after reset timeout" time="0.0016475">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeCircuitBreaker &gt; resets to CLOSED on success in HALF_OPEN" time="0.0010378">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeCircuitBreaker &gt; resets to CLOSED on success in HALF_OPEN" time="0.0006334">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="EmotionalScorer &gt; normalizes scores within 0-1" time="0.0006257">
+        <testcase classname="backend/tests/unit/hume.test.js" name="EmotionalScorer &gt; normalizes scores within 0-1" time="0.0006162">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="EmotionalScorer &gt; validates scores above threshold" time="0.0004972">
+        <testcase classname="backend/tests/unit/hume.test.js" name="EmotionalScorer &gt; validates scores above threshold" time="0.0004916">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="EmotionalScorer &gt; invalidates scores below threshold" time="0.0003017">
+        <testcase classname="backend/tests/unit/hume.test.js" name="EmotionalScorer &gt; invalidates scores below threshold" time="0.0003489">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService emotional scoring &gt; returns normalized and validated score" time="0.0020422">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService emotional scoring &gt; returns normalized and validated score" time="0.0019902">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService emotional scoring &gt; throws if score is below threshold" time="0.0017811">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService emotional scoring &gt; throws if score is below threshold" time="0.0018329">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService fallback logic &gt; uses fallback when circuit breaker is open" time="0.0020966">
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService fallback logic &gt; uses fallback when circuit breaker is open" time="0.0021229">
         </testcase>
-        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService fallback logic &gt; uses fallback when score is below threshold" time="0.0031463">
-        </testcase>
-    </testsuite>
-    <testsuite name="backend/tests/unit/posthog.test.js" timestamp="2025-07-01T01:15:15.905Z" hostname="DESKTOP-BGMEO6L" tests="11" failures="0" errors="0" skipped="0" time="0.2247387">
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event validation &gt; validates a correct funnel_step event" time="0.0580548">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event validation &gt; rejects a funnel_step event missing stepName" time="0.0185603">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; PII scrubbing &gt; removes email, name, phone, userId" time="0.0142023">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Session management &gt; creates and retrieves a session" time="0.0123711">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Session management &gt; ends a session and marks as ended" time="0.0069302">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event enrichment &gt; adds appVersion, environment, deploymentId to events" time="0.0088835">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event tracking &gt; tracks funnel_step event correctly" time="0.0146652">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event tracking &gt; tracks api_latency event correctly" time="0.007189">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event tracking &gt; tracks error_occurred event correctly" time="0.0071322">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event tracking &gt; tracks user_action event correctly" time="0.0085611">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
-        </testcase>
-        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Batching &gt; batches events according to flushAt" time="0.0621776">
-            <system-out>
-[PostHog] Connection validated. Analytics enabled.
-
-            </system-out>
+        <testcase classname="backend/tests/unit/hume.test.js" name="HumeService fallback logic &gt; uses fallback when score is below threshold" time="0.0027687">
         </testcase>
     </testsuite>
-    <testsuite name="frontend/src/tests/DeliverableGeneration.test.tsx" timestamp="2025-07-01T01:15:15.910Z" hostname="DESKTOP-BGMEO6L" tests="13" failures="0" errors="0" skipped="4" time="2.8251948">
+    <testsuite name="backend/tests/unit/posthog.test.js" timestamp="2025-07-01T14:55:07.125Z" hostname="DESKTOP-BGMEO6L" tests="11" failures="0" errors="0" skipped="0" time="0.1829528">
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event validation &gt; validates a correct funnel_step event" time="0.0382576">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event validation &gt; rejects a funnel_step event missing stepName" time="0.0096378">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; PII scrubbing &gt; removes email, name, phone, userId" time="0.0070944">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Session management &gt; creates and retrieves a session" time="0.0060392">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Session management &gt; ends a session and marks as ended" time="0.0097241">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event enrichment &gt; adds appVersion, environment, deploymentId to events" time="0.0045236">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event tracking &gt; tracks funnel_step event correctly" time="0.0169639">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event tracking &gt; tracks api_latency event correctly" time="0.0073446">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event tracking &gt; tracks error_occurred event correctly" time="0.0077301">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Event tracking &gt; tracks user_action event correctly" time="0.0069543">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+        <testcase classname="backend/tests/unit/posthog.test.js" name="posthog.js analytics logic &gt; Batching &gt; batches events according to flushAt" time="0.0634132">
+            <system-out>
+[PostHog] Connection validated. Analytics enabled.
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="frontend/src/tests/DeliverableGeneration.test.tsx" timestamp="2025-07-01T14:55:07.136Z" hostname="DESKTOP-BGMEO6L" tests="13" failures="0" errors="0" skipped="4" time="2.1831344">
         <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate BUSINESS_BUILDER length and financial projections (700-800 words, 100-word financials)" time="0">
             <skipped/>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate SOCIAL_EMAIL format and word counts (3-7 posts, 3-5 emails)" time="0.5829668">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate SOCIAL_EMAIL format and word counts (3-7 posts, 3-5 emails)" time="0.5545168">
             <system-out>
 [DeliverableGeneration] Page loaded, starting generation process
 [DeliverableGeneration] Starting deliverable generation
@@ -571,7 +571,7 @@ Generation step: [33m5[39m Timed out: [33mfalse[39m
 
             </system-err>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate SITE_AUDIT length and structure (300-400 words audit + 100-150 words recommendations)" time="0.1312348">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate SITE_AUDIT length and structure (300-400 words audit + 100-150 words recommendations)" time="0.0731635">
             <system-out>
 [DeliverableGeneration] Page loaded, starting generation process
 [DeliverableGeneration] Starting deliverable generation
@@ -604,7 +604,7 @@ Generation step: [33m5[39m Timed out: [33mfalse[39m
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate emotional resonance scoring with Hume AI requirements" time="0.1417989">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate emotional resonance scoring with Hume AI requirements" time="0.1127065">
             <system-out>
 [DeliverableGeneration] Page loaded, starting generation process
 [DeliverableGeneration] Starting deliverable generation
@@ -637,7 +637,7 @@ Generation step: [33m5[39m Timed out: [33mfalse[39m
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should handle revision requests with proper API calls" time="1.5007337">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should handle revision requests with proper API calls" time="0.9296374">
             <system-out>
 [DeliverableGeneration] Page loaded, starting generation process
 [DeliverableGeneration] Starting deliverable generation
@@ -669,7 +669,7 @@ Generation step: [33m5[39m Timed out: [33mfalse[39m
 [DeliverableGeneration] Content generated successfully
 
 Revision button visible? {
-  id: [32m&apos;del-1751332509904&apos;[39m,
+  id: [32m&apos;del-1751381700391&apos;[39m,
   content: [32m&apos;Website Audit Report\n&apos;[39m +
     [32m&apos;\n&apos;[39m +
     [32m&apos;Current State Analysis (320 words)\n&apos;[39m +
@@ -679,7 +679,7 @@ Revision button visible? {
     [32m&apos;Improve SEO, optimize for mobile, highlight $50k budget, emphasize warm brand.&apos;[39m,
   productType: [32m&apos;SITE_AUDIT&apos;[39m,
   promptId: [32m&apos;test&apos;[39m,
-  generatedAt: [32m&apos;2025-07-01T01:15:09.904Z&apos;[39m,
+  generatedAt: [32m&apos;2025-07-01T14:55:00.391Z&apos;[39m,
   revisionCount: [33m0[39m,
   pdfUrl: [32m&apos;https://example.com/deliverables/test.pdf&apos;[39m,
   emotionalResonance: {
@@ -694,7 +694,7 @@ Revision button visible? {
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should enforce regeneration limit and track attempts" time="0.1484061">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should enforce regeneration limit and track attempts" time="0.165195">
             <system-out>
 [DeliverableGeneration] Page loaded, starting generation process
 [DeliverableGeneration] Starting deliverable generation
@@ -726,7 +726,7 @@ Generation step: [33m5[39m Timed out: [33mfalse[39m
 [DeliverableGeneration] Content generated successfully
 
 Regenerate button visible? {
-  id: [32m&apos;del-1751332511417&apos;[39m,
+  id: [32m&apos;del-1751381701328&apos;[39m,
   content: [32m&apos;Website Audit Report\n&apos;[39m +
     [32m&apos;\n&apos;[39m +
     [32m&apos;Current State Analysis (320 words)\n&apos;[39m +
@@ -736,7 +736,7 @@ Regenerate button visible? {
     [32m&apos;Improve SEO, optimize for mobile, highlight $50k budget, emphasize warm brand.&apos;[39m,
   productType: [32m&apos;SITE_AUDIT&apos;[39m,
   promptId: [32m&apos;test&apos;[39m,
-  generatedAt: [32m&apos;2025-07-01T01:15:11.417Z&apos;[39m,
+  generatedAt: [32m&apos;2025-07-01T14:55:01.328Z&apos;[39m,
   revisionCount: [33m0[39m,
   pdfUrl: [32m&apos;https://example.com/deliverables/test.pdf&apos;[39m,
   emotionalResonance: {
@@ -750,11 +750,11 @@ Regenerate button visible? {
 }
 
 Regenerate button visible? {
-  id: [32m&apos;del-1751332511417&apos;[39m,
+  id: [32m&apos;del-1751381701328&apos;[39m,
   content: [32m&apos;Regenerated output&apos;[39m,
   productType: [32m&apos;SITE_AUDIT&apos;[39m,
   promptId: [32m&apos;test&apos;[39m,
-  generatedAt: [32m&apos;2025-07-01T01:15:11.488Z&apos;[39m,
+  generatedAt: [32m&apos;2025-07-01T14:55:01.435Z&apos;[39m,
   revisionCount: [33m0[39m,
   pdfUrl: [32m&apos;https://example.com/deliverables/test.pdf&apos;[39m,
   emotionalResonance: {
@@ -769,7 +769,7 @@ Regenerate button visible? {
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should display branding note with correct ID" time="0.0688809">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should display branding note with correct ID" time="0.0585053">
             <system-out>
 [DeliverableGeneration] Page loaded, starting generation process
 [DeliverableGeneration] Starting deliverable generation
@@ -802,7 +802,7 @@ Generation step: [33m5[39m Timed out: [33mfalse[39m
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should handle timeout errors with proper fallback UI" time="0.0750963">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should handle timeout errors with proper fallback UI" time="0.1239581">
             <system-out>
 [DeliverableGeneration] Page loaded, starting generation process
 [DeliverableGeneration] Starting deliverable generation
@@ -853,7 +853,7 @@ Generation step: [33m5[39m Timed out: [33mfalse[39m
         <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should integrate Sprinkle Haven Bakery context in all deliverable types" time="0">
             <skipped/>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate collapsible content sections and copy functionality" time="0.1635672">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate collapsible content sections and copy functionality" time="0.1590888">
             <system-out>
 [DeliverableGeneration] Page loaded, starting generation process
 [DeliverableGeneration] Starting deliverable generation
@@ -903,36 +903,36 @@ Clicked copy button, asserting clipboard
         <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="F7-tests: Enhanced Deliverable Generation Tests &gt; should validate multi-step loading with retry mechanism" time="0">
             <skipped/>
         </testcase>
-        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="some long-running test" time="0.0010793">
+        <testcase classname="frontend/src/tests/DeliverableGeneration.test.tsx" name="some long-running test" time="0.0005664">
         </testcase>
     </testsuite>
-    <testsuite name="frontend/src/tests/F9-feedback-flow.test.tsx" timestamp="2025-07-01T01:15:15.918Z" hostname="DESKTOP-BGMEO6L" tests="8" failures="0" errors="0" skipped="2" time="1.5096669">
-        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; renders main feedback form elements" time="0.7326111">
+    <testsuite name="frontend/src/tests/F9-feedback-flow.test.tsx" timestamp="2025-07-01T14:55:07.152Z" hostname="DESKTOP-BGMEO6L" tests="8" failures="0" errors="0" skipped="2" time="1.2225323">
+        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; renders main feedback form elements" time="0.6369539">
             <system-err>
 ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
 ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
 
             </system-err>
         </testcase>
-        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; displays star rating component" time="0.0874732">
+        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; displays star rating component" time="0.0682684">
         </testcase>
-        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; shows enhanced social sharing options" time="0.1164169">
+        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; shows enhanced social sharing options" time="0.1077821">
         </testcase>
-        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; displays enhanced referral component" time="0.1469386">
+        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; displays enhanced referral component" time="0.1301704">
         </testcase>
         <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; handles form submission with success animation" time="0">
             <skipped/>
         </testcase>
-        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; referral link generation and copying" time="0.2573306">
+        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; referral link generation and copying" time="0.2157127">
         </testcase>
         <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; post-submission state shows thank you message" time="0">
             <skipped/>
         </testcase>
-        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; danger zone purge functionality" time="0.1642221">
+        <testcase classname="frontend/src/tests/F9-feedback-flow.test.tsx" name="FeedbackPage &gt; danger zone purge functionality" time="0.0594441">
         </testcase>
     </testsuite>
-    <testsuite name="frontend/src/tests/IntentMirror.test.tsx" timestamp="2025-07-01T01:15:15.922Z" hostname="DESKTOP-BGMEO6L" tests="11" failures="0" errors="0" skipped="0" time="2.0320945">
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; renders loading state initially" time="0.4246056">
+    <testsuite name="frontend/src/tests/IntentMirror.test.tsx" timestamp="2025-07-01T14:55:07.157Z" hostname="DESKTOP-BGMEO6L" tests="11" failures="0" errors="0" skipped="0" time="1.8192467">
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; renders loading state initially" time="0.328226">
             <system-out>
 [API] POST /v1/intent-mirror called with: {
   businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
@@ -952,7 +952,7 @@ Confirm button state: [33mfalse[39m
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; displays summary and confidence gauge after loading" time="0.2691914">
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; displays summary and confidence gauge after loading" time="0.2270942">
             <system-out>
 [API] POST /v1/intent-mirror called with: {
   businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
@@ -970,79 +970,19 @@ Confirm button state: [33mfalse[39m
 }
 Confirm button state: [33mfalse[39m
 
-[API] Intent mirror generated in 18ms: {
+[API] Intent mirror generated in 21ms: {
   summary: [32m&apos;Create a family-friendly bakery&apos;[39m,
   confidenceScore: [33m0.85[39m,
   clarifyingQuestions: []
 }
 
-Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m23[39m }
+Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m28[39m }
 
 Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; shows clarifying questions when confidence &lt; 0.8" time="0.1917153">
-            <system-out>
-[API] POST /v1/intent-mirror called with: {
-  businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
-  targetAudience: [32m&apos;Denver families with children seeking organic, artisanal baked goods&apos;[39m,
-  primaryGoal: [32m&apos;Secure $200K investor funding for bakery launch&apos;[39m,
-  competitiveContext: [32m&apos;Competing with Blue Moon Bakery and chain stores&apos;[39m,
-  brandVoice: [32m&apos;warm&apos;[39m,
-  resourceConstraints: [32m&apos;$50k initial budget; team of 3; 6-month timeline&apos;[39m,
-  currentStatus: [32m&apos;Planning phase with market research completed&apos;[39m,
-  businessDescription: [32m&apos;Artisanal neighborhood bakery specializing in organic pastries&apos;[39m,
-  revenueModel: [32m&apos;Retail sales, custom orders, baking workshops, catering events&apos;[39m,
-  planPurpose: [32m&apos;Secure investor funding and establish market presence&apos;[39m,
-  location: [32m&apos;Denver, Colorado&apos;[39m,
-  uniqueValue: [32m&apos;Organic, community-focused pastries with interactive family baking workshops&apos;[39m
-}
-Confirm button state: [33mfalse[39m
-
-[API] Intent mirror generated in 17ms: {
-  summary: [32m&apos;Create a family-friendly bakery&apos;[39m,
-  confidenceScore: [33m0.85[39m,
-  clarifyingQuestions: []
-}
-
-Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m25[39m }
-
-Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
-
-            </system-out>
-        </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; handles confirm button click" time="0.4484915">
-            <system-out>
-[API] POST /v1/intent-mirror called with: {
-  businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
-  targetAudience: [32m&apos;Denver families with children seeking organic, artisanal baked goods&apos;[39m,
-  primaryGoal: [32m&apos;Secure $200K investor funding for bakery launch&apos;[39m,
-  competitiveContext: [32m&apos;Competing with Blue Moon Bakery and chain stores&apos;[39m,
-  brandVoice: [32m&apos;warm&apos;[39m,
-  resourceConstraints: [32m&apos;$50k initial budget; team of 3; 6-month timeline&apos;[39m,
-  currentStatus: [32m&apos;Planning phase with market research completed&apos;[39m,
-  businessDescription: [32m&apos;Artisanal neighborhood bakery specializing in organic pastries&apos;[39m,
-  revenueModel: [32m&apos;Retail sales, custom orders, baking workshops, catering events&apos;[39m,
-  planPurpose: [32m&apos;Secure investor funding and establish market presence&apos;[39m,
-  location: [32m&apos;Denver, Colorado&apos;[39m,
-  uniqueValue: [32m&apos;Organic, community-focused pastries with interactive family baking workshops&apos;[39m
-}
-Confirm button state: [33mfalse[39m
-
-[API] Intent mirror generated in 1ms: {
-  summary: [32m&apos;Create a family-friendly bakery&apos;[39m,
-  confidenceScore: [33m0.85[39m,
-  clarifyingQuestions: []
-}
-
-Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m8[39m }
-
-Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
-
-            </system-out>
-        </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; confirm button disabled during confirm action" time="0.2655039">
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; shows clarifying questions when confidence &lt; 0.8" time="0.1187931">
             <system-out>
 [API] POST /v1/intent-mirror called with: {
   businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
@@ -1066,15 +1006,105 @@ Confirm button state: [33mfalse[39m
   clarifyingQuestions: []
 }
 
-Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m13[39m }
+Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m14[39m }
 
 Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; handles edit button functionality" time="0.0004642">
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; handles confirm button click" time="0.319285">
+            <system-out>
+[API] POST /v1/intent-mirror called with: {
+  businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
+  targetAudience: [32m&apos;Denver families with children seeking organic, artisanal baked goods&apos;[39m,
+  primaryGoal: [32m&apos;Secure $200K investor funding for bakery launch&apos;[39m,
+  competitiveContext: [32m&apos;Competing with Blue Moon Bakery and chain stores&apos;[39m,
+  brandVoice: [32m&apos;warm&apos;[39m,
+  resourceConstraints: [32m&apos;$50k initial budget; team of 3; 6-month timeline&apos;[39m,
+  currentStatus: [32m&apos;Planning phase with market research completed&apos;[39m,
+  businessDescription: [32m&apos;Artisanal neighborhood bakery specializing in organic pastries&apos;[39m,
+  revenueModel: [32m&apos;Retail sales, custom orders, baking workshops, catering events&apos;[39m,
+  planPurpose: [32m&apos;Secure investor funding and establish market presence&apos;[39m,
+  location: [32m&apos;Denver, Colorado&apos;[39m,
+  uniqueValue: [32m&apos;Organic, community-focused pastries with interactive family baking workshops&apos;[39m
+}
+Confirm button state: [33mfalse[39m
+
+[API] Intent mirror generated in 2ms: {
+  summary: [32m&apos;Create a family-friendly bakery&apos;[39m,
+  confidenceScore: [33m0.85[39m,
+  clarifyingQuestions: []
+}
+
+Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m7[39m }
+
+Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
+
+            </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; displays field-specific edit buttons" time="0.0869716">
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; confirm button disabled during confirm action" time="0.3029948">
+            <system-out>
+[API] POST /v1/intent-mirror called with: {
+  businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
+  targetAudience: [32m&apos;Denver families with children seeking organic, artisanal baked goods&apos;[39m,
+  primaryGoal: [32m&apos;Secure $200K investor funding for bakery launch&apos;[39m,
+  competitiveContext: [32m&apos;Competing with Blue Moon Bakery and chain stores&apos;[39m,
+  brandVoice: [32m&apos;warm&apos;[39m,
+  resourceConstraints: [32m&apos;$50k initial budget; team of 3; 6-month timeline&apos;[39m,
+  currentStatus: [32m&apos;Planning phase with market research completed&apos;[39m,
+  businessDescription: [32m&apos;Artisanal neighborhood bakery specializing in organic pastries&apos;[39m,
+  revenueModel: [32m&apos;Retail sales, custom orders, baking workshops, catering events&apos;[39m,
+  planPurpose: [32m&apos;Secure investor funding and establish market presence&apos;[39m,
+  location: [32m&apos;Denver, Colorado&apos;[39m,
+  uniqueValue: [32m&apos;Organic, community-focused pastries with interactive family baking workshops&apos;[39m
+}
+Confirm button state: [33mfalse[39m
+
+[API] Intent mirror generated in 2ms: {
+  summary: [32m&apos;Create a family-friendly bakery&apos;[39m,
+  confidenceScore: [33m0.85[39m,
+  clarifyingQuestions: []
+}
+
+Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m7[39m }
+
+Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
+
+            </system-out>
+        </testcase>
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; handles edit button functionality" time="0.0005934">
+        </testcase>
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; displays field-specific edit buttons" time="0.1315205">
+            <system-out>
+[API] POST /v1/intent-mirror called with: {
+  businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
+  targetAudience: [32m&apos;Denver families with children seeking organic, artisanal baked goods&apos;[39m,
+  primaryGoal: [32m&apos;Secure $200K investor funding for bakery launch&apos;[39m,
+  competitiveContext: [32m&apos;Competing with Blue Moon Bakery and chain stores&apos;[39m,
+  brandVoice: [32m&apos;warm&apos;[39m,
+  resourceConstraints: [32m&apos;$50k initial budget; team of 3; 6-month timeline&apos;[39m,
+  currentStatus: [32m&apos;Planning phase with market research completed&apos;[39m,
+  businessDescription: [32m&apos;Artisanal neighborhood bakery specializing in organic pastries&apos;[39m,
+  revenueModel: [32m&apos;Retail sales, custom orders, baking workshops, catering events&apos;[39m,
+  planPurpose: [32m&apos;Secure investor funding and establish market presence&apos;[39m,
+  location: [32m&apos;Denver, Colorado&apos;[39m,
+  uniqueValue: [32m&apos;Organic, community-focused pastries with interactive family baking workshops&apos;[39m
+}
+Confirm button state: [33mfalse[39m
+
+[API] Intent mirror generated in 5ms: {
+  summary: [32m&apos;Create a family-friendly bakery&apos;[39m,
+  confidenceScore: [33m0.85[39m,
+  clarifyingQuestions: []
+}
+
+Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m11[39m }
+
+Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
+
+            </system-out>
+        </testcase>
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; shows support link after multiple low confidence attempts" time="0.1329">
             <system-out>
 [API] POST /v1/intent-mirror called with: {
   businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
@@ -1098,13 +1128,33 @@ Confirm button state: [33mfalse[39m
   clarifyingQuestions: []
 }
 
-Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m15[39m }
+Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m11[39m }
 
 Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; shows support link after multiple low confidence attempts" time="0.1008158">
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; implements retry logic on API failure" time="0.0161019">
+            <system-out>
+[API] POST /v1/intent-mirror called with: {
+  businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
+  targetAudience: [32m&apos;Denver families with children seeking organic, artisanal baked goods&apos;[39m,
+  primaryGoal: [32m&apos;Secure $200K investor funding for bakery launch&apos;[39m,
+  competitiveContext: [32m&apos;Competing with Blue Moon Bakery and chain stores&apos;[39m,
+  brandVoice: [32m&apos;warm&apos;[39m,
+  resourceConstraints: [32m&apos;$50k initial budget; team of 3; 6-month timeline&apos;[39m,
+  currentStatus: [32m&apos;Planning phase with market research completed&apos;[39m,
+  businessDescription: [32m&apos;Artisanal neighborhood bakery specializing in organic pastries&apos;[39m,
+  revenueModel: [32m&apos;Retail sales, custom orders, baking workshops, catering events&apos;[39m,
+  planPurpose: [32m&apos;Secure investor funding and establish market presence&apos;[39m,
+  location: [32m&apos;Denver, Colorado&apos;[39m,
+  uniqueValue: [32m&apos;Organic, community-focused pastries with interactive family baking workshops&apos;[39m
+}
+Confirm button state: [33mfalse[39m
+
+            </system-out>
+        </testcase>
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; performance: summary and score render within 300ms" time="0.0844376">
             <system-out>
 [API] POST /v1/intent-mirror called with: {
   businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
@@ -1134,7 +1184,7 @@ Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[
 
             </system-out>
         </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; implements retry logic on API failure" time="0.0138599">
+        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; handles navigation back to detailed input" time="0.1416361">
             <system-out>
 [API] POST /v1/intent-mirror called with: {
   businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
@@ -1152,70 +1202,20 @@ Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[
 }
 Confirm button state: [33mfalse[39m
 
-            </system-out>
-        </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; performance: summary and score render within 300ms" time="0.0638628">
-            <system-out>
-[API] POST /v1/intent-mirror called with: {
-  businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
-  targetAudience: [32m&apos;Denver families with children seeking organic, artisanal baked goods&apos;[39m,
-  primaryGoal: [32m&apos;Secure $200K investor funding for bakery launch&apos;[39m,
-  competitiveContext: [32m&apos;Competing with Blue Moon Bakery and chain stores&apos;[39m,
-  brandVoice: [32m&apos;warm&apos;[39m,
-  resourceConstraints: [32m&apos;$50k initial budget; team of 3; 6-month timeline&apos;[39m,
-  currentStatus: [32m&apos;Planning phase with market research completed&apos;[39m,
-  businessDescription: [32m&apos;Artisanal neighborhood bakery specializing in organic pastries&apos;[39m,
-  revenueModel: [32m&apos;Retail sales, custom orders, baking workshops, catering events&apos;[39m,
-  planPurpose: [32m&apos;Secure investor funding and establish market presence&apos;[39m,
-  location: [32m&apos;Denver, Colorado&apos;[39m,
-  uniqueValue: [32m&apos;Organic, community-focused pastries with interactive family baking workshops&apos;[39m
-}
-Confirm button state: [33mfalse[39m
-
-[API] Intent mirror generated in 4ms: {
+[API] Intent mirror generated in 7ms: {
   summary: [32m&apos;Create a family-friendly bakery&apos;[39m,
   confidenceScore: [33m0.85[39m,
   clarifyingQuestions: []
 }
 
-Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m8[39m }
-
-Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
-
-            </system-out>
-        </testcase>
-        <testcase classname="frontend/src/tests/IntentMirror.test.tsx" name="IntentMirror (F6-tests) &gt; handles navigation back to detailed input" time="0.1434277">
-            <system-out>
-[API] POST /v1/intent-mirror called with: {
-  businessName: [32m&apos;Sprinkle Haven Bakery&apos;[39m,
-  targetAudience: [32m&apos;Denver families with children seeking organic, artisanal baked goods&apos;[39m,
-  primaryGoal: [32m&apos;Secure $200K investor funding for bakery launch&apos;[39m,
-  competitiveContext: [32m&apos;Competing with Blue Moon Bakery and chain stores&apos;[39m,
-  brandVoice: [32m&apos;warm&apos;[39m,
-  resourceConstraints: [32m&apos;$50k initial budget; team of 3; 6-month timeline&apos;[39m,
-  currentStatus: [32m&apos;Planning phase with market research completed&apos;[39m,
-  businessDescription: [32m&apos;Artisanal neighborhood bakery specializing in organic pastries&apos;[39m,
-  revenueModel: [32m&apos;Retail sales, custom orders, baking workshops, catering events&apos;[39m,
-  planPurpose: [32m&apos;Secure investor funding and establish market presence&apos;[39m,
-  location: [32m&apos;Denver, Colorado&apos;[39m,
-  uniqueValue: [32m&apos;Organic, community-focused pastries with interactive family baking workshops&apos;[39m
-}
-Confirm button state: [33mfalse[39m
-
-[API] Intent mirror generated in 11ms: {
-  summary: [32m&apos;Create a family-friendly bakery&apos;[39m,
-  confidenceScore: [33m0.85[39m,
-  clarifyingQuestions: []
-}
-
-Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m16[39m }
+Intent mirror loaded: { promptId: [32m&apos;test-prompt-123&apos;[39m, confidence: [33m0.85[39m, loadTime: [33m11[39m }
 
 Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[39m, text: [32m&apos;Confirm&apos;[39m }
 
             </system-out>
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/integration/supabase/prompt-logs.integration.test.ts" timestamp="2025-07-01T01:15:15.929Z" hostname="DESKTOP-BGMEO6L" tests="8" failures="0" errors="0" skipped="8" time="0">
+    <testsuite name="backend/tests/integration/supabase/prompt-logs.integration.test.ts" timestamp="2025-07-01T14:55:07.174Z" hostname="DESKTOP-BGMEO6L" tests="8" failures="0" errors="0" skipped="8" time="0">
         <testcase classname="backend/tests/integration/supabase/prompt-logs.integration.test.ts" name="prompt_logs CRUD &amp; RLS (F5: Input Collection) &gt; should create a prompt_log (POST /api/prompt-logs)" time="0">
             <skipped/>
         </testcase>
@@ -1241,14 +1241,14 @@ Confirm button props: { id: [32m&apos;confirm-btn&apos;[39m, disabled: [33mtrue[
             <skipped/>
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/integration/supabase/supabase-connectivity.test.ts" timestamp="2025-07-01T01:15:15.933Z" hostname="DESKTOP-BGMEO6L" tests="2" failures="0" errors="0" skipped="0" time="0.0088974">
-        <testcase classname="backend/tests/integration/supabase/supabase-connectivity.test.ts" name="Supabase Connectivity via /health endpoint &gt; should return healthy status if Supabase is reachable" time="0.0048458">
+    <testsuite name="backend/tests/integration/supabase/supabase-connectivity.test.ts" timestamp="2025-07-01T14:55:07.180Z" hostname="DESKTOP-BGMEO6L" tests="2" failures="0" errors="0" skipped="0" time="0.0096197">
+        <testcase classname="backend/tests/integration/supabase/supabase-connectivity.test.ts" name="Supabase Connectivity via /health endpoint &gt; should return healthy status if Supabase is reachable" time="0.0043058">
         </testcase>
-        <testcase classname="backend/tests/integration/supabase/supabase-connectivity.test.ts" name="Supabase Connectivity via /health endpoint &gt; should fail clearly if Supabase is not reachable" time="0.0009376">
+        <testcase classname="backend/tests/integration/supabase/supabase-connectivity.test.ts" name="Supabase Connectivity via /health endpoint &gt; should fail clearly if Supabase is not reachable" time="0.0014351">
         </testcase>
     </testsuite>
-    <testsuite name="backend/tests/integration/supabase/supabase-env-connectivity.test.ts" timestamp="2025-07-01T01:15:15.934Z" hostname="DESKTOP-BGMEO6L" tests="1" failures="0" errors="0" skipped="0" time="0.00872">
-        <testcase classname="backend/tests/integration/supabase/supabase-env-connectivity.test.ts" name="Supabase .env connectivity (debug) &gt; should print debug info and confirm env vars are set" time="0.0027915">
+    <testsuite name="backend/tests/integration/supabase/supabase-env-connectivity.test.ts" timestamp="2025-07-01T14:55:07.181Z" hostname="DESKTOP-BGMEO6L" tests="1" failures="0" errors="0" skipped="0" time="0.0190676">
+        <testcase classname="backend/tests/integration/supabase/supabase-env-connectivity.test.ts" name="Supabase .env connectivity (debug) &gt; should print debug info and confirm env vars are set" time="0.0066452">
             <system-out>
 CWD: C:\Projects\canai-platform
 SUPABASE_URL: https://xegwrehxfbxbatsdpvqe.supabase.co
