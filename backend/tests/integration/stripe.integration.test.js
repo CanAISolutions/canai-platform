@@ -8,6 +8,14 @@ process.env.NODE_ENV = 'test';
 process.env.CLIENT_URL = 'https://test.example.com';
 
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import fetch from 'node-fetch';
+
+// Polyfill and mock global.fetch before any imports
+if (typeof global.fetch === 'undefined') {
+  global.fetch = vi.fn();
+} else {
+  global.fetch = vi.fn();
+}
 
 // Mock Stripe completely
 vi.mock('stripe', () => {
@@ -387,5 +395,68 @@ describe('Stripe Payment Integration', () => {
         expect.anything()
       );
     });
+  });
+});
+
+describe('Stripe Webhook Integration', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    process.env.MAKECOM_WEBHOOK_URL = 'https://make.com/webhook/add_project.json';
+  });
+
+  it('triggers Make.com scenario on checkout.session.completed', async () => {
+    global.fetch.mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({ success: true }) });
+
+    // Simulate Stripe webhook event
+    const session = {
+      id: 'cs_test_webhook_123',
+      metadata: { user_id: 'user_abc', product_track: 'business-plan-builder' },
+      amount_total: 9900,
+      currency: 'usd',
+    };
+    // Import the handler directly or call the webhook endpoint (depending on test setup)
+    const { handleCheckoutSessionCompleted } = await import('../../routes/stripe.js');
+    await handleCheckoutSessionCompleted(session);
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://make.com/webhook/add_project.json',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: expect.stringContaining('checkout.session.completed'),
+      })
+    );
+  });
+
+  it('does not trigger Make.com scenario more than once for the same session (idempotency)', async () => {
+    global.fetch.mockResolvedValue({ ok: true, status: 200, statusText: 'OK', json: async () => ({ success: true }) });
+
+    const session = {
+      id: 'cs_test_webhook_123',
+      metadata: { user_id: 'user_abc', product_track: 'business-plan-builder' },
+      amount_total: 9900,
+      currency: 'usd',
+    };
+    const { handleCheckoutSessionCompleted } = await import('../../routes/stripe.js');
+    await handleCheckoutSessionCompleted(session);
+    global.fetch.mockClear(); // Clear calls after first trigger
+    await handleCheckoutSessionCompleted(session); // Call again with same session
+
+    // Should not call fetch again for the same session (simulate idempotency)
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+});
+
+describe('Stripe Webhook Health Check', () => {
+  it('returns 200 and status ok for /webhook/health', async () => {
+    const express = (await import('express')).default;
+    const app = express();
+    const router = (await import('../../routes/stripe.js')).default;
+    app.use(router);
+    const request = (await import('supertest')).default;
+    const res = await request(app).get('/webhook/health');
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(res.body.message).toMatch(/operational/i);
   });
 });

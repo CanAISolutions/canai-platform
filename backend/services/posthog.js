@@ -2,6 +2,7 @@
 import { PostHog } from 'posthog-node';
 import Joi from 'joi';
 import { v4 as uuidv4 } from 'uuid'; // For anonymous user/session IDs
+import supabase from '../supabase/client.js';
 
 // --- Analytics State ---
 let posthog = null;
@@ -372,3 +373,40 @@ export {
   safeCapture,
   sessionStore,
 };
+
+/**
+ * getPaymentTrends - Query payment_logs for payment analytics
+ * Returns total payments, success/failure counts, and daily trends
+ */
+export async function getPaymentTrends({ startDate, endDate } = {}) {
+  // Default: last 30 days
+  const start = startDate || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const end = endDate || new Date().toISOString().slice(0, 10);
+
+  // Query total payments and status breakdown
+  const { data: counts, error: countError } = await supabase.rpc('payment_logs_aggregate', {
+    start_date: start,
+    end_date: end,
+  });
+  if (countError) throw new Error('Failed to fetch payment trends: ' + countError.message);
+
+  // Query daily trends
+  const { data: daily, error: dailyError } = await supabase
+    .from('payment_logs')
+    .select('event_type, status, inserted_at')
+    .gte('inserted_at', start)
+    .lte('inserted_at', end);
+  if (dailyError) throw new Error('Failed to fetch daily payment logs: ' + dailyError.message);
+
+  // Aggregate daily trends by date
+  const trends = {};
+  for (const row of daily) {
+    const date = row.inserted_at.slice(0, 10);
+    if (!trends[date]) trends[date] = { total: 0, success: 0, failed: 0 };
+    trends[date].total++;
+    if (row.status === 'success' || row.status === 'completed') trends[date].success++;
+    if (row.status === 'failed') trends[date].failed++;
+  }
+
+  return { counts, trends };
+}
