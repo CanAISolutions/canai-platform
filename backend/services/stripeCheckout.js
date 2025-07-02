@@ -70,6 +70,29 @@ function isRetryableError(error) {
 }
 
 /**
+ * Utility to redact sensitive fields from objects before logging
+ */
+function redactSensitiveData(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+  // Deduplicated sensitive fields and converted to Set for efficient lookup
+  const SENSITIVE_FIELDS = new Set([
+    'card_number', 'cvc', 'cvv', 'exp_month', 'exp_year', 'email', 'phone', 'address', 'name', 'full_name', 'billing_details', 'payment_method', 'source', 'customer', 'account_number', 'routing_number', 'iban', 'ssn', 'tax_id', 'password', 'token', 'authorization', 'authorization_code', 'card', 'cards', 'bank_account', 'bank_accounts', 'fingerprint', 'receipt_email', 'receipt_number', 'receipt_url', 'shipping', 'sources', 'payment_method_details', 'payment_method_data', 'payment_method_options', 'payment_intent', 'payment_intents', 'setup_intent', 'setup_intents', 'mandate', 'mandates', 'pii', 'personal_id_number', 'identity_document', 'identity_documents', 'ssn_last_4', 'ssn_last4', 'ssn_first_5', 'ssn_first5', 'dob', 'date_of_birth', 'birthdate', 'birth_date', 'passport', 'passport_number', 'drivers_license', 'license_number', 'license', 'national_id', 'national_id_number', 'taxpayer_id', 'taxpayer_id_number', 'tax_id_number', 'tax_info', 'tax_information', 'taxpayer_information', 'taxpayer_info', 'taxpayer', 'tax', 'taxes'
+  ]);
+  if (Array.isArray(obj)) return obj.map(redactSensitiveData);
+  const result = {};
+  for (const key in obj) {
+    if (SENSITIVE_FIELDS.has(key)) continue;
+    const value = obj[key];
+    if (typeof value === 'object' && value !== null) {
+      result[key] = redactSensitiveData(value);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
+/**
  * Logs payment events to Supabase payment_logs table
  * @param {Object} logData - Data to log
  */
@@ -80,7 +103,7 @@ async function logPaymentEvent(logData) {
       user_id: logData.user_id,
       amount: logData.amount,
       status: logData.status,
-      metadata: logData.metadata,
+      metadata: redactSensitiveData(logData.metadata),
       session_id: logData.session_id,
       created_at: new Date().toISOString(),
     });
@@ -352,3 +375,5 @@ export async function createRefund({
     throw new Error('Refund creation failed: ' + error.message);
   }
 }
+
+export { logPaymentEvent };
