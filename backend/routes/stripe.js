@@ -6,6 +6,7 @@ import {
   retrieveCheckoutSession,
   createRefund,
 } from '../services/stripeCheckout.js';
+import auth from '../middleware/auth.js';
 
 // Import withRetry function for reliable external API calls
 async function withRetry(fn, maxRetries = 3, baseDelay = 1000) {
@@ -17,9 +18,18 @@ async function withRetry(fn, maxRetries = 3, baseDelay = 1000) {
     } catch (error) {
       lastError = error;
 
-      // Don't retry on non-retryable errors (4xx errors except rate limits)
-      if (error.status && error.status >= 400 && error.status < 500 && error.status !== 429) {
+      // Don't retry on non-retryable Stripe errors
+      if (error.type === 'StripeInvalidRequestError' || error.type === 'StripeCardError') {
         throw error;
+      }
+
+      // Retry on specific StripeAPIError codes or server errors
+      if (error.type === 'StripeAPIError') {
+        if (error.code === 'rate_limit' || (error.status && error.status >= 500)) {
+          // Retryable: rate limit or server error
+        } else {
+          throw error; // Non-retryable API error
+        }
       }
 
       // Don't retry on last attempt
@@ -27,7 +37,6 @@ async function withRetry(fn, maxRetries = 3, baseDelay = 1000) {
         break;
       }
 
-      // Exponential backoff: 2^attempt * baseDelay
       const delay = Math.pow(2, attempt) * baseDelay;
       await new Promise(resolve => setTimeout(resolve, delay));
     }
@@ -230,7 +239,7 @@ router.get('/session/:sessionId', async (req, res) => {
  * POST /refund
  * Creates a refund for a payment
  */
-router.post('/refund', async (req, res) => {
+router.post('/refund', auth, async (req, res) => {
   try {
     // Input validation
     const { error, value } = refundSchema.validate(req.body);
@@ -330,6 +339,74 @@ router.post('/refund', async (req, res) => {
 });
 
 /**
+ * GET /refund/:refundId/status
+ * Checks the status of a refund
+ */
+router.get('/refund/:refundId/status', auth, async (req, res) => {
+  try {
+    const { refundId } = req.params;
+
+    if (!refundId || !refundId.startsWith('re_')) {
+      return res.status(400).json({
+        error: {
+          message: 'Invalid refund ID format',
+          code: 'INVALID_REFUND_ID',
+        },
+      });
+    }
+
+    // Retrieve refund status from Stripe
+    const refund = await withRetry(async () => {
+      return await stripe.refunds.retrieve(refundId);
+    });
+
+    // Check if user has permission to view this refund
+    if (req.user && refund.metadata?.user_id !== req.user.sub) {
+      return res.status(403).json({
+        error: {
+          message: 'Access denied: You can only check your own refunds',
+          code: 'ACCESS_DENIED',
+        },
+      });
+    }
+
+    res.json({
+      refund: {
+        id: refund.id,
+        amount: refund.amount,
+        currency: refund.currency,
+        status: refund.status,
+        reason: refund.reason,
+        created: refund.created,
+        metadata: refund.metadata,
+      },
+    });
+  } catch (error) {
+    captureException(error, {
+      tags: { component: 'stripe_routes', operation: 'refund_status' },
+      user: req.user ? { id: req.user.sub } : undefined,
+      extra: { refund_id: req.params.refundId },
+    });
+
+    if (error.message.includes('No such refund')) {
+      res.status(404).json({
+        error: {
+          message: 'Refund not found',
+          code: 'REFUND_NOT_FOUND',
+        },
+      });
+    } else {
+      res.status(500).json({
+        error: {
+          message: 'Failed to retrieve refund status',
+          code: 'REFUND_STATUS_ERROR',
+        },
+      });
+    }
+  }
+});
+
+/**
  * POST /webhook
  * Handles Stripe webhooks for payment events
  */
@@ -383,6 +460,11 @@ router.post(
         case 'charge.dispute.created': {
           const dispute = event.data.object;
           await handleChargeDisputeCreated(dispute);
+          break;
+        }
+        case 'charge.refunded': {
+          const charge = event.data.object;
+          await handleChargeRefunded(charge);
           break;
         }
         default:
@@ -507,6 +589,21 @@ async function handleChargeDisputeCreated(dispute) {
       dispute_id: dispute.id,
       reason: dispute.reason,
       status: dispute.status,
+    },
+  });
+}
+
+async function handleChargeRefunded(charge) {
+  // Log charge refunded
+  await supabase.from('payment_logs').insert({
+    event_type: 'charge_refunded',
+    user_id: charge.metadata?.user_id || null,
+    amount: charge.amount / 100,
+    status: 'refunded',
+    metadata: {
+      charge_id: charge.id,
+      refund_id: charge.refund?.id,
+      refund_status: charge.refund?.status,
     },
   });
 }
