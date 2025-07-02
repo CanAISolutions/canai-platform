@@ -459,7 +459,7 @@
             "id": 4,
             "title": "Add refund processing functionality",
             "description": "Implement refund creation and management with proper validation and error handling",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [
               1,
               3
@@ -471,7 +471,7 @@
             "id": 5,
             "title": "Implement subscription management",
             "description": "Build comprehensive subscription lifecycle management including creation, updates, and cancellations",
-            "status": "pending",
+            "status": "in-progress",
             "dependencies": [
               1,
               3
@@ -934,6 +934,17 @@
             "parentTaskId": 15
           }
         ]
+      },
+      {
+        "id": 16,
+        "title": "Implement GET /v1/pricing API",
+        "description": "Create pricing data API with caching from Supabase",
+        "details": "[PRD ref: T6.1.5-pricing-api] Create Express route for GET /v1/pricing that integrates Supabase client to query pricing table. Implement caching with node-cache (1-hour TTL). Log pricing_modal_viewed event with PostHog. Set up backend/routes/pricing.js and ensure Supabase pricing table exists with proper schema.",
+        "testStrategy": "Test API response format, caching behavior, Supabase integration, and PostHog event logging.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
       },
       {
         "id": 17,
@@ -2190,6 +2201,17 @@
         ]
       },
       {
+        "id": 45,
+        "title": "Create POST /v1/purge-data API",
+        "description": "Implement POST /v1/purge-data API for GDPR/CCPA-compliant data deletion",
+        "details": "[PRD ref: T6.9.4-data-purge] Create Express route for POST /v1/purge-data. Authenticate with Memberstack. Implement RLS-based data purge. Trigger Make.com webhook. Cache purge status. Log purge event with PostHog. Use backend/routes/purge.js, backend/middleware/auth.js, backend/services/supabase.js, backend/webhooks/purge_data.js.",
+        "testStrategy": "Test API response confirming data purge, webhook handler for purge logging, and localStorage cache for purge status.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 46,
         "title": "Maintain API Documentation",
         "description": "Create and validate feedback API documentation",
@@ -2600,6 +2622,17 @@
         ]
       },
       {
+        "id": 55,
+        "title": "Implement Continuous Accessibility Monitoring",
+        "description": "Implement continuous accessibility monitoring.",
+        "details": "[PRD ref: T7.7.3-continuous-accessibility] Add pa11y-ci to CI/CD for frontend/public/. Test keyboard navigation and NVDA/JAWS compatibility. Generate accessibility report in accessibility-report.md. Log accessibility_error to PostHog. Write accessibility tests (backend/tests/accessibility.test.js). Use frontend/public/, backend/tests/accessibility.test.js, .github/workflows/accessibility.yml, .env.",
+        "testStrategy": "CI/CD step for pa11y-ci accessibility tests. Tests for keyboard navigation and screen readers. Accessibility report with 0 critical issues.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 56,
         "title": "Setup Make.com Project Creation Scenario",
         "description": "Implement Make.com scenario for project creation on Stripe checkout",
@@ -2731,6 +2764,17 @@
             "status": "pending"
           }
         ]
+      },
+      {
+        "id": 59,
+        "title": "Implement Output Quality Validation",
+        "description": "Add quality validation for GPT-4o outputs",
+        "details": "[PRD ref: T7.7.2-output-quality-validation] Validate outputs (650–850 words) and score quality. Retry if TrustDelta <4.2. Log output_quality event with PostHog. Set up validation logic in backend/routes/deliverables.js.",
+        "testStrategy": "Test output validation, quality scoring, retry logic, and PostHog event logging.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
       },
       {
         "id": 60,
@@ -2865,6 +2909,17 @@
         ]
       },
       {
+        "id": 63,
+        "title": "Update Social Media and Website Audit Prompts",
+        "description": "Enhance prompts for better resonance",
+        "details": "Enhance prompts for resonance and use 12 fields for personalization. Log output_quality event with PostHog. Update backend/prompts/social_media.js and backend/prompts/website_audit.js.",
+        "testStrategy": "Test prompt effectiveness, personalization features, and PostHog event logging.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 64,
         "title": "Document API Catalog",
         "description": "Create comprehensive API documentation in OpenAPI format",
@@ -2961,6 +3016,17 @@
         "dependencies": [
           1
         ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 67,
+        "title": "Validate TaskMaster Dependencies",
+        "description": "Validate all dependencies and ensure TaskMaster operates correctly across all environments.",
+        "details": "Audit and validate all dependencies required by TaskMaster. Ensure compatibility and correct versions for all core and optional packages. Test TaskMaster initialization, task expansion, and update flows in all supported environments. Document any issues and resolutions.",
+        "testStrategy": "Test TaskMaster initialization, dependency validation, and task management flows in all environments. Verify error handling and compatibility.",
+        "priority": "medium",
+        "dependencies": [],
         "status": "pending",
         "subtasks": []
       },
@@ -3155,6 +3221,19 @@
         ]
       },
       {
+        "id": 73,
+        "title": "Implement Support Request Queue",
+        "description": "Create support queue for critical errors",
+        "details": "Create support webhook and send personalized emails. Log support_request event with PostHog. Set up backend/webhooks/support.js and backend/templates/email/support.html.",
+        "testStrategy": "Test support webhook, email personalization, and PostHog event logging.",
+        "priority": "medium",
+        "dependencies": [
+          55
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 74,
         "title": "Implement Deliverable Resume API",
         "description": "Create /v1/resume API for deliverable timeout recovery",
@@ -3196,6 +3275,17 @@
             "status": "pending"
           }
         ]
+      },
+      {
+        "id": 75,
+        "title": "Standardize Error Handling",
+        "description": "Implement consistent error handling patterns across the backend",
+        "details": "Refactor backend services and routes to use standardized error handling. Implement centralized error middleware, consistent error response formats, and comprehensive logging. Update documentation to reflect new error handling standards.",
+        "testStrategy": "Test error handling in all major API endpoints and services. Verify error responses, logging, and middleware behavior.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
       },
       {
         "id": 76,
@@ -3432,6 +3522,28 @@
             "status": "pending"
           }
         ]
+      },
+      {
+        "id": 80,
+        "title": "Enhance Edge Case Testing",
+        "description": "Expand and improve edge case test coverage across the backend",
+        "details": "Identify and implement tests for critical edge cases in backend services and APIs. Refactor existing tests to cover boundary conditions, error scenarios, and rare input combinations. Document new edge cases and update testing guidelines.",
+        "testStrategy": "Run all tests and verify coverage of edge cases. Validate that new and existing tests catch boundary and error conditions.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 81,
+        "title": "Enforce Approved Tech Stack",
+        "description": "Ensure all code and dependencies conform to the approved technology stack",
+        "details": "Audit the codebase and dependencies to identify any unapproved technologies. Refactor or replace non-compliant components. Update documentation to list the approved tech stack and provide guidelines for future contributions.",
+        "testStrategy": "Verify that all code and dependencies match the approved tech stack. Run tests to ensure no regressions after refactoring.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
       },
       {
         "id": 82,
@@ -3738,6 +3850,32 @@
         ]
       },
       {
+        "id": 89,
+        "title": "Monitor Uptime with Sentry",
+        "description": "Configure Sentry for uptime monitoring and error tracking",
+        "details": "Configure Sentry for uptime tracking and log errors to error_logs. Write Jest tests for Sentry integration and uptime monitoring.",
+        "testStrategy": "Test Sentry uptime tracking, error logging, and Jest test coverage.",
+        "priority": "medium",
+        "dependencies": [
+          31
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 90,
+        "title": "Store Metrics in Supabase",
+        "description": "Set up Supabase tables for metric storage with RLS",
+        "details": "Update schemas for session_logs, feedback_logs, and share_logs. Add RLS policies and log metrics. Write Supatest tests for metric storage.",
+        "testStrategy": "Write Supatest tests for metric tables, test RLS policies, and verify metric logging.",
+        "priority": "medium",
+        "dependencies": [
+          37
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 91,
         "title": "Implement Jest Unit Tests",
         "description": "Create comprehensive unit tests for backend APIs and services",
@@ -3968,6 +4106,19 @@
         ]
       },
       {
+        "id": 97,
+        "title": "Update Test Suites for New Features",
+        "description": "Maintain test coverage for voice mode, i18n, and integrations",
+        "details": "Update Jest tests for new endpoints and services. Add regression tests for existing APIs. Add CI/CD step to validate test coverage. Log test_maintenance_complete to PostHog.",
+        "testStrategy": "Test new features, regression testing, CI/CD integration, and test maintenance.",
+        "priority": "medium",
+        "dependencies": [
+          91
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 98,
         "title": "Integrate Security Scanning in CI/CD",
         "description": "Add OWASP ZAP and Semgrep to CI/CD pipeline",
@@ -4023,6 +4174,17 @@
             "status": "pending"
           }
         ]
+      },
+      {
+        "id": 100,
+        "title": "Implement Advanced Rate Limiting",
+        "description": "Add advanced rate limiting to backend APIs and services",
+        "details": "Design and implement advanced rate limiting strategies for backend APIs. Support tiered limits, burst protection, and user/IP-based throttling. Integrate with existing middleware and document configuration.",
+        "testStrategy": "Test rate limiting under various load scenarios. Verify correct enforcement for different user tiers and IPs. Ensure no regressions in API performance.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
       },
       {
         "id": 101,
@@ -4199,6 +4361,17 @@
         ]
       },
       {
+        "id": 105,
+        "title": "Deploy Frontend to Render",
+        "description": "Deploy the frontend application to the Render hosting platform",
+        "details": "Configure Render deployment for the frontend. Set up environment variables, build scripts, and health checks. Validate deployment and document the process.",
+        "testStrategy": "Test frontend deployment on Render. Verify environment configuration, build success, and live site health.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 106,
         "title": "Deploy Backend to Render",
         "description": "Configure serverless backend deployment with Heroku fallback",
@@ -4328,6 +4501,19 @@
         ]
       },
       {
+        "id": 109,
+        "title": "Configure Production Monitoring",
+        "description": "Set up Sentry and PostHog for production monitoring",
+        "details": "Configure Sentry and PostHog for production. Log errors and validate dashboards. Log monitoring_enabled with PostHog.",
+        "testStrategy": "Test production monitoring, error tracking, and dashboard functionality.",
+        "priority": "high",
+        "dependencies": [
+          51
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 110,
         "title": "Implement API Downtime Mitigation",
         "description": "Create caching and retry mechanisms for API failures",
@@ -4427,6 +4613,17 @@
           1,
           67
         ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 113,
+        "title": "Test Scalability with Load Testing",
+        "description": "Perform load testing to validate system scalability and performance",
+        "details": "Design and execute load tests for backend and frontend services. Identify bottlenecks, measure response times, and document results. Recommend optimizations based on findings.",
+        "testStrategy": "Run load tests simulating high user traffic. Validate system stability, response times, and resource utilization.",
+        "priority": "medium",
+        "dependencies": [],
         "status": "pending",
         "subtasks": []
       },
@@ -4607,6 +4804,19 @@
         ]
       },
       {
+        "id": 118,
+        "title": "Mitigate Webflow CMS Downtime",
+        "description": "Implement CMS caching and static fallback",
+        "details": "Cache CMS in Supabase and implement static fallback. Log downtime to Sentry and log cache_hit with PostHog.",
+        "testStrategy": "Test CMS caching, static fallback, and downtime handling.",
+        "priority": "medium",
+        "dependencies": [
+          105
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 119,
         "title": "Mitigate Hume AI Rate Limits",
         "description": "Implement circuit breaker and GPT-4o fallback",
@@ -4650,6 +4860,20 @@
             "status": "pending"
           }
         ]
+      },
+      {
+        "id": 120,
+        "title": "Mitigate Webhook Rate Limiting",
+        "description": "Add exponential backoff for Make.com webhooks",
+        "details": "Add exponential backoff (2^i * 1000ms) to webhook retries. Log rate limit failures to error_logs. Test rate limit handling with Jest. Log webhook_rate_limit_handled to PostHog.",
+        "testStrategy": "Write Jest tests for webhook rate limiting, test backoff logic, and verify error logging.",
+        "priority": "medium",
+        "dependencies": [
+          48,
+          20
+        ],
+        "status": "pending",
+        "subtasks": []
       },
       {
         "id": 121,
@@ -4883,6 +5107,19 @@
         ]
       },
       {
+        "id": 127,
+        "title": "Document Glossary Terms",
+        "description": "Create comprehensive glossary documentation",
+        "details": "Write glossary in docs/glossary.md and map terms to project files. Test documentation with Jest and log glossary_updated with PostHog.",
+        "testStrategy": "Test glossary accuracy, term mapping, and Jest test coverage.",
+        "priority": "low",
+        "dependencies": [
+          52
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
         "id": 128,
         "title": "Implement Health Check Monitoring",
         "description": "Create comprehensive health check system",
@@ -4892,6 +5129,19 @@
         "dependencies": [
           1,
           109
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 129,
+        "title": "Optimize Database Performance",
+        "description": "Fine-tune database queries and indexing strategy",
+        "details": "Analyze slow queries and optimize indexing strategy. Implement query result caching and connection pooling. Monitor query performance and log optimization metrics.",
+        "testStrategy": "Test query performance improvements, caching effectiveness, and connection pooling.",
+        "priority": "high",
+        "dependencies": [
+          49
         ],
         "status": "pending",
         "subtasks": []
@@ -4979,7 +5229,7 @@
     "metadata": {
       "created": "2025-06-20T11:49:39.574Z",
       "description": "Tasks for master context",
-      "updated": "2025-07-02T15:55:15.640Z"
+      "updated": "2025-07-02T20:57:47.004Z"
     }
   }
 }
