@@ -2,7 +2,9 @@
 
 ## 1. Commit Message Format (for code commits)
 
-Your commit messages **must** follow the [conventional commit](https://github.com/conventional-changelog/commitlint/#wha) format enforced by commitlint/husky:
+Your commit messages **must** follow the [conventional commit format][commitlint-docs] enforced by commitlint/husky:
+
+[commitlint-docs]: https://github.com/conventional-changelog/commitlint/#wha
 
 ```
 <type>(<scope>): <subject in lower-case>
