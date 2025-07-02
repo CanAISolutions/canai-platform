@@ -578,3 +578,29 @@ SELECT name, description FROM vault.secrets WHERE name = 'openai_api_key';
 - Provides testStripeConnection() for health checks
 - Fully PRD-aligned (see docs/PRD.md and docs/stripe-payment-strategy.md)
 - Ready for integration with payment, refund, and subscription flows
+
+### stripe.js (backend/routes/)
+- **Implements Stripe webhook and health endpoints:**
+  - `POST /webhook`: Handles Stripe webhook events (checkout.session.completed, payment_intent.succeeded, payment_intent.payment_failed, charge.dispute.created)
+  - `GET /webhook/health`: Health check endpoint for Stripe webhook handler (returns 200 if operational)
+  - All other methods on `/webhook` return 405
+- **Features:**
+  - Signature verification using STRIPE_WEBHOOK_SECRET
+  - Idempotency for event processing (prevents duplicate Make.com triggers)
+  - Make.com integration: Triggers scenario on checkout.session.completed with retry logic
+  - Logs all events to Supabase `payment_logs`
+  - Centralized error handling, Sentry integration, robust status codes
+- **Test Coverage:**
+  - `backend/tests/integration/stripe.integration.test.js`: End-to-end tests for webhook, Make.com, idempotency, health check
+  - `backend/tests/unit/stripeWebhook.test.js`: Unit tests for event handling, error cases, method restrictions
+- **Documentation:**
+  - See [docs/stripe-payment-strategy.md](stripe-payment-strategy.md) for full implementation and requirements
+- **Status:** Complete, PRD and strategy-aligned, all tests passing as of July 2025
+
+---
+
+## [2025-07-02] Stripe Webhook & Health Endpoint Implementation
+- Implemented and documented Stripe webhook handler (`/webhook`) and health check endpoint (`/webhook/health`) in `backend/routes/stripe.js`
+- Added/updated test coverage in integration and unit tests
+- Updated project-structure-mapping.md and stripe-payment-strategy.md to reflect changes
+- All requirements from PRD and strategy doc are met; all tests passing
