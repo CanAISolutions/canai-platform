@@ -337,3 +337,6 @@ frontend/environment.txt
 backend/.env
 backend/.env.*
 scripts/.env
+
+# Ignore test results
+/test-results.xml
