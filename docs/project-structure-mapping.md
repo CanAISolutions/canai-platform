@@ -604,3 +604,18 @@ SELECT name, description FROM vault.secrets WHERE name = 'openai_api_key';
 - Added/updated test coverage in integration and unit tests
 - Updated project-structure-mapping.md and stripe-payment-strategy.md to reflect changes
 - All requirements from PRD and strategy doc are met; all tests passing
+
+## Changelog
+
+### [MVP Focus, July 2025]
+- Removed obsolete GitHub Actions workflow files: observability.yml, performance.yml, test.yml, security.yml, deploy.yml, validate-analytics.yml, structure.yml, make.yml, llm.yml, flags.yml, prompts.yml, sync.yml.
+- Only essential workflows for code quality, PR hygiene, and secret scanning are retained (ci.yml, lint.yml, secret-scan.yml, pr.yml, rules-validation.yml, cortex-validation.yml, supabase.yml).
+
+## CI/CD Workflows (Current)
+- ci.yml: Main CI pipeline (lint, tsc, Sentry, etc.)
+- lint.yml: Code quality and linting
+- secret-scan.yml: Secret scanning
+- pr.yml: PR validation and quality gates
+- rules-validation.yml: Cursor rules validation
+- cortex-validation.yml: Cortex memory and milestone tracking
+- supabase.yml: Database integration validation
