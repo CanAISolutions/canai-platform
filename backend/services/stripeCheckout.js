@@ -49,11 +49,18 @@ async function withRetry(fn, maxRetries = 3, baseDelay = 1000) {
  * @returns {boolean} True if the error is retryable
  */
 function isRetryableError(error) {
-  // Stripe API errors that are retryable
+  // Don't retry on non-retryable Stripe errors
+  if (error.type === 'StripeInvalidRequestError' || error.type === 'StripeCardError') {
+    return false;
+  }
+
+  // Retry on specific StripeAPIError codes or server errors
   if (error.type === 'StripeAPIError') {
-    return ['rate_limit', 'api_connection_error', 'api_error'].includes(
-      error.code
-    );
+    if (error.code === 'rate_limit' || (error.status && error.status >= 500)) {
+      return true; // Retryable: rate limit or server error
+    } else {
+      return false; // Non-retryable API error
+    }
   }
 
   // Network errors
@@ -326,6 +333,11 @@ export async function createRefund({
       const refundData = {
         payment_intent: paymentIntentId,
         reason: reason || 'requested_by_customer',
+        metadata: {
+          user_id: userId,
+          refund_reason: reason || 'requested_by_customer',
+          created_by: 'api',
+        },
       };
 
       if (amount) {
