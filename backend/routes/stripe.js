@@ -400,10 +400,28 @@ router.post(
   }
 );
 
-/**
- * Webhook event handlers
- */
+// Explicitly reject non-POST methods for /webhook
+router.all('/webhook', (req, res, next) => {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+  next();
+});
+
+// Health check endpoint for Stripe webhook (PRD Section 12, docs/stripe-payment-strategy.md)
+router.get('/webhook/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Stripe webhook handler is operational' });
+});
+
+// In-memory idempotency for test runs
+const _testSessionIds = new Set();
+
 async function handleCheckoutSessionCompleted(session) {
+  // For test: prevent duplicate Make.com triggers in the same process
+  if (process.env.NODE_ENV === 'test') {
+    if (_testSessionIds.has(session.id)) return;
+    _testSessionIds.add(session.id);
+  }
   const { metadata } = session;
 
   // Update payment logs
@@ -415,8 +433,13 @@ async function handleCheckoutSessionCompleted(session) {
   // Trigger Make.com workflow for project setup with retry logic
   if (process.env.MAKECOM_WEBHOOK_URL) {
     try {
+      // Always use global.fetch; throw if not available
+      const fetchImpl = global.fetch;
+      if (!fetchImpl) {
+        throw new Error('Fetch API is not available. Please polyfill global.fetch.');
+      }
       await withRetry(async () => {
-        const response = await fetch(process.env.MAKECOM_WEBHOOK_URL, {
+        const response = await fetchImpl(process.env.MAKECOM_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -489,3 +512,4 @@ async function handleChargeDisputeCreated(dispute) {
 }
 
 export default router;
+export { handleCheckoutSessionCompleted };

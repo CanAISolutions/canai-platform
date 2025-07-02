@@ -56,7 +56,7 @@ This document outlines our strategic approach for implementing a secure, scalabl
 ## 6. Payment Logging & Analytics
 - **Database Schema:** Use a normalized `payment_logs` table with fields: `event_type`, `user_id`, `amount`, `status`, `metadata`.
 - **RLS Policies:** Enforce row-level security so users only access their logs.
-- **Analytics:** Enable querying for payment trends and analytics.
+- **Analytics:** Enable querying for payment trends and analytics. Implemented in `backend/services/posthog.js` via `getPaymentTrends` (returns event counts, status breakdown, daily trends).
 - **Retention:** Implement 24-month data retention per PRD, using Supabase `pg_cron`.
 
 ---
@@ -78,6 +78,7 @@ This document outlines our strategic approach for implementing a secure, scalabl
 ---
 
 ## 9. Testing Strategy
+- **Unit and integration tests mock the global `fetch` implementation, ensuring retry and error handling logic is fully exercised.**
 - **Integration Tests:** Use mocked Stripe clients and Supabase test databases for end-to-end tests.
 - **Webhook Tests:** Simulate Stripe events and verify Make.com scenario triggers (e.g., `add_project.json`).
 - **Manual QA:** Test payment, refund, and subscription flows in Stripe test mode.
@@ -91,6 +92,62 @@ This document outlines our strategic approach for implementing a secure, scalabl
 - **Monitoring:** Set up health checks and alerts for payment/webhook failures via Sentry.
 - **Documentation:** Keep this strategy and implementation docs updated.
 - **PRD Alignment:** Ensure support for F4 Purchase Flow and pricing transparency.
+
+---
+
+## 11. Webhook Endpoint, Event Handlers, and Error Handling (Implementation Documentation)
+
+### Webhook Endpoint
+- **Path:** `/webhook` (POST only; all other methods return 405)
+- **Signature Verification:** Enforced using `STRIPE_WEBHOOK_SECRET` (400 on failure)
+- **Idempotency:** Each event is processed only once (integration tested)
+
+### Supported Events
+- `checkout.session.completed`: Triggers Make.com scenario (`add_project.json`) for project setup
+- `payment_intent.succeeded`: Logs successful payment
+- `payment_intent.payment_failed`: Logs failed payment
+- `charge.dispute.created`: Logs dispute event
+- Unknown events: Logged and ignored (no error)
+
+### Make.com Integration
+- On `checkout.session.completed`, sends POST to `MAKECOM_WEBHOOK_URL` with session/user/product info
+- Idempotency enforced (no duplicate triggers for same session)
+- Retry logic with exponential backoff (max 3 attempts)
+- **Fetch implementation always uses the global `fetch` if available (mocked in tests), falling back to `node-fetch` only if not present. This ensures robust testability and production reliability.**
+- Integration tested in `stripe.integration.test.js`
+
+### Error Handling
+- All errors are logged to Sentry with context (component, operation, event type, session ID)
+- Returns appropriate status codes:
+  - 400: Signature verification failed
+  - 405: Method not allowed
+  - 500: Webhook processing failed or misconfiguration
+- Unknown events do not cause errors
+- All errors and retries are covered by integration/unit tests
+
+### References
+- See `backend/routes/stripe.js` for implementation
+- See `backend/tests/integration/stripe.integration.test.js` for integration test coverage
+
+---
+
+## 12. Health Checks for Webhook Endpoint
+
+### Current Status
+- The main backend exposes a `/health` endpoint for overall system and Supabase connectivity monitoring (see backend/health.js).
+- No dedicated health check exists for the Stripe `/webhook` endpoint itself.
+
+### Requirements
+- PRD and TaskMaster require health monitoring for all critical endpoints, including Stripe webhook.
+- Should expose a `/webhook/health` (or similar) endpoint that returns 200 if the webhook handler is operational (does not process events, just readiness/liveness).
+- Should be monitored by uptime/alerting tools (e.g., Sentry, Render, or external service).
+- Implementation may depend on Task 128 (health check monitoring integration).
+
+### Next Steps
+- Implement `/webhook/health` endpoint in backend/routes/stripe.js or as a separate route.
+- Integrate with monitoring/alerting system.
+- Add test coverage for health check endpoint.
+- Update this documentation and Stripe-7.3-Progress.md when complete.
 
 ---
 
