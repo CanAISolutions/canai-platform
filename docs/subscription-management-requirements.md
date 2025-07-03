@@ -131,4 +131,16 @@ The following subtasks have been generated for Task 7.5 and serve as the officia
 8. **Testing and Documentation**
    - Comprehensive tests and documentation for the subscription system.
    - Unit/integration tests, API docs, deployment guides, troubleshooting.
-   - **Dependencies:** 1, 2, 3, 4, 5, 6, 7 
+   - **Dependencies:** 1, 2, 3, 4, 5, 6, 7
+
+### Subtask 1 Progress Log
+
+- [x] **Stripe SDK initialized in backend/services/stripeSubscription.js**
+  - Loads API key from environment
+  - Exports singleton Stripe client
+  - Adds retry logic for transient errors (max 3 attempts, exponential backoff)
+  - Integrates Sentry for error tracking
+  - PCI compliance: No card data stored
+  - Documented in project-structure-mapping.md
+  - .env.example updated with STRIPE_API_KEY and STRIPE_WEBHOOK_SECRET
+  - PRD and requirements doc alignment confirmed
