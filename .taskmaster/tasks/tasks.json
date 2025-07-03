@@ -440,9 +440,29 @@
           2
         ],
         "priority": "high",
-        "details": "Initialize Stripe SDK with secret key. Create service for checkout session creation, payment processing, and webhook handling. Implement refund processing and subscription management. Add payment logging to Supabase payment_logs table. Service includes robust retry logic, comprehensive error handling, and full test coverage.",
+        "details": "Initialize Stripe SDK with secret key. Create service for checkout session creation, payment processing, and webhook handling. Implement refund processing functionality. Add payment logging to Supabase payment_logs table. Service includes robust retry logic, comprehensive error handling, and full test coverage.",
         "testStrategy": "Test checkout session creation and payment processing with comprehensive test suite (22+ tests). Verify webhook handling and refund functionality. Test payment logging to database. Ensure proper error handling and retry mechanisms.",
         "subtasks": [
+          {
+            "id": 5,
+            "title": "Initialize Stripe SDK with secret key",
+            "description": "Set up Stripe SDK configuration with proper secret key management and environment variable handling",
+            "status": "done",
+            "dependencies": [],
+            "details": "Install Stripe SDK, configure environment variables for API keys (test/live), create Stripe client initialization with proper error handling, implement key validation, and set up basic connection testing\n<info added on 2025-06-30T21:02:31.717Z>\nDetailed Implementation Steps:\n\n1. Review PRD and stripe-payment-strategy.md for F4 Purchase Flow requirements and compliance needs\n2. Verify/Install Stripe SDK:\n   - Run `npm install stripe --save` or equivalent package manager command\n   - Check compatibility with current backend framework version\n\n3. Environment Configuration:\n   - Add STRIPE_SECRET_KEY_TEST and STRIPE_SECRET_KEY_LIVE to .env template\n   - Update environment loading in backend configuration\n   - Document key management process in team documentation\n   - Implement environment validation checks at startup\n\n4. Create stripe.ts/js service module:\n   - Define TypeScript interfaces for Stripe client configuration\n   - Implement key validation logic with specific error messages\n   - Create singleton pattern for Stripe client instance\n   - Add comprehensive error handling for initialization failures\n   - Include retry logic for temporary connection issues\n\n5. Connection Testing:\n   - Implement health check function using Stripe.balance.retrieve()\n   - Add startup validation sequence\n   - Create connection status monitoring utility\n   - Log connection events appropriately\n\n6. Documentation:\n   - Add JSDoc comments for all public methods\n   - Update project-structure-mapping.md with new service details\n   - Include code examples for common usage patterns\n   - Document error handling approaches and recovery procedures\n\n7. Integration Preparation:\n   - Define service interfaces for upcoming payment processing features\n   - Create stub methods for planned checkout session functionality\n   - Establish logging standards for payment operations\n   - Set up error tracking integration\n\nExpected Deliverables:\n- Functioning Stripe client initialization service\n- Environment configuration template\n- Connection testing utilities\n- Updated documentation\n- TypeScript definitions (if applicable)\n- Integration-ready service structure\n</info added on 2025-06-30T21:02:31.717Z>",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Create checkout session creation service",
+            "description": "Build service to create Stripe checkout sessions with product/price configuration",
+            "status": "done",
+            "dependencies": [
+              1
+            ],
+            "details": "Create checkout session endpoint, implement product/price mapping, configure success/cancel URLs, add customer data handling, implement session metadata, and add proper error handling for session creation failures\n<info added on 2025-06-30T21:21:43.411Z>\nDetailed Implementation Plan for Checkout Session Creation:\n\n1. Review F4 Purchase Flow requirements in PRD and stripe-payment-strategy.md\n2. Design backend service (backend/services/stripeCheckout.js):\n   - Session creation logic\n   - Price mapping and validation\n   - Customer data handling\n   - Error management\n\n3. Implement POST /v1/payments/checkout-session endpoint:\n   - Input: product track, user ID, metadata\n   - Schema validation using Joi/Zod\n   - Dynamic pricing validation\n   - Product track configuration\n   - User/plan metadata attachment\n   - Environment-based success/cancel URLs\n   - Idempotency key implementation\n   - Error handling and logging\n\n4. TypeScript Interface Development:\n   - CheckoutSessionInput\n   - ProductTrackConfig\n   - SessionResponse\n   - Error types\n\n5. Testing Requirements:\n   - Unit tests for service logic\n   - Integration tests with mocked Stripe API\n   - Error scenario coverage\n   - Idempotency verification\n\n6. Documentation Tasks:\n   - Code comments\n   - Update project-structure-mapping.md\n   - API endpoint documentation\n   - Error handling guide\n\n7. Webhook/Payment Logging Preparation:\n   - Event type definitions\n   - Logging structure setup\n   - Integration points identification\n\nReference Stripe Checkout documentation for best practices and security requirements.\n</info added on 2025-06-30T21:21:43.411Z>\n<info added on 2025-07-01T15:39:14.816Z>\nImplementation Completion Status:\n\nStripe Checkout Session Service has been fully implemented with the following key components:\n\nService Implementation (backend/services/stripeCheckout.js):\n- Implemented retry mechanism with exponential backoff (3 retries, 2^i * 1000ms delays)\n- Added Sentry integration for error tracking and monitoring\n- Integrated payment logging to payment_logs table\n- Configured automatic tax calculation and billing address collection\n- Implemented idempotency key generation and validation\n- Added Supabase pricing validation\n- Configured environment-specific success/cancel URLs\n- Completed core functions: createCheckoutSession, retrieveCheckoutSession, createRefund\n\nTest Coverage:\n- 11 unit tests covering client initialization, environment validation, and session creation\n- 11 integration tests for payment flows, error scenarios, and configuration\n- Achieved 72% coverage for stripeCheckout.js and 51% for stripe.js\n- All tests passing successfully\n\nProduction Features:\n- Retry handling for transient failures\n- Structured logging with metadata and timing metrics\n- Error tracking with contextual information\n- Duplicate prevention through idempotency\n- Environment-specific configurations\n- Input validation and sanitization\n- User-friendly error messaging\n\nSupported Features:\n- All product tracks implemented (business-plan-builder, social-media-campaign, website-audit-feedback)\n- Dynamic pricing validation\n- USD currency handling with cent conversion\n- Enhanced metadata including user context and processing metrics\n- Automatic tax calculation\n- Billing address collection\n- Stripe best practices compliance\n\nReady for progression to webhook handling implementation.\n</info added on 2025-07-01T15:39:14.816Z>\n<info added on 2025-07-01T22:36:06.974Z>\nCode Review and Testing Update:\n\nCode review feedback has been fully addressed with comprehensive test coverage improvements:\n\nUnit Testing (17 tests):\n- Added correlation ID propagation tests through metadata\n- Implemented retry mechanism testing with exponential backoff (1s, 2s, 4s)\n- Enhanced client initialization and session creation test coverage\n- Added error classification testing (retryable vs non-retryable)\n- Improved timeout handling verification\n\nIntegration Testing (11 tests):\n- End-to-end payment flow validation\n- Error scenario coverage\n- Idempotency verification\n- Enhanced Supabase mock implementations\n\nCoverage Metrics:\n- stripe.js: 69.76% line coverage, 100% function coverage\n- stripeCheckout.js: 76.56% line coverage, 88.09% branch coverage\n- All 28 tests passing consistently\n\nTest Infrastructure Improvements:\n- Fixed test timeout configuration (10s for retry tests)\n- Standardized code formatting with Prettier\n- Enhanced test organization and reliability\n- Improved mock implementations for consistent behavior\n\nProduction readiness verified with comprehensive error handling, retry mechanism validation, and correlation tracking implementation. All requirements from stripe-payment-strategy.md have been met.\n</info added on 2025-07-01T22:36:06.974Z>",
+            "testStrategy": ""
+          },
           {
             "id": 3,
             "title": "Implement payment processing and webhook handling",
@@ -465,31 +485,6 @@
               3
             ],
             "details": "Create refund endpoint with payment validation, implement partial and full refund logic, add refund reason tracking, implement refund webhook handling (charge.dispute.created, refund events), add refund status checking, and implement proper authorization checks. Utilize existing retry mechanism and error handling patterns.",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Implement subscription management",
-            "description": "Build comprehensive subscription lifecycle management including creation, updates, and cancellations",
-            "status": "in-progress",
-            "dependencies": [
-              1,
-              3
-            ],
-            "details": "Create subscription creation service, implement plan changes and upgrades/downgrades, add subscription cancellation and pause functionality, handle subscription webhook events (customer.subscription.created, updated, deleted), implement proration handling, and add subscription status tracking. Integrate with existing logging and monitoring infrastructure.",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Add payment logging to Supabase",
-            "description": "Implement comprehensive payment event logging and audit trail in Supabase database",
-            "status": "pending",
-            "dependencies": [
-              3,
-              4,
-              5
-            ],
-            "details": "Extend existing payment logging implementation to cover all payment events (payments, refunds, subscriptions). Implement structured logging with event types and metadata, implement log querying and filtering, add payment analytics data collection, and ensure proper data retention policies. Build upon logging infrastructure established in checkout session service.",
             "testStrategy": ""
           },
           {
@@ -5229,7 +5224,7 @@
     "metadata": {
       "created": "2025-06-20T11:49:39.574Z",
       "description": "Tasks for master context",
-      "updated": "2025-07-02T20:57:47.004Z"
+      "updated": "2025-07-03T15:56:24.263Z"
     }
   }
 }
